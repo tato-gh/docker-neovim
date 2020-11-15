@@ -47,34 +47,34 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " Quickfix ショートカット
 " " オープン
-nnoremap <Space>co :copen 30 <CR>
+nnoremap <Leader>co :copen 30 <CR>
 " " ファイル移動
-nnoremap <Space>cc :.cc <CR>
+nnoremap <Leader>cc :.cc <CR>
 
 " ペースト
-nnoremap <Space>p :set paste<CR>i
+nnoremap <Leader>p :set paste<CR>i
 autocmd InsertLeave * set nopaste
 
 " タブ切り替え
-nnoremap <Space>1 :tabn1 <CR>
-nnoremap <Space>2 :tabn2 <CR>
-nnoremap <Space>3 :tabn3 <CR>
-nnoremap <Space>4 :tabn4 <CR>
-nnoremap <Space>5 :tabn5 <CR>
-nnoremap <Space>6 :tabn6 <CR>
-nnoremap <Space>7 :tabn7 <CR>
-nnoremap <Space>8 :tabn8 <CR>
-nnoremap <Space>9 :tabn9 <CR>
-nnoremap <Space>t :tabnew 
+nnoremap <Leader>1 :tabn1 <CR>
+nnoremap <Leader>2 :tabn2 <CR>
+nnoremap <Leader>3 :tabn3 <CR>
+nnoremap <Leader>4 :tabn4 <CR>
+nnoremap <Leader>5 :tabn5 <CR>
+nnoremap <Leader>6 :tabn6 <CR>
+nnoremap <Leader>7 :tabn7 <CR>
+nnoremap <Leader>8 :tabn8 <CR>
+nnoremap <Leader>9 :tabn9 <CR>
+nnoremap <Leader>t :tabnew
 
 " ウィンドウ切り替え
-nnoremap <Space>h :execute 'wincmd h' <CR>
-nnoremap <Space>j :execute 'wincmd j' <CR>
-nnoremap <Space>k :execute 'wincmd k' <CR>
-nnoremap <Space>l :execute 'wincmd l' <CR>
-nnoremap <Space>v :execute 'wincmd v' <CR>
-nnoremap <Space>s :execute 'wincmd s' <CR>
-nnoremap <Space>e :e 
+nnoremap <Leader>h :execute 'wincmd h' <CR>
+nnoremap <Leader>j :execute 'wincmd j' <CR>
+nnoremap <Leader>k :execute 'wincmd k' <CR>
+nnoremap <Leader>l :execute 'wincmd l' <CR>
+nnoremap <Leader>v :execute 'wincmd v' <CR>
+nnoremap <Leader>s :execute 'wincmd s' <CR>
+nnoremap <Leader>e :e
 
 
 " 日付挿入 時刻挿入
@@ -88,10 +88,10 @@ command! -nargs=1 Silent execute ':silent ! '.<q-args>|execute ':redraw!'
 
 
 " バッファ一覧/移動
-nnoremap <silent><Space>l :ls<CR>:b<Space>
+nnoremap <silent><Leader>l :ls<CR>:b<Space>
 
 " marks一覧/移動
-nnoremap <silent><Space>m :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
 
 " 保存時の行末空白削除
 autocmd BufWritePre * :%s/\s\+$//ge

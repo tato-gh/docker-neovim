@@ -21,6 +21,8 @@ RUN apk update && \
     bash
 RUN rm -rf /var/cache/apk/*
 
+RUN npm install -g yarn
+
 ENV LANG="ja_JP.UTF-8" LANGUAGE="ja_JP:ja" LC_ALL="ja_JP.UTF-8"
 RUN pip3 install --upgrade pip neovim pynvim && \
     rm -rf /root/.cache

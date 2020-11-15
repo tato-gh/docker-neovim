@@ -4,15 +4,21 @@ filetype indent on
 set number
 set nocompatible
 set complete-=i
-set wildmenu
-set textwidth=80
+set textwidth=160
 set colorcolumn=+1
 set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 set laststatus=2
-set cmdheight=2
+set cmdheight=1
+
+let mapleader = "\<Space>"
 
 " shellでaliasを有効化
 set shell=/bin/bash\ -l\ -O\ expand_aliases
+
+" タブ補完
+" 例: <Tab>=list, <Tab><Tab>=full
+" set wildmode=list,full
+set wildmode=list:longest
 
 " スワップ
 set noswapfile
@@ -43,11 +49,11 @@ set incsearch
 
 
 " neovim Original Settings
-if filereadable(expand('~/.config/nvim/original_custom.vim')) 
+if filereadable(expand('~/.config/nvim/original_custom.vim'))
   source ~/.config/nvim/original_custom.vim
 endif
 
 " Plugins Settings
-if filereadable(expand('~/.config/nvim/plugin_settings.vim')) 
+if filereadable(expand('~/.config/nvim/plugin_settings.vim'))
   source ~/.config/nvim/plugin_settings.vim
 endif

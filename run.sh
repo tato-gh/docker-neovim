@@ -6,4 +6,4 @@ GID=`ls -1dl /srv |sed 's/[\t ]\+/\t/g' |cut -f4`
 chown $UID:$GID /home/dev -R
 adduser dev -D -u $UID -h /home/dev
 
-sudo -u dev byobu
+sudo -i -u dev byobu
