@@ -17,6 +17,8 @@ RUN apk update && \
     nodejs \
     npm \
     byobu \
+    file \
+    ripgrep \
     sudo \
     bash
 RUN rm -rf /var/cache/apk/*

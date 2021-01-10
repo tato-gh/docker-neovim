@@ -86,12 +86,11 @@ nnoremap ,t <Esc>$a<C-R>=strftime('%Y-%m-%d (').weeks[strftime("%w")].')'<CR><Es
 " Silent処理
 command! -nargs=1 Silent execute ':silent ! '.<q-args>|execute ':redraw!'
 
-
 " バッファ一覧/移動
-nnoremap <silent><Leader>l :ls<CR>:b<Space>
+nnoremap <silent><Leader>bb :ls<CR>:b<Space>
 
 " marks一覧/移動
-nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>bm :<C-u>marks<CR>:normal! `
 
 " 保存時の行末空白削除
 autocmd BufWritePre * :%s/\s\+$//ge
