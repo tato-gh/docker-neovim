@@ -30,8 +30,10 @@ nnoremap <CR> o<Esc>
 
 " viminfo を使用したウインドウ間コピー
 " および /tmp/yanked にヤンク内容を書き出す
-" - なぜか空行が2つ入るため sed で削除
-vnoremap y y:wv<CR>:redir! > /tmp/yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -i -e '1,2d' /tmp/yanked<CR>:redraw<CR>
+" - なぜか空行が2つ入るため除去済み
+vnoremap y y:wv<CR>:redir! > /tmp/yanked_tmp<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -e '1,2d' -e '$d' /tmp/yanked_tmp > /tmp/yanked<CR>:redraw<CR>
+" (以前sedで調整していたがinodeが変わってhost側のinotifywaitで検知できなくなるため没)
+" vnoremap y y:wv<CR>:redir! > /tmp/yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -i -e '1,2d' /tmp/yanked<CR>:redraw<CR>
 
 " ヤンクレジスタからの貼り付け
 "   この操作時のみ(viminfoロードも行う)
@@ -65,7 +67,7 @@ nnoremap <Leader>6 :tabn6 <CR>
 nnoremap <Leader>7 :tabn7 <CR>
 nnoremap <Leader>8 :tabn8 <CR>
 nnoremap <Leader>9 :tabn9 <CR>
-nnoremap <Leader>t :tabnew
+nnoremap <Leader>t :tabnew 
 
 " ウィンドウ切り替え
 nnoremap <Leader>h :execute 'wincmd h' <CR>
@@ -74,7 +76,7 @@ nnoremap <Leader>k :execute 'wincmd k' <CR>
 nnoremap <Leader>l :execute 'wincmd l' <CR>
 nnoremap <Leader>v :execute 'wincmd v' <CR>
 nnoremap <Leader>s :execute 'wincmd s' <CR>
-nnoremap <Leader>e :e
+nnoremap <Leader>e :e 
 
 
 " 日付挿入 時刻挿入
@@ -86,6 +88,7 @@ nnoremap ,t <Esc>$a<C-R>=strftime('%Y-%m-%d (').weeks[strftime("%w")].')'<CR><Es
 " Silent処理
 command! -nargs=1 Silent execute ':silent ! '.<q-args>|execute ':redraw!'
 
+
 " バッファ一覧/移動
 nnoremap <silent><Leader>bb :ls<CR>:b<Space>
 
@@ -93,7 +96,10 @@ nnoremap <silent><Leader>bb :ls<CR>:b<Space>
 nnoremap <silent><Leader>bm :<C-u>marks<CR>:normal! `
 
 " 保存時の行末空白削除
-autocmd BufWritePre * :%s/\s\+$//ge
+" - 場合によっては必要なファイルもあるため拡張子が明確な場合は明示して除外
+let ftToIgnore = ['vim']
+autocmd BufWritePre * if index(ftToIgnore, &ft) < 0 | :%s/\s\+$//ge
+" autocmd BufWritePre * :%s/\s\+$//ge
 " autocmd BufWritePre *.{rb,ex,coffee,txt,md,js} :%s/\s\+$//ge
 
 

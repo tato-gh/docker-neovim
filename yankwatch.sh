@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# 下記ファイルが作成された際に内容をclip.exeでコピーする
-# use: inotify-tools
+# dockerコンテナ内等からのクリップボード共有用スクリプト
+# $FILEに記載内容をclip.exeで共有する仕組み
+# package: inotify-tools
 
 FILE="/tmp/yanked"
 
