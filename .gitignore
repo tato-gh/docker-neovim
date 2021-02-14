@@ -1,18 +1,18 @@
 dev_sample/*
-
+!dev_sample/.gitconfig
+!dev_sample/.gitignore
 !dev_sample/.config/
-dev_sample/.config/*
+!dev_sample/.config/coc
 !dev_sample/.config/nvim
+!dev_sample/.byobu/
+
+dev_sample/.config/*
 dev_sample/.config/nvim/*
 !dev_sample/.config/nvim/init.vim
 !dev_sample/.config/nvim/original_custom.vim
 !dev_sample/.config/nvim/plugin_settings.vim
-!dev_sample/.config/coc
-node_modules/
 
-!dev_sample/.byobu/
 dev_sample/.byobu/*
 !dev_sample/.byobu/keybindings.tmux
 
-!dev_sample/.gitconfig
-!dev_sample/.gitignore
+node_modules/

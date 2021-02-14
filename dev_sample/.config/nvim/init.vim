@@ -39,6 +39,7 @@ set iskeyword-=_
 set iskeyword-=-
 
 " インデント各種設定
+" " MEMO: tab入力方法: <ctrl-v>tab
 set expandtab
 set tabstop=2 shiftwidth=2 softtabstop=2
 set autoindent

@@ -16,6 +16,14 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
 Plug 'LeafCage/yankround.vim'
 
+" launcher
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'mattn/ctrlp-launcher'
+
+" filer
+Plug 'Shougo/defx.nvim'
+" Plug 'mattn/vim-molder'
+
 " for services
 Plug 'rhysd/git-messenger.vim'
 
@@ -65,3 +73,36 @@ nmap <C-n> <Plug>(yankround-next)
 " -----------------------
 nmap <C-w>m <Plug>(git-messenger)
 let g:git_messenger_always_into_popup = v:true
+
+" defx
+" NOTE :UpdateRemotePlugins
+" -----------------------
+" nnoremap <silent> <Leader>e :<C-u> Defx <CR>
+nnoremap <silent><Leader>e :<C-u>Defx `expand('%:p:h')`<CR>
+autocmd FileType defx call s:defx_my_settings()
+call defx#custom#option('_', {
+      \ 'split': 'no',
+      \ 'show_ignored_files': 1,
+      \ 'buffer_name': 'exlorer',
+      \ 'toggle': 1,
+      \ 'resume': 1,
+      \ })
+
+function! s:defx_my_settings() abort
+  nnoremap <silent><buffer><expr> <CR> defx#is_directory() ? defx#do_action('open_tree', 'recursive:2') : defx#do_action('open')
+  nnoremap <silent><buffer><expr> t defx#do_action('open','tabnew')
+  nnoremap <silent><buffer><expr> o defx#do_action('open_or_close_tree')
+  nnoremap <silent><buffer><expr> N defx#do_action('new_directory')
+  nnoremap <silent><buffer><expr> n defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> x defx#do_action('execute_system')
+  nnoremap <silent><buffer><expr> yy defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> . defx#do_action('toggle_ignored_files')
+  nnoremap <silent><buffer><expr> h defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> q defx#do_action('quit')
+  nnoremap <silent><buffer><expr> r defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> p defx#do_action('preview')
+endfunction
+
+" ctrlp
+let g:ctrlp_map = '<Nop>'
+nnoremap <c-e> :<c-u>CtrlPLauncher<cr>

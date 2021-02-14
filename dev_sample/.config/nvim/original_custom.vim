@@ -31,7 +31,7 @@ nnoremap <CR> o<Esc>
 " viminfo を使用したウインドウ間コピー
 " および /tmp/yanked にヤンク内容を書き出す
 " - なぜか空行が2つ入るため除去済み
-vnoremap y y:wv<CR>:redir! > /tmp/yanked_tmp<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -e '1,2d' -e '$d' /tmp/yanked_tmp > /tmp/yanked<CR>:redraw<CR>
+vnoremap y y:wv<CR>:redir! > ~/.yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -e '1,2d' -e '4d' ~/.yanked > /tmp/yanked<CR>:redraw<CR>
 " (以前sedで調整していたがinodeが変わってhost側のinotifywaitで検知できなくなるため没)
 " vnoremap y y:wv<CR>:redir! > /tmp/yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -i -e '1,2d' /tmp/yanked<CR>:redraw<CR>
 
@@ -76,7 +76,7 @@ nnoremap <Leader>k :execute 'wincmd k' <CR>
 nnoremap <Leader>l :execute 'wincmd l' <CR>
 nnoremap <Leader>v :execute 'wincmd v' <CR>
 nnoremap <Leader>s :execute 'wincmd s' <CR>
-nnoremap <Leader>e :e 
+" nnoremap <Leader>e :e 
 
 
 " 日付挿入 時刻挿入
