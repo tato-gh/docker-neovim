@@ -48,6 +48,7 @@ nnoremap <silent> <Leader>d  :<C-u>CocCommand fzf-preview.DirectoryFiles<CR>
 nnoremap <silent> <Leader>n  :<C-u>CocCommand fzf-preview.DirectoryFiles <C-r>=expand('%:h')<CR><CR>
 nnoremap <silent> <Leader>gs :<C-u>CocCommand fzf-preview.GitStatus<CR>
 nnoremap <silent> <Leader>ga :<C-u>CocCommand fzf-preview.GitActions<CR>
+nnoremap <silent> <Leader>gl :<C-u>CocCommand fzf-preview.GitLogs<CR>
 nnoremap <silent> <Leader>g; :<C-u>CocCommand fzf-preview.Changes<CR>
 nnoremap <silent> <Leader>gr :<C-u>CocCommand fzf-preview.ProjectGrep<Space>
 nnoremap <silent> <Leader>gw :<C-u>CocCommand fzf-preview.ProjectGrep<Space><C-r>=expand('<cword>')<CR><CR>
@@ -79,6 +80,7 @@ let g:git_messenger_always_into_popup = v:true
 " -----------------------
 " nnoremap <silent> <Leader>e :<C-u> Defx <CR>
 nnoremap <silent><Leader>e :<C-u>Defx `expand('%:p:h')`<CR>
+nnoremap <silent><Leader>t :tabnew %<CR>:<C-u>Defx `expand('%:p:h')`<CR>
 autocmd FileType defx call s:defx_my_settings()
 call defx#custom#option('_', {
       \ 'split': 'no',
@@ -101,6 +103,7 @@ function! s:defx_my_settings() abort
   nnoremap <silent><buffer><expr> q defx#do_action('quit')
   nnoremap <silent><buffer><expr> r defx#do_action('redraw')
   nnoremap <silent><buffer><expr> p defx#do_action('preview')
+  nnoremap <silent><buffer><expr> v defx#do_action('open', 'vsplit')
 endfunction
 
 " ctrlp
