@@ -42,20 +42,21 @@ colorscheme badwolf
 "   ref: https://github.com/yuki-ycino/fzf-preview.vim#coc-extensions-2
 " -----------------------
 let g:fzf_preview_floating_window_rate = 0.9
-nnoremap <silent> <Leader>f  :<C-u>CocCommand fzf-preview.FromResources project_mru git<CR>
+nnoremap <silent> <Leader>f  :<C-u>CocCommand fzf-preview.DirectoryFiles<CR>
 nnoremap <silent> <Leader>m  :<C-u>CocCommand fzf-preview.MruFiles<CR>
-nnoremap <silent> <Leader>d  :<C-u>CocCommand fzf-preview.DirectoryFiles<CR>
-nnoremap <silent> <Leader>n  :<C-u>CocCommand fzf-preview.DirectoryFiles <C-r>=expand('%:h')<CR><CR>
+nnoremap <silent> <Leader>tm :tabnew<CR>:<C-u>CocCommand fzf-preview.MruFiles<CR>
+nnoremap <silent> <Leader>;  :<C-u>CocCommand fzf-preview.Changes<CR>
+nnoremap <silent> <Leader>gf :<C-u>CocCommand fzf-preview.FromResources git<CR>
 nnoremap <silent> <Leader>gs :<C-u>CocCommand fzf-preview.GitStatus<CR>
 nnoremap <silent> <Leader>ga :<C-u>CocCommand fzf-preview.GitActions<CR>
 nnoremap <silent> <Leader>gl :<C-u>CocCommand fzf-preview.GitLogs<CR>
-nnoremap <silent> <Leader>g; :<C-u>CocCommand fzf-preview.Changes<CR>
 nnoremap <silent> <Leader>gr :<C-u>CocCommand fzf-preview.ProjectGrep<Space>
 nnoremap <silent> <Leader>gw :<C-u>CocCommand fzf-preview.ProjectGrep<Space><C-r>=expand('<cword>')<CR><CR>
 nnoremap <silent> <Leader>gy :<C-u>CocCommand fzf-preview.ProjectGrep<Space><C-r>=@"<CR><CR>
-nnoremap <silent> <Leader>/  :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="'"<CR>
-nnoremap <silent> <Leader>*  :<C-u>CocCommand fzf-preview.Lines --add-fzf-arg=--no-sort --add-fzf-arg=--query="'<C-r>=expand('<cword>')<CR>"<CR>
-
+nnoremap <silent> gd <Plug>(coc-definition)
+nnoremap <silent> gy <Plug>(coc-type-definition)
+nnoremap <silent> gi <Plug>(coc-implementation)
+nnoremap <silent> gr <Plug>(coc-references)
 
 
 " Easy Motion
@@ -79,8 +80,8 @@ let g:git_messenger_always_into_popup = v:true
 " NOTE :UpdateRemotePlugins
 " -----------------------
 " nnoremap <silent> <Leader>e :<C-u> Defx <CR>
-nnoremap <silent><Leader>e :<C-u>Defx `expand('%:p:h')`<CR>
-nnoremap <silent><Leader>t :tabnew %<CR>:<C-u>Defx `expand('%:p:h')`<CR>
+nnoremap <silent><Leader>d  :<C-u>Defx `expand('%:p:h')`<CR>
+nnoremap <silent><Leader>td :tabnew %<CR>:<C-u>Defx `expand('%:p:h')`<CR>
 autocmd FileType defx call s:defx_my_settings()
 call defx#custom#option('_', {
       \ 'split': 'no',

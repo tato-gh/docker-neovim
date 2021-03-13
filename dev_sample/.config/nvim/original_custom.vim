@@ -31,7 +31,7 @@ nnoremap <CR> o<Esc>
 " viminfo を使用したウインドウ間コピー
 " および /tmp/yanked にヤンク内容を書き出す
 " - なぜか空行が2つ入るため除去済み
-vnoremap y y:wv<CR>:redir! > ~/.yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -e '1,2d' -e '4d' ~/.yanked > /tmp/yanked<CR>:redraw<CR>
+vnoremap y y:wv<CR>:redir! > ~/.yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -e '1,2d' ~/.yanked > /tmp/yanked<CR>:redraw<CR>
 " (以前sedで調整していたがinodeが変わってhost側のinotifywaitで検知できなくなるため没)
 " vnoremap y y:wv<CR>:redir! > /tmp/yanked<CR>:silent echo getreg("0")<CR>:redir end<CR>:!sed -i -e '1,2d' /tmp/yanked<CR>:redraw<CR>
 
@@ -57,6 +57,10 @@ nnoremap <Leader>cc :.cc <CR>
 nnoremap <Leader>p :set paste<CR>i
 autocmd InsertLeave * set nopaste
 
+" 新規バッファ補助
+nnoremap <Leader>e :e 
+nnoremap <Leader>tt :tabnew 
+
 " タブ切り替え
 nnoremap <Leader>1 :tabn1 <CR>
 nnoremap <Leader>2 :tabn2 <CR>
@@ -67,7 +71,6 @@ nnoremap <Leader>6 :tabn6 <CR>
 nnoremap <Leader>7 :tabn7 <CR>
 nnoremap <Leader>8 :tabn8 <CR>
 nnoremap <Leader>9 :tabn9 <CR>
-nnoremap <Leader>t :tabnew 
 
 " ウィンドウ切り替え
 nnoremap <Leader>h :execute 'wincmd h' <CR>
