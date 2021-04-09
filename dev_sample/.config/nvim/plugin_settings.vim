@@ -15,6 +15,7 @@ Plug 'nelstrom/vim-visual-star-search'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
 Plug 'LeafCage/yankround.vim'
+Plug 'hrsh7th/vim-vsnip'
 
 " launcher
 Plug 'ctrlpvim/ctrlp.vim'
@@ -110,3 +111,14 @@ endfunction
 " ctrlp
 let g:ctrlp_map = '<Nop>'
 nnoremap <c-e> :<c-u>CtrlPLauncher<cr>
+
+" vim-vsnip 
+" samples: https://github.com/rafamadriz/friendly-snippets/tree/main/snippets
+imap <expr> <C-l>   vsnip#expandable() ? '<Plug>(vsnip-expand)'         : '<C-l>'
+smap <expr> <C-l>   vsnip#expandable() ? '<Plug>(vsnip-expand)'         : '<C-l>'
+imap <expr> <C-l>   vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+smap <expr> <C-l>   vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'

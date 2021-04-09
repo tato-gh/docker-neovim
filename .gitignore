@@ -5,6 +5,7 @@ dev_sample/*
 !dev_sample/.config/coc
 !dev_sample/.config/nvim
 !dev_sample/.byobu/
+!dev_sample/.vsnip/
 
 dev_sample/.config/*
 dev_sample/.config/nvim/*

@@ -1,0 +1,28 @@
+{
+  "def": {
+    "prefix": "def",
+    "body": [
+      "def $1 do",
+      "end"
+    ]
+  },
+  "def inline": {
+    "prefix": "defi",
+    "body": [
+      "def $1, do: $2"
+    ]
+  },
+  "defp": {
+    "prefix": "defp",
+    "body": [
+      "defp $1 do",
+      "end"
+    ]
+  },
+  "defp inline": {
+    "prefix": "defpi",
+    "body": [
+      "defp $1, do: $2"
+    ]
+  }
+}
