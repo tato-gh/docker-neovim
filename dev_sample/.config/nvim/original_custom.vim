@@ -59,7 +59,8 @@ autocmd InsertLeave * set nopaste
 
 " 新規バッファ補助
 nnoremap <Leader>e :e 
-nnoremap <Leader>tt :tabnew 
+nnoremap <Leader>tc :tabnew 
+nnoremap <Leader>tt :tabnew <C-r>=expand('%:h')<CR>/
 
 " タブ切り替え
 nnoremap <Leader>1 :tabn1 <CR>

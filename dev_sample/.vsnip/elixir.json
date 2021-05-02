@@ -24,5 +24,11 @@
     "body": [
       "defp $1, do: $2"
     ]
+  },
+  "io": {
+    "prefix": "io inspect",
+    "body": [
+      "IO.inspect "
+    ]
   }
 }
