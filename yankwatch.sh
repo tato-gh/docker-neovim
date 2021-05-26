@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# dockerコンテナ内等からのクリップボード共有用スクリプト
+# WSLでdockerコンテナ内からのクリップボード共有用スクリプト
 # $FILEに記載内容をclip.exeで共有する仕組み
 # package: inotify-tools
 

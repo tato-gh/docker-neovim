@@ -1,19 +1,21 @@
-dev_sample/*
-!dev_sample/.gitconfig
-!dev_sample/.gitignore
-!dev_sample/.config/
-!dev_sample/.config/coc
-!dev_sample/.config/nvim
-!dev_sample/.byobu/
-!dev_sample/.vsnip/
+home_nvim.sample/*
+!home_nvim.sample/.gitconfig
+!home_nvim.sample/.gitignore
+!home_nvim.sample/.config/
+!home_nvim.sample/.config/nvim
+!home_nvim.sample/.byobu/
+!home_nvim.sample/.vsnip/
 
-dev_sample/.config/*
-dev_sample/.config/nvim/*
-!dev_sample/.config/nvim/init.vim
-!dev_sample/.config/nvim/original_custom.vim
-!dev_sample/.config/nvim/plugin_settings.vim
+home_nvim.sample/.config/*
+!home_nvim.sample/.config/nvim/
+home_nvim.sample/.config/nvim/*
+!home_nvim.sample/.config/nvim/init.vim
+!home_nvim.sample/.config/nvim/init_originals.vim
+!home_nvim.sample/.config/nvim/init_plugins.vim
 
-dev_sample/.byobu/*
-!dev_sample/.byobu/keybindings.tmux
+home_nvim.sample/.byobu/*
+!home_nvim.sample/.byobu/keybindings.tmux
+!home_nvim.sample/.byobu/.tmux.conf
 
 node_modules/
+tmp/
