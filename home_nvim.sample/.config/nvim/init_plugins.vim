@@ -53,14 +53,13 @@ nmap s <Plug>(easymotion-bd-w)
 nmap gl <Plug>(easymotion-bd-jk)
 
 
-
 " ctrlp
 let g:ctrlp_map = '<Nop>'
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_lazy_update = 1
 nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
-nnoremap <C-m> :<C-u>CtrlPMRUFiles<CR>
+nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 
 
 " treesitter

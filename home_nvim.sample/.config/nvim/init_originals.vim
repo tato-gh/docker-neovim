@@ -1,11 +1,11 @@
 
 " NOTE
 " - タブは `gt``gT` で扱えるように1~2つ程度を使用する
-"   多用するとタブで開くかどうかの選択でショートカットが増えすぎるため
-"   (かつて多用していたものの...)
+"   多用するとタブで開くかどうかの選択でショートカットが増えすぎる
+"   (かつて多用していたがやめてみる...)
 " - ウィンドウ分割は <C-w> を素直に使用する
 " - tmuxである程度作業するフォルダを分離しているので前後フォルダ移動が早いほうがいい
-"   fzf はさほど必要ない
+"   そのため fzf はさほど必要ないと思われる
 " - コーディング中に一時退避用ファイルとして .memo を作ることがある
 "   .memo をさくっと開けるほうがいい
 "   .memo のみを対象とした検索があったほうがいい
@@ -15,8 +15,11 @@
 "   - `:e %:h` ではタブ補完後に入力が必要なのでひと手間かかる
 "   - fzf 系も基本的に入力が必要
 "   - netrw(等)は行移動でもいいのでやや楽
-" - 番号指定でファイルが開くこと
+" - 同じフォルダにあるファイルをさくっと開けること
+" - 番号指定でファイルを開けること
 " - 同じフォルダの前後に変更したファイルがさくっと開けること
+" - locationlist を活用することにした
+"   （ターミナル活用の方がよかったかもしれない。ただバッファに残る
 
 " -----------------------
 "
@@ -176,14 +179,22 @@ nnoremap <Leader>49 :OpenFileAtLine 49<CR>
 nnoremap <Leader>50 :OpenFileAtLine 50<CR>
 
 
+" ターミナル
+tnoremap <C-j> <C-\><C-n>
+nnoremap <C-t> :MyTerm<Space>
+nnoremap <C-g>ll :MyTerm git log -p %<CR>
+nnoremap <C-g>la :MyTerm git log -p<CR>
+nnoremap <C-g>dd :MyTerm git diff %<CR>
+nnoremap <C-g>da :MyTerm git diff<CR>
+nnoremap <C-g>st :MyTerm git status<CR>
+command! -nargs=* MyTerm split | wincmd j | resize 20 | terminal <args>
+
+
 " ヒューリスティック(便利機能案)
-" " 開いた先を参照しながら元ファイルに戻りたい reference
+" " 移動先を参照しながら、移動元に戻りたい(後から気づいたケース)
 nnoremap <Leader>r :wincmd v<CR>:MyMovePrevFile<CR>
 
-" terminal
-tnoremap <C-j> <C-\><C-n>
-nnoremap <Leader>t :split<CR>:wincmd j<CR>:resize 20<CR>:terminal<CR>
-autocmd TermOpen * startinsert
+
 
 
 " -----------------------
@@ -204,6 +215,7 @@ augroup vimrc_save_directory
   autocmd!
   autocmd BufWinEnter * let b:dir = expand('%:h') . '/'
 augroup END
+
 
 " ファイルタイプ設定
 "
@@ -232,6 +244,14 @@ augroup vimrc_restore_cursor_position
 augroup END
 
 
+" ターミナル
+augroup vimrc_terminal_start_insert
+  autocmd TermOpen * startinsert
+augroup END
+
+
+
+
 " -----------------------
 " Function
 " -----------------------
@@ -248,7 +268,6 @@ function! s:MyYank() range
   !sed -e '1,1d' ~/.yanked > /tmp/yanked
   redraw
 endfunction
-
 
 " カーソル位置を最後の編集位置へ
 function! s:RestoreCursorPostion()
@@ -295,7 +314,6 @@ function! MyTabLabel(n)
   let altbuf = a:n . ':' . altbuf
   return altbuf
 endfunction
-
 
 
 " シーケンスマーキング
@@ -365,7 +383,7 @@ function! s:LocationlistDirectory(...)
 endfunction
 
 
-" locationlist のみ表示
+" locationlist 全画面表示
 command! -nargs=1 OpenLocationlist call s:OpenLocationlist(<f-args>)
 function! s:OpenLocationlist(path)
   lopen
@@ -400,17 +418,18 @@ command! -nargs=* MyMovePostFile call s:MovePostFile(<f-args>)
 function! s:MovePostFile(...)
   let l:current_grep = &grepprg " 設定値の保存
   setlocal grepprg=bash\ -c
-  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -t \| grep -v /\\\."'
+  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -t'
   execute 'OpenLocationlist '. Curdir()
   let &grepprg = l:current_grep
-  if exists('a:1') && a:1 != ""
-    execute 'silent /' . substitute(a:1, '/', '.', 'g')
-    normal k
-  else
-    normal gg
-  endif
-  normal gf
+  " if exists('a:1') && a:1 != ""
+  "   execute 'silent /' . substitute(a:1, '/', '.', 'g')
+  "   normal k
+  " else
+  "   normal gg
+  " endif
+  " normal gf
 endfunction
+
 
 " 同一フォルダで更新履歴が１つ前のファイルを開く
 " - locationlist に更新履歴順の結果を出力し、今のファイルの次行のファイルを開く
@@ -420,16 +439,16 @@ command! -nargs=* MyMovePrevFile call s:MovePrevFile(<f-args>)
 function! s:MovePrevFile(...)
   let l:current_grep = &grepprg " 設定値の保存
   setlocal grepprg=bash\ -c
-  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -rt \| grep -v /\\\."'
+  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -rt'
   execute 'OpenLocationlist '. Curdir()
   let &grepprg = l:current_grep
-  if exists('a:1') && a:1 != ""
-    execute 'silent /' . substitute(a:1, '/', '.', 'g')
-    normal k
-  else
-    normal G
-  endif
-  normal gf
+  " if exists('a:1') && a:1 != ""
+  "   execute 'silent /' . substitute(a:1, '/', '.', 'g')
+  "   normal k
+  " else
+  "   normal G
+  " endif
+  " normal gf
 endfunction
 
 function! Curdir()
