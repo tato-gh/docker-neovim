@@ -22,7 +22,7 @@
 "
 " Command / Shortcut
 " - 何かを読み書きする処理系は ,<KEY> のようにカンマを前置する(マイルール)
-" - 表示/非表示等の切り替え系は t(rue)/f(alse) を意図して t/f を使う
+" - 表示/非表示等の切り替え系は s*y(es)/s*n(o) を意図して y/n を使う
 "   - 例えば行番号 表示/非表示は rt/rf を割り当てている
 " -----------------------
 
@@ -68,12 +68,10 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " 新規バッファ
 " - d はディレクトリの意
 nnoremap <Leader>ee :e 
-" nnoremap <Leader>ed :e <C-r>=expand('%:h')<CR>/
 nnoremap <Leader>ed :e <C-r>=Curdir()<CR>
 nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
 nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
 nnoremap <Leader>tt :tabnew<Space>
-" nnoremap <Leader>td :tabnew <C-r>=expand('%:h')<CR>/
 nnoremap <Leader>td :tabnew <C-r>=Curdir()<CR>
 
 
@@ -93,8 +91,8 @@ nnoremap ,th <Esc>$a<C-R>=strftime('%H:%M')<CR><Esc>
 
 
 " 行番号 表示/非表示
-nnoremap <Leader>rt :set number<CR>
-nnoremap <Leader>rf :set nonumber<CR>
+nnoremap <Leader>sny :set number<CR>
+nnoremap <Leader>snn :set nonumber<CR>
 
 
 
@@ -119,8 +117,6 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 "   grep! grep!
 nnoremap <Leader>g :MyRg 
 "   現バッファのファイル/フォルダ一覧
-" nnoremap <Leader>j :MyLocationlistDirectoryFocused <C-r>=expand('%:h')<CR>/ <C-r>=expand('%')<CR><CR>
-" nnoremap <Leader>k :MyLocationlistDirectory <C-r>=expand('%:h')<CR>/../<CR>
 nnoremap <Leader>j :MyLocationlistDirectory <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :MyLocationlistDirectory <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>l :MyMovePostFile <C-r>=expand('%')<CR><CR>
@@ -129,15 +125,15 @@ nnoremap <Leader>h :MyMovePrevFile <C-r>=expand('%')<CR><CR>
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
 nnoremap <Leader>0 :OpenFileAtLine 0<CR>
-nnoremap <Leader>1<CR> :OpenFileAtLine 1<CR>
-nnoremap <Leader>2<CR> :OpenFileAtLine 2<CR>
-nnoremap <Leader>3<CR> :OpenFileAtLine 3<CR>
-nnoremap <Leader>4<CR> :OpenFileAtLine 4<CR>
-nnoremap <Leader>5<CR> :OpenFileAtLine 5<CR>
-nnoremap <Leader>6<CR> :OpenFileAtLine 6<CR>
-nnoremap <Leader>7<CR> :OpenFileAtLine 7<CR>
-nnoremap <Leader>8<CR> :OpenFileAtLine 8<CR>
-nnoremap <Leader>9<CR> :OpenFileAtLine 9<CR>
+nnoremap <Leader>1<Space> :OpenFileAtLine 1<CR>
+nnoremap <Leader>2<Space> :OpenFileAtLine 2<CR>
+nnoremap <Leader>3<Space> :OpenFileAtLine 3<CR>
+nnoremap <Leader>4<Space> :OpenFileAtLine 4<CR>
+nnoremap <Leader>5<Space> :OpenFileAtLine 5<CR>
+nnoremap <Leader>6<Space> :OpenFileAtLine 6<CR>
+nnoremap <Leader>7<Space> :OpenFileAtLine 7<CR>
+nnoremap <Leader>8<Space> :OpenFileAtLine 8<CR>
+nnoremap <Leader>9<Space> :OpenFileAtLine 9<CR>
 nnoremap <Leader>10 :OpenFileAtLine 10<CR>
 nnoremap <Leader>11 :OpenFileAtLine 11<CR>
 nnoremap <Leader>12 :OpenFileAtLine 12<CR>
@@ -181,6 +177,11 @@ nnoremap <Leader>49 :OpenFileAtLine 49<CR>
 nnoremap <Leader>50 :OpenFileAtLine 50<CR>
 
 
+" ヒューリスティック(便利機能案)
+" " 開いた先を参照しながら元ファイルに戻りたい reference
+nnoremap <Leader>r :wincmd v<CR>:MyMovePrevFile<CR>
+
+
 
 " -----------------------
 " Auto Command
@@ -188,13 +189,11 @@ nnoremap <Leader>50 :OpenFileAtLine 50<CR>
 " - 複数回の読み込みで上書きされるように、augroupで囲み、削除と追加を記述すること
 " -----------------------
 
-" netrw カスタマイズ
-" - netrw はいつからか WinBufEnter が発火しない
-augroup vimrc_netrw_commands
-  autocmd!
-  autocmd FileType netrw autocmd BufEnter * let b:hoge = 'hoge'
-  autocmd FileType netrw autocmd BufEnter * let b:hoge = 'hoge'
-augroup END
+" " netrw カスタマイズ
+" " - netrw はいつからかWinBufEnterが発火しない
+" augroup vimrc_netrw_commands
+" augroup END
+
 
 " 作業フォルダ保存
 "
@@ -226,7 +225,7 @@ augroup END
 " - ファイルを開いた際に、以前のカーソル位置を復元する
 augroup vimrc_restore_cursor_position
   autocmd!
-  autocmd BufWinEnter * call s:RestoreCursorPostion()
+  autocmd BufWinEnter * silent! call s:RestoreCursorPostion()
 augroup END
 
 
@@ -368,7 +367,7 @@ command! -nargs=1 OpenLocationlist call s:OpenLocationlist(<f-args>)
 function! s:OpenLocationlist(path)
   lopen
   if winnr('$') > 1
-    execute 'wincmd k' | q | setlocal modifiable
+    execute 'wincmd k' | wq | wincmd w | setlocal modifiable
   else
     setlocal modifiable
   endif

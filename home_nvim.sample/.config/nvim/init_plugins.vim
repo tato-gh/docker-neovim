@@ -50,7 +50,7 @@ nmap gl <Plug>(easymotion-bd-jk)
 
 " treesitter
 " - 試用段階
-" - elixir が取れない？
+" - elixir が取れない様子
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "all",   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
