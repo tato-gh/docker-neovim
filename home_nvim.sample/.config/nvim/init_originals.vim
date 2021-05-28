@@ -69,12 +69,15 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " 新規バッファ
 " - d はディレクトリの意
+" - m はメモ用ファイル
 nnoremap <Leader>ee :e 
 nnoremap <Leader>ed :e <C-r>=Curdir()<CR>
+nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
 nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
 nnoremap <Leader>tt :tabnew<Space>
 nnoremap <Leader>td :tabnew <C-r>=Curdir()<CR>
+nnoremap <Leader>tm :tabnew <C-r>=Curdir()<CR>.memo<CR>
 
 
 " ファイル/フォルダ ショートカット
@@ -192,7 +195,7 @@ command! -nargs=* MyTermSelf terminal <args>
 
 " ヒューリスティック(便利機能案)
 " " 移動先を参照しながら、移動元に戻りたい(後から気づいたケース)
-nnoremap <Leader>r :wincmd v<CR>:MyMovePrevFile<CR>
+nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 
 
@@ -207,6 +210,10 @@ nnoremap <Leader>r :wincmd v<CR>:MyMovePrevFile<CR>
 " " - netrw はいつからかWinBufEnterが発火しない
 " augroup vimrc_netrw_commands
 " augroup END
+
+
+" 起動時 MRU
+autocmd VimEnter * nested if @% == '' | CtrlPMRUFiles | endif
 
 
 " 作業フォルダ保存
@@ -372,6 +379,7 @@ endfunction
 " ターミナルを使用
 command! -nargs=? TRipGrep silent call s:TRipGrep(<f-args>)
 function! s:TRipGrep(query)
+  w
   let l:from = b:dir
   execute 'MyTermSelf rg ' . a:query
   let b:dir = l:from
@@ -382,6 +390,7 @@ endfunction
 command! -nargs=* TDirectoryFiles call s:TDirectoryFiles(<f-args>)
 function! s:TDirectoryFiles(...)
   let l:from = b:dir
+  w
   execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1'
   let l:wait_result = jobwait([&channel], -1)[0]
   if l:wait_result == 0 && exists('a:2')
