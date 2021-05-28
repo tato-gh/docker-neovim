@@ -119,7 +119,12 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 " ターミナル関係
 "   grep! grep!
-nnoremap <C-r> :TRipGrep<Space>
+nnoremap <C-g>rr :TRipGrep<Space>
+nnoremap <C-g>ra :TRipGrep<Space><C-r>=Curdir()<CR><Space>
+nnoremap <C-g>ww :TRipGrep<Space><C-r>=expand('<cword>')<CR><Space><C-r>=Curdir()<CR><CR>
+nnoremap <C-g>wa :TRipGrep<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <C-g>yy :TRipGrep<Space><C-r>=@"<CR><Space><C-r>=Curdir()<CR><CR>
+nnoremap <C-g>ya :TRipGrep<Space><C-r>=@"<CR><CR>
 "   現バッファのファイル/フォルダ一覧
 nnoremap <Leader>j :TDirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :TDirectoryFiles <C-r>=Curdir()<CR>../<CR>
@@ -199,7 +204,6 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 
 
-
 " -----------------------
 " Auto Command
 " - autocmd はファイルを読むたびに登録される
@@ -213,8 +217,8 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 
 " 起動時 MRU
+"
 autocmd VimEnter * nested if @% == '' | CtrlPMRUFiles | endif
-
 
 " 作業フォルダ保存
 "
@@ -225,12 +229,12 @@ augroup END
 
 
 " ファイルタイプ設定
-"
 augroup vimrc_my_filetypes
   autocmd!
   " autocmd BufNewFile,BufRead *.txt      set filetype=markdown
   autocmd BufNewFile,BufRead *.ruby     set filetype=ruby
   autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
+  " autocmd TermOpen * set filetype=terminal
 augroup END
 
 

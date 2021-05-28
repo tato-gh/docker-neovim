@@ -1,6 +1,6 @@
 syntax enable
-filetype plugin on
-filetype indent on
+filetype plugin indent on
+set nocompatible
 
 " <LEADER> 設定
 let mapleader = "\<Space>"
@@ -19,11 +19,11 @@ let g:netrw_banner=0
 " set nonumber
 set number
 
-
 " 補完候補
 " see https://medium.com/usevim/set-complete-e76b9f196f0f
 " - include先までは必要ない。言語依存
 set complete-=i
+set completeopt=menuone,noinsert
 
 
 " テキスト幅とハイライトする列
@@ -88,7 +88,6 @@ set incsearch " 検索
 set splitright " ウィンドウ分割 右
 set splitbelow " ウィンドウ分割 下
 set lazyredraw " 遅延再描画
-
 
 
 " Originals (shortcut, etc)

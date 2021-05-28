@@ -40,6 +40,23 @@ call plug#end()
 " colorscheme badwolf
 colorscheme iceberg
 
+" 色のカスタマイズ
+augroup MyColors
+  autocmd!
+  autocmd ColorScheme * call MyHighlights()
+augroup END
+
+function! MyHighlights() abort
+  " iceberg
+  " - 暗い紫がみにくいのでmagentaにする
+  " - コメントはむしろ目立つほうがいい(試用)。区切りにもなっている
+  " - TODO: rg結果がみにくいけれどどの色かわからない(terminal_color_Nとは違った)
+  " https://github.com/cocopon/iceberg.vim/blob/master/colors/iceberg.vim
+  " https://oki2a24.com/2019/02/15/make-mintty-theme-like-iceberg/
+  highlight Constant ctermfg=magenta
+  highlight Comment ctermfg=245
+  highlight LineNr ctermfg=245
+endfunction
 
 
 " hop
