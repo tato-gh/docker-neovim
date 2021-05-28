@@ -40,7 +40,7 @@ nnoremap <CR> o<Esc>
 
 " yank
 " - いろいろするのでfunctionへ
-vnoremap y y:MyYank<CR>
+vnoremap y y:YankAnd<CR>
 
 
 " paste
@@ -259,15 +259,23 @@ augroup END
 " Yank に付随する追加処理用
 " - Vim間コピーのため、viminfo に書き出し (`wv`)
 " - WSLでのホストへのコピーのため、/tmp/yanked に書き出し
-command! -range MyYank call s:MyYank()
-function! s:MyYank() range
+" - メモのため、.memo に書き出し
+command! -range YankAnd call s:YankAnd()
+function! s:YankAnd() range
   wv
+
   redir! > ~/.yanked
   silent echo getreg("0")
   redir end
   !sed -e '1,1d' ~/.yanked > /tmp/yanked
-  redraw
+
+  let memofile = Curdir() . '.memo'
+  execute '!touch ' . memofile
+  execute '!cat /tmp/yanked ' . memofile . ' > /tmp/.memo'
+  execute '!mv /tmp/.memo ' . memofile
+  execute '!sed -i 1i-----------------------------------------\\n ' . memofile
 endfunction
+
 
 " カーソル位置を最後の編集位置へ
 function! s:RestoreCursorPostion()
