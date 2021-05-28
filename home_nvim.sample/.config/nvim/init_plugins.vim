@@ -11,13 +11,6 @@ Plug 'sjl/badwolf'
 " Plug 'phaazon/hop.nvim'
 Plug 'easymotion/vim-easymotion'
 
-" ファイル移動
-" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-" Plug 'junegunn/fzf.vim'
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
-
 " コーディング
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tomtom/tcomment_vim'
@@ -53,52 +46,6 @@ colorscheme badwolf
 let g:EasyMotion_do_mapping = 0 "Disable default mappings
 nmap s <Plug>(easymotion-bd-w)
 nmap gl <Plug>(easymotion-bd-jk)
-
-
-" telescope
-nnoremap <leader>ff <cmd>lua require('telescope.builtin').find_files()<cr>
-nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <leader>fb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
-
-lua << EOF
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-local custom_actions = {}
-
-function custom_actions.fzf_multi_select(prompt_bufnr)
-    local picker = action_state.get_current_picker(prompt_bufnr)
-    local num_selections = table.getn(picker:get_multi_selection())
-
-    if num_selections > 1 then
-        -- actions.file_edit throws - context of picker seems to change
-        --actions.file_edit(prompt_bufnr)
-        actions.send_selected_to_qflist(prompt_bufnr)
-        actions.open_qflist()
-    else
-        actions.file_edit(prompt_bufnr)
-    end
-end
-
-require("telescope").setup {
-    defaults = {
-        mappings = {
-            i = {
-                -- close on escape
-                ["<esc>"] = actions.close,
-                ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
-                ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
-                ["<cr>"] = custom_actions.fzf_multi_select
-            },
-            n = {
-                ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
-                ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
-                ["<cr>"] = custom_actions.fzf_multi_select
-            }
-        }
-    }
-}
-EOF
 
 
 " treesitter

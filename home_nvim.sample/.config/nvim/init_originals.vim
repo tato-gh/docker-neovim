@@ -1,11 +1,27 @@
 
+" NOTE
+" - タブは `gt``gT` で扱えるように1~2つ程度を使用する
+"   多用するとタブで開くかどうかの選択でショートカットが増えすぎるため
+"   (かつて多用していたものの...)
+" - ウィンドウ分割は <C-w> を素直に使用する
+" - tmuxである程度作業するフォルダを分離しているので前後フォルダ移動が早いほうがいい
+"   fzf はさほど必要ない
+" - コーディング中に一時退避用ファイルとして .memo を作ることがある
+"   .memo をさくっと開けるほうがいい
+"   .memo のみを対象とした検索があったほうがいい
+
+" 同フォルダのファイルを中心に作業する運用のショートカット要件
+" - 課題
+"   - `:e %:h` ではタブ補完後に入力が必要なのでひと手間かかる
+"   - fzf 系も基本的に入力が必要
+"   - netrw(等)は行移動でもいいのでやや楽
+" - 番号指定でファイルが開くこと
+" - 同じフォルダの前後に変更したファイルがさくっと開けること
+
 " -----------------------
+"
 " Command / Shortcut
 " - 何かを読み書きする処理系は ,<KEY> のようにカンマを前置する(マイルール)
-" - バッファ移動のための処理系も ctrl を使っていく
-"   - grep: <C-g>
-"   - fils: <C-f>
-"   - current dir: <C-.>
 " - 表示/非表示等の切り替え系は t(rue)/f(alse) を意図して t/f を使う
 "   - 例えば行番号 表示/非表示は rt/rf を割り当てている
 " -----------------------
@@ -32,7 +48,7 @@ nnoremap ,p :rv<CR>"0p
 
 
 " set paste
-" - Windows側クリップボードからの貼り付け時にautoindent等を防止
+" - Windows側クリップボードからの貼り付け時にautoindent等を防止用途
 " - 抜けるときにset nopasteに自動で戻す
 nnoremap <Leader>i :set paste<CR>i
 autocmd InsertLeave * set nopaste
@@ -45,47 +61,28 @@ cnoremap <C-n> <Down>
 
 
 " ディレクトリパス表示
-" - % は表示しているファイル。%% でフォルダを展開
+" - %% でフォルダを展開 (%は表示しているファイル)
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 
 " 新規バッファ
 " - d はディレクトリの意
 nnoremap <Leader>ee :e 
-nnoremap <Leader>ed :e <C-r>=expand('%:h')<CR>/
-nnoremap <Leader>es :execute 'wincmd s' <CR> :e 
-nnoremap <Leader>ev :execute 'wincmd v' <CR> :e 
-nnoremap <Leader>tt :tabnew 
-nnoremap <Leader>td :tabnew <C-r>=expand('%:h')<CR>/
+" nnoremap <Leader>ed :e <C-r>=expand('%:h')<CR>/
+nnoremap <Leader>ed :e <C-r>=Curdir()<CR>
+nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
+nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
+nnoremap <Leader>tt :tabnew<Space>
+" nnoremap <Leader>td :tabnew <C-r>=expand('%:h')<CR>/
+nnoremap <Leader>td :tabnew <C-r>=Curdir()<CR>
 
 
 " ファイル/フォルダ ショートカット
 " - vim からよくある操作は直下ファイル/フォルダ作成
-nnoremap <Leader>cf :silent !touch <C-r>=expand('%:h')<CR>/
-nnoremap <Leader>cd :silent !mkdir -p <C-r>=expand('%:h')<CR>/
-nnoremap <Leader>df :silent !rm <C-r>=expand('%:h')<CR>/
-nnoremap <Leader>dd :silent !rm -r <C-r>=expand('%:h')<CR>/
-
-
-" タブ切り替え
-nnoremap <Leader>1 :tabn1 <CR>
-nnoremap <Leader>2 :tabn2 <CR>
-nnoremap <Leader>3 :tabn3 <CR>
-nnoremap <Leader>4 :tabn4 <CR>
-nnoremap <Leader>5 :tabn5 <CR>
-nnoremap <Leader>6 :tabn6 <CR>
-nnoremap <Leader>7 :tabn7 <CR>
-nnoremap <Leader>8 :tabn8 <CR>
-nnoremap <Leader>9 :tabn9 <CR>
-
-
-" ウィンドウ分割系
-nnoremap <Leader>h :execute 'wincmd h' <CR>
-nnoremap <Leader>j :execute 'wincmd j' <CR>
-nnoremap <Leader>k :execute 'wincmd k' <CR>
-nnoremap <Leader>l :execute 'wincmd l' <CR>
-nnoremap <Leader>v :execute 'wincmd v' <CR>
-nnoremap <Leader>s :execute 'wincmd s' <CR>
+nnoremap <Leader>cf :silent !touch <C-r>=Curdir()<CR>
+nnoremap <Leader>cd :silent !mkdir -p <C-r>=Curdir()<CR>
+nnoremap <Leader>df :silent !rm <C-r>=Curdir()<CR>
+nnoremap <Leader>dd :silent !rm -r <C-r>=Curdir()<CR>
 
 
 " 日付挿入 時刻挿入
@@ -102,27 +99,87 @@ nnoremap <Leader>rf :set nonumber<CR>
 
 
 " バッファ 一覧移動用
-nnoremap <silent><C-b> :ls<CR>:b<Space>
+nnoremap <silent><Leader>b :ls<CR>:b<Space>
 
 
 " マーク 一覧移動用
-nnoremap <silent><C-m> :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
+
+
+" マーク 自動採番
+nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
+nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 
 
 " oldfiles 一覧移動用
-" - TODO: <C-o>はつぶせない
-" nnoremap <silent><C-o> :browse :oldfiles
-
+nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 
 " quickfix 関係
-nnoremap <Leader>ql :lopen<CR>:set modifiable<CR>
-nnoremap <Leader>qc :copen<CR>:set modifiable<CR>
-nnoremap <Leader>qq :cclose<CR>:lclose<CR>
-nnoremap <C-g> :MyRg 
-"   行数を指定したgt
-nnoremap <Leader>gn :OpenFileAtLine 
-nnoremap <Leader>gt :OpenFileAtLineWithTab 
+"   grep! grep!
+nnoremap <Leader>g :MyRg 
+"   現バッファのファイル/フォルダ一覧
+" nnoremap <Leader>j :MyLocationlistDirectoryFocused <C-r>=expand('%:h')<CR>/ <C-r>=expand('%')<CR><CR>
+" nnoremap <Leader>k :MyLocationlistDirectory <C-r>=expand('%:h')<CR>/../<CR>
+nnoremap <Leader>j :MyLocationlistDirectory <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>k :MyLocationlistDirectory <C-r>=Curdir()<CR>../<CR>
+nnoremap <Leader>l :MyMovePostFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>h :MyMovePrevFile <C-r>=expand('%')<CR><CR>
+
+"   行番号を指定してファイル移動
+"   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
+nnoremap <Leader>0 :OpenFileAtLine 0<CR>
+nnoremap <Leader>1<CR> :OpenFileAtLine 1<CR>
+nnoremap <Leader>2<CR> :OpenFileAtLine 2<CR>
+nnoremap <Leader>3<CR> :OpenFileAtLine 3<CR>
+nnoremap <Leader>4<CR> :OpenFileAtLine 4<CR>
+nnoremap <Leader>5<CR> :OpenFileAtLine 5<CR>
+nnoremap <Leader>6<CR> :OpenFileAtLine 6<CR>
+nnoremap <Leader>7<CR> :OpenFileAtLine 7<CR>
+nnoremap <Leader>8<CR> :OpenFileAtLine 8<CR>
+nnoremap <Leader>9<CR> :OpenFileAtLine 9<CR>
+nnoremap <Leader>10 :OpenFileAtLine 10<CR>
+nnoremap <Leader>11 :OpenFileAtLine 11<CR>
+nnoremap <Leader>12 :OpenFileAtLine 12<CR>
+nnoremap <Leader>13 :OpenFileAtLine 13<CR>
+nnoremap <Leader>14 :OpenFileAtLine 14<CR>
+nnoremap <Leader>15 :OpenFileAtLine 15<CR>
+nnoremap <Leader>16 :OpenFileAtLine 16<CR>
+nnoremap <Leader>17 :OpenFileAtLine 17<CR>
+nnoremap <Leader>18 :OpenFileAtLine 18<CR>
+nnoremap <Leader>19 :OpenFileAtLine 19<CR>
+nnoremap <Leader>20 :OpenFileAtLine 20<CR>
+nnoremap <Leader>21 :OpenFileAtLine 21<CR>
+nnoremap <Leader>22 :OpenFileAtLine 22<CR>
+nnoremap <Leader>23 :OpenFileAtLine 23<CR>
+nnoremap <Leader>24 :OpenFileAtLine 24<CR>
+nnoremap <Leader>25 :OpenFileAtLine 25<CR>
+nnoremap <Leader>26 :OpenFileAtLine 26<CR>
+nnoremap <Leader>27 :OpenFileAtLine 27<CR>
+nnoremap <Leader>28 :OpenFileAtLine 28<CR>
+nnoremap <Leader>29 :OpenFileAtLine 29<CR>
+nnoremap <Leader>30 :OpenFileAtLine 30<CR>
+nnoremap <Leader>31 :OpenFileAtLine 31<CR>
+nnoremap <Leader>32 :OpenFileAtLine 32<CR>
+nnoremap <Leader>33 :OpenFileAtLine 33<CR>
+nnoremap <Leader>34 :OpenFileAtLine 34<CR>
+nnoremap <Leader>35 :OpenFileAtLine 35<CR>
+nnoremap <Leader>36 :OpenFileAtLine 36<CR>
+nnoremap <Leader>37 :OpenFileAtLine 37<CR>
+nnoremap <Leader>38 :OpenFileAtLine 38<CR>
+nnoremap <Leader>39 :OpenFileAtLine 39<CR>
+nnoremap <Leader>40 :OpenFileAtLine 40<CR>
+nnoremap <Leader>41 :OpenFileAtLine 41<CR>
+nnoremap <Leader>42 :OpenFileAtLine 42<CR>
+nnoremap <Leader>43 :OpenFileAtLine 43<CR>
+nnoremap <Leader>44 :OpenFileAtLine 44<CR>
+nnoremap <Leader>45 :OpenFileAtLine 45<CR>
+nnoremap <Leader>46 :OpenFileAtLine 46<CR>
+nnoremap <Leader>47 :OpenFileAtLine 47<CR>
+nnoremap <Leader>48 :OpenFileAtLine 48<CR>
+nnoremap <Leader>49 :OpenFileAtLine 49<CR>
+nnoremap <Leader>50 :OpenFileAtLine 50<CR>
+
 
 
 " -----------------------
@@ -130,6 +187,21 @@ nnoremap <Leader>gt :OpenFileAtLineWithTab
 " - autocmd はファイルを読むたびに登録される
 " - 複数回の読み込みで上書きされるように、augroupで囲み、削除と追加を記述すること
 " -----------------------
+
+" netrw カスタマイズ
+" - netrw はいつからか WinBufEnter が発火しない
+augroup vimrc_netrw_commands
+  autocmd!
+  autocmd FileType netrw autocmd BufEnter * let b:hoge = 'hoge'
+  autocmd FileType netrw autocmd BufEnter * let b:hoge = 'hoge'
+augroup END
+
+" 作業フォルダ保存
+"
+augroup vimrc_save_directory
+  autocmd!
+  autocmd BufWinEnter * let b:dir = expand('%:h') . '/'
+augroup END
 
 " ファイルタイプ設定
 "
@@ -156,17 +228,6 @@ augroup vimrc_restore_cursor_position
   autocmd!
   autocmd BufWinEnter * call s:RestoreCursorPostion()
 augroup END
-
-
-" quickfix
-augroup vimrc_quickfix_open
-  autocmd!
-  " TODO: コマンド化
-  autocmd QuickFixCmdPost lgrep vs | lopen | execute 'wincmd k'| q | execute 'wincmd w' | set modifiable
-  autocmd QuickFixCmdPost make,grep copen
-augroup END
-
-
 
 
 " -----------------------
@@ -251,7 +312,6 @@ if !exists('g:markrement_bigchar')
   \ ]
 endif
 
-nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
 function! s:AutoMarkrement()
   if !exists('b:markrement_pos')
     let b:markrement_pos = 0
@@ -262,7 +322,6 @@ function! s:AutoMarkrement()
   echo 'marked' g:markrement_char[b:markrement_pos]
 endfunction
 
-nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 function! s:AutoMarkrementBig()
   if !exists('b:markrement_pos_big')
     let b:markrement_pos_big = 0
@@ -274,8 +333,7 @@ function! s:AutoMarkrementBig()
 endfunction
 
 
-
-" ファイル検索
+" quickfix grep
 " see: https//maxmellon.hateblo.jp/entry/2016/12/25/165545
 " - 一時的に :grep 処理を変更することでquickfixに書き込むようにしている
 " - 用途として locatonlist を使用
@@ -283,26 +341,101 @@ command! -nargs=? MyRg call s:RipGrep(<f-args>)
 function! s:RipGrep(query)
   let l:current_grep = &grepprg " 設定値の保存
   setlocal grepprg=rg\ --vimgrep
-  setlocal grepformat=%f " format指定がうまくいかない :h error-file-format
   execute 'silent lgrep! ' . a:query
+  let l:path = expand('%:h') . '/'
+  execute 'OpenLocationlist '. l:path
   let &grepprg = l:current_grep
-  redraw!
 endfunction
 
-" quickfix 行番号を指定ファイルオープン
+
+" locationlist directry
+" - 用途として locatonlist を使用
+command! -nargs=* MyLocationlistDirectory call s:LocationlistDirectory(<f-args>)
+function! s:LocationlistDirectory(...)
+  let l:current_grep = &grepprg " 設定値の保存
+  setlocal grepprg=find
+  execute 'silent lgrep! ' . a:1 . ' -maxdepth 1'
+  execute 'OpenLocationlist '. a:1
+  let &grepprg = l:current_grep
+  if exists('a:2')
+    execute 'silent /' . substitute(a:2, '/', '.', 'g')
+  endif
+endfunction
+
+
+" locationlist のみ表示
+command! -nargs=1 OpenLocationlist call s:OpenLocationlist(<f-args>)
+function! s:OpenLocationlist(path)
+  lopen
+  if winnr('$') > 1
+    execute 'wincmd k' | q | setlocal modifiable
+  else
+    setlocal modifiable
+  endif
+  let b:dir = a:path
+endfunction
+
+
+" 行番号を指定ファイルオープン
+" - locationlist に書き出したファイル一覧に対しての操作
+" - netrw を開いた際のファイル一覧に対しての操作
+"   `gf`でファイルが開いていないならフォルダなので`gd`実行
 command! -nargs=? OpenFileAtLine call s:OpenFileAtLine(<f-args>)
 function! s:OpenFileAtLine(query)
-  let l:line = getline(a:query)
-  let l:file = split(l:line, ':')[0]
-  echo l:file
-  execute "lclose | e " . l:file
+  execute ":" . a:query
+  normal gf
+  if &filetype == 'netrw'
+    normal gd
+  endif
 endfunction
 
-" quickfix 行番号を指定ファイルオープン（新規タブ）
-command! -nargs=? OpenFileAtLineWithTab call s:OpenFileAtLineTab(<f-args>)
-function! s:OpenFileAtLineTab(query)
-  let l:line = getline(a:query)
-  let l:file = split(l:line, ':')[0]
-  echo l:file
-  execute "lclose | tabnew " . l:file
+
+" 同一フォルダで更新履歴が１つ後のファイルを開く
+" - locationlist に更新履歴順の結果を出力して利用する
+" - `ls -t` で並びを指定して、1つ上の行のファイルを開く
+" - locationlist 等で対象がない場合は最新を開く
+command! -nargs=* MyMovePostFile call s:MovePostFile(<f-args>)
+function! s:MovePostFile(...)
+  let l:current_grep = &grepprg " 設定値の保存
+  setlocal grepprg=bash\ -c
+  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -t \| grep -v /\\\."'
+  execute 'OpenLocationlist '. Curdir()
+  let &grepprg = l:current_grep
+  if exists('a:1') && a:1 != ""
+    execute 'silent /' . substitute(a:1, '/', '.', 'g')
+    normal k
+  else
+    normal gg
+  endif
+  normal gf
+endfunction
+
+" 同一フォルダで更新履歴が１つ前のファイルを開く
+" - locationlist に更新履歴順の結果を出力し、今のファイルの次行のファイルを開く
+" - `ls -rt` で並びを指定して、1つ上の行のファイルを開く
+" - locationlist 等で対象がない場合は最新を開く
+command! -nargs=* MyMovePrevFile call s:MovePrevFile(<f-args>)
+function! s:MovePrevFile(...)
+  let l:current_grep = &grepprg " 設定値の保存
+  setlocal grepprg=bash\ -c
+  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -rt \| grep -v /\\\."'
+  execute 'OpenLocationlist '. Curdir()
+  let &grepprg = l:current_grep
+  if exists('a:1') && a:1 != ""
+    execute 'silent /' . substitute(a:1, '/', '.', 'g')
+    normal k
+  else
+    normal G
+  endif
+  normal gf
+endfunction
+
+function! Curdir()
+  if exists('b:dir')
+    return b:dir
+  endif
+  if exists('b:netrw_curdir')
+    return b:netrw_curdir . '/'
+  endif
+  return expand('%:h') . '/'
 endfunction

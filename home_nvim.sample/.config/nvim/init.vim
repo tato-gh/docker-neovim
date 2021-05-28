@@ -6,6 +6,12 @@ filetype indent on
 let mapleader = "\<Space>"
 
 
+" netrw set number
+let g:netrw_bufsettings = 'noma nomod number nobl nowrap ro'
+
+set errorformat=%f
+
+
 " 行番号表示/非表示
 " - 主にテスト時などで何行目か見えたほうがよい
 " - shortcut キーで切り替えられればいいかもしれない
