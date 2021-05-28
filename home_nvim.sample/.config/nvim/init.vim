@@ -6,10 +6,11 @@ filetype indent on
 let mapleader = "\<Space>"
 
 
-" netrw set number
+" netrw
+" - 行指定ファイル移動のため番号表示
+" - 移動以外に使用しないのでヘッダーは必要ない
 let g:netrw_bufsettings = 'noma nomod number nobl nowrap ro'
-
-set errorformat=%f
+let g:netrw_banner=0
 
 
 " 行番号表示/非表示
@@ -86,6 +87,8 @@ set cmdheight=1 " コマンド行高さ
 set incsearch " 検索
 set splitright " ウィンドウ分割 右
 set splitbelow " ウィンドウ分割 下
+set lazyredraw " 遅延再描画
+
 
 
 " Originals (shortcut, etc)

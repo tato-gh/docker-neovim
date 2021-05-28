@@ -95,7 +95,6 @@ nnoremap <Leader>sny :set number<CR>
 nnoremap <Leader>snn :set nonumber<CR>
 
 
-
 " バッファ 一覧移動用
 nnoremap <silent><Leader>b :ls<CR>:b<Space>
 
@@ -124,7 +123,7 @@ nnoremap <Leader>h :MyMovePrevFile <C-r>=expand('%')<CR><CR>
 
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
-nnoremap <Leader>0 :OpenFileAtLine 0<CR>
+nnoremap <Leader>0<Space> :OpenFileAtLine 0<CR>
 nnoremap <Leader>1<Space> :OpenFileAtLine 1<CR>
 nnoremap <Leader>2<Space> :OpenFileAtLine 2<CR>
 nnoremap <Leader>3<Space> :OpenFileAtLine 3<CR>
@@ -181,6 +180,10 @@ nnoremap <Leader>50 :OpenFileAtLine 50<CR>
 " " 開いた先を参照しながら元ファイルに戻りたい reference
 nnoremap <Leader>r :wincmd v<CR>:MyMovePrevFile<CR>
 
+" terminal
+tnoremap <C-j> <C-\><C-n>
+nnoremap <Leader>t :split<CR>:wincmd j<CR>:resize 20<CR>:terminal<CR>
+autocmd TermOpen * startinsert
 
 
 " -----------------------
