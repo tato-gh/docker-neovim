@@ -8,5 +8,5 @@
 	st = status
 [core]
 	editor = /usr/bin/vim
-	pager = less
+	pager = ""
 	excludesfile = ~/.gitignore

@@ -5,7 +5,8 @@
 call plug#begin('~/.config/nvim/plugged')
 
 " カラースキーマ
-Plug 'sjl/badwolf'
+" Plug 'sjl/badwolf'
+Plug 'cocopon/iceberg.vim'
 
 " カーソル移動
 " Plug 'phaazon/hop.nvim'
@@ -35,8 +36,10 @@ call plug#end()
 
 
 
-" カラースキーマ
-colorscheme badwolf
+" カラー
+" colorscheme badwolf
+colorscheme iceberg
+
 
 
 " hop

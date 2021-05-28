@@ -18,8 +18,7 @@
 " - 同じフォルダにあるファイルをさくっと開けること
 " - 番号指定でファイルを開けること
 " - 同じフォルダの前後に変更したファイルがさくっと開けること
-" - locationlist を活用することにした
-"   （ターミナル活用の方がよかったかもしれない。ただバッファに残る
+
 
 " -----------------------
 "
@@ -115,14 +114,14 @@ nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 
-" quickfix 関係
+" ターミナル関係
 "   grep! grep!
-nnoremap <Leader>g :MyRg 
+nnoremap <C-r> :TRipGrep<Space>
 "   現バッファのファイル/フォルダ一覧
-nnoremap <Leader>j :MyLocationlistDirectory <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>k :MyLocationlistDirectory <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>l :MyMovePostFile <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>h :MyMovePrevFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>j :TDirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>k :TDirectoryFiles <C-r>=Curdir()<CR>../<CR>
+nnoremap <Leader>l :TMovePostFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>h :TMovePrevFile <C-r>=expand('%')<CR><CR>
 
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
@@ -188,6 +187,7 @@ nnoremap <C-g>dd :MyTerm git diff %<CR>
 nnoremap <C-g>da :MyTerm git diff<CR>
 nnoremap <C-g>st :MyTerm git status<CR>
 command! -nargs=* MyTerm split | wincmd j | resize 20 | terminal <args>
+command! -nargs=* MyTermSelf terminal <args>
 
 
 " ヒューリスティック(便利機能案)
@@ -244,12 +244,6 @@ augroup vimrc_restore_cursor_position
 augroup END
 
 
-" ターミナル
-augroup vimrc_terminal_start_insert
-  autocmd TermOpen * startinsert
-augroup END
-
-
 
 
 " -----------------------
@@ -259,8 +253,8 @@ augroup END
 " Yank に付随する追加処理用
 " - Vim間コピーのため、viminfo に書き出し (`wv`)
 " - WSLでのホストへのコピーのため、/tmp/yanked に書き出し
-" - メモのため、.memo に書き出し
-command! -range YankAnd call s:YankAnd()
+" - メモのため、.memo に書き出し。消すのをためらうもの等
+command! -range YankAnd silent call s:YankAnd()
 function! s:YankAnd() range
   wv
 
@@ -361,104 +355,90 @@ function! s:AutoMarkrementBig()
 endfunction
 
 
-" quickfix grep
-" see: https//maxmellon.hateblo.jp/entry/2016/12/25/165545
-" - 一時的に :grep 処理を変更することでquickfixに書き込むようにしている
-" - 用途として locatonlist を使用
-command! -nargs=? MyRg call s:RipGrep(<f-args>)
-function! s:RipGrep(query)
-  let l:current_grep = &grepprg " 設定値の保存
-  setlocal grepprg=rg\ --vimgrep
-  execute 'silent lgrep! ' . a:query
-  let l:path = expand('%:h') . '/'
-  execute 'OpenLocationlist '. l:path
-  let &grepprg = l:current_grep
-endfunction
-
-
-" locationlist directry
-" - 用途として locatonlist を使用
-command! -nargs=* MyLocationlistDirectory call s:LocationlistDirectory(<f-args>)
-function! s:LocationlistDirectory(...)
-  let l:current_grep = &grepprg " 設定値の保存
-  setlocal grepprg=find
-  execute 'silent lgrep! ' . a:1 . ' -maxdepth 1'
-  execute 'OpenLocationlist '. a:1
-  let &grepprg = l:current_grep
-  if exists('a:2')
-    execute 'silent /' . substitute(a:2, '/', '.', 'g')
-  endif
-endfunction
-
-
-" locationlist 全画面表示
-command! -nargs=1 OpenLocationlist call s:OpenLocationlist(<f-args>)
-function! s:OpenLocationlist(path)
-  lopen
-  if winnr('$') > 1
-    execute 'wincmd k' | wq | wincmd w | setlocal modifiable
-  else
-    setlocal modifiable
-  endif
-  let b:dir = a:path
-endfunction
-
-
 " 行番号を指定ファイルオープン
-" - locationlist に書き出したファイル一覧に対しての操作
 " - netrw を開いた際のファイル一覧に対しての操作
 "   `gf`でファイルが開いていないならフォルダなので`gd`実行
 command! -nargs=? OpenFileAtLine call s:OpenFileAtLine(<f-args>)
 function! s:OpenFileAtLine(query)
   execute ":" . a:query
-  normal gf
+  normal gF
   if &filetype == 'netrw'
     normal gd
   endif
 endfunction
 
 
+" ripgrep
+" ターミナルを使用
+command! -nargs=? TRipGrep silent call s:TRipGrep(<f-args>)
+function! s:TRipGrep(query)
+  let l:from = b:dir
+  execute 'MyTermSelf rg ' . a:query
+  let b:dir = l:from
+endfunction
+
+
+" find 同フォルダファイル一覧
+command! -nargs=* TDirectoryFiles call s:TDirectoryFiles(<f-args>)
+function! s:TDirectoryFiles(...)
+  let l:from = b:dir
+  execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1'
+  let l:wait_result = jobwait([&channel], -1)[0]
+  if l:wait_result == 0 && exists('a:2')
+    execute 'silent /' . substitute(a:2, '/', '.', 'g')
+  endif
+  let b:dir = l:from
+endfunction
+
+
 " 同一フォルダで更新履歴が１つ後のファイルを開く
-" - locationlist に更新履歴順の結果を出力して利用する
 " - `ls -t` で並びを指定して、1つ上の行のファイルを開く
-" - locationlist 等で対象がない場合は最新を開く
-command! -nargs=* MyMovePostFile call s:MovePostFile(<f-args>)
-function! s:MovePostFile(...)
-  let l:current_grep = &grepprg " 設定値の保存
-  setlocal grepprg=bash\ -c
-  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -t'
-  execute 'OpenLocationlist '. Curdir()
-  let &grepprg = l:current_grep
-  " if exists('a:1') && a:1 != ""
-  "   execute 'silent /' . substitute(a:1, '/', '.', 'g')
-  "   normal k
-  " else
-  "   normal gg
-  " endif
-  " normal gf
+command! -nargs=* TMovePostFile call s:TMovePostFile(<f-args>)
+function! s:TMovePostFile(...)
+  let l:from  = Curdir()
+  execute 'MyTermSelf find ' . Curdir() . ' -maxdepth 1 -type f -print0 | xargs -0 ls -t'
+  if jobwait([&channel], -1)[0] != 0
+    return
+  endif
+
+  if exists('a:1')
+    execute 'silent! /' . substitute(a:1, '/', '.', 'g')
+    normal k
+  else
+    normal gg
+  endif
+  let l:bnum = bufnr('%')
+  normal gf
+  execute 'bdelete! ' . l:bnum
+  let b:dir = l:from
 endfunction
 
 
 " 同一フォルダで更新履歴が１つ前のファイルを開く
-" - locationlist に更新履歴順の結果を出力し、今のファイルの次行のファイルを開く
 " - `ls -rt` で並びを指定して、1つ上の行のファイルを開く
-" - locationlist 等で対象がない場合は最新を開く
-command! -nargs=* MyMovePrevFile call s:MovePrevFile(<f-args>)
-function! s:MovePrevFile(...)
-  let l:current_grep = &grepprg " 設定値の保存
-  setlocal grepprg=bash\ -c
-  execute 'silent lgrep! ' . '"find ' . Curdir() . ' -maxdepth 1 -type f -print0 \| xargs -0 ls -rt'
-  execute 'OpenLocationlist '. Curdir()
-  let &grepprg = l:current_grep
-  " if exists('a:1') && a:1 != ""
-  "   execute 'silent /' . substitute(a:1, '/', '.', 'g')
-  "   normal k
-  " else
-  "   normal G
-  " endif
-  " normal gf
+" - 一時的に使うだけなのでバッファ一覧から削除する
+command! -nargs=* TMovePrevFile call s:TMovePrevFile(<f-args>)
+function! s:TMovePrevFile(...)
+  let l:from  = Curdir()
+  execute 'MyTermSelf find ' . Curdir() . ' -maxdepth 1 -type f -print0 | xargs -0 ls -rt'
+  if jobwait([&channel], -1)[0] != 0
+    return
+  endif
+
+  if exists('a:1') && a:1 != ""
+    execute 'silent! /' . substitute(a:1, '/', '.', 'g')
+    normal k
+  else
+    normal G
+  endif
+  let l:bnum = bufnr('%')
+  normal gf
+  execute 'bdelete! ' . l:bnum
+  let b:dir = l:from
 endfunction
 
+
+" 現フォルダ取得処理
 function! Curdir()
   if exists('b:dir')
     return b:dir
