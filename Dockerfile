@@ -40,6 +40,3 @@ RUN git clone https://github.com/neovim/neovim.git \
   && make install \
   && cd ../ \
   && rm -rf neovim
-
-# vim-plug
-RUN curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
