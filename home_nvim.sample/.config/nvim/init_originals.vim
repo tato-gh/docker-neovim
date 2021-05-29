@@ -185,14 +185,24 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 
 " バッファ操作
-" - バッファを抜けるときに削除フラグがあれば消す
-" - カーソル位置を保存
+" - カーソル位置を保存/復元
+" - (特にターミナルの一時利用の)バッファ削除。w:bnum_to_delete 変数の有無で実施
+"   バッファ一覧がひどいことになるための対応
+"   ターミナルからnetrwに入ったときの`BufWinEnter`でのみターミナルのバッファが消せない
+"   （処理自体は走っている）
+"   netrwに限り自身から抜ける前に1つ前のバッファを削除する
 " - 作業フォルダを保存
 augroup vimrc_inout_buffer
   autocmd!
-  autocmd BufLeave * if exists('b:bnum_to_delete') | execute 'bdelete! ' . b:bnum_to_delete | endif
+
   autocmd BufLeave * let b:linenr = line('.')
   autocmd BufWinEnter * if exists('b:linenr') | execute ':' . b:linenr | endif
+
+  " autocmd BufLeave * if &filetype == 'netrw' && exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
+  " autocmd BufLeave * if &filetype == 'netrw' | let w:bnum_to_delete = bufnr('%') | endif
+  " autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
+  " autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
+
   autocmd BufWinEnter * let b:dir = expand('%:h') . '/'
 augroup END
 
@@ -203,6 +213,7 @@ augroup vimrc_my_filetypes
   " autocmd BufNewFile,BufRead *.txt      set filetype=markdown
   autocmd BufNewFile,BufRead *.ruby     set filetype=ruby
   autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
+  autocmd TermOpen * set filetype=terminal
 augroup END
 
 
@@ -322,14 +333,16 @@ endfunction
 "   `gf`でファイルが開いていないならフォルダなので`gd`実行
 command! -nargs=? OpenFileAtLine silent call s:OpenFileAtLine(<f-args>)
 function! s:OpenFileAtLine(query)
-  if exists('b:bnum_to_delete')
-    let l:bnum_to_delete = b:bnum_to_delete
-  endif
-
   execute ":" . a:query
-  normal gF
   if &filetype == 'netrw'
-    normal gd
+    normal $
+    if getline('.')[col('.')-1] == '/'
+      normal gd
+    else
+      normal gf
+    end
+  else
+    normal gF
   endif
 endfunction
 
@@ -350,13 +363,13 @@ command! -nargs=* TDirectoryFiles silent! call s:TDirectoryFiles(<f-args>)
 function! s:TDirectoryFiles(...)
   let l:from = b:dir
   w
-  execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1'
+  execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1 -print0 |xargs -0 ls -Fd1'
   if jobwait([&channel], -1)[0] != 0
     return
   endif
 
   let b:dir = l:from
-  let b:bnum_to_delete = bufnr('%')
+  let w:bnum_to_delete = bufnr('%')
   if exists('a:2')
     execute 'silent /' . substitute(a:2, '/', '.', 'g')
   endif
@@ -365,44 +378,46 @@ endfunction
 
 " 同一フォルダで更新履歴が１つ後のファイルを開く
 " - `ls -t` で並びを指定して、1つ上の行のファイルを開く
+" - pipeするとtermの結果が返ってこないときがある(system()と同様か)
 command! -nargs=* TMovePostFile call s:TMovePostFile(<f-args>)
 function! s:TMovePostFile(...)
   let l:from  = Curdir()
-  execute 'MyTermSelf find ' . Curdir() . ' -maxdepth 1 -type f -print0 | xargs -0 ls -t'
-  if jobwait([&channel], -1)[0] != 0
-    return
-  endif
+  execute 'MyTermSelf ls -lut ' . Curdir()
+  let l:from  = Curdir()
 
-  if exists('a:1')
-    execute 'silent! /' . substitute(a:1, '/', '.', 'g')
-    normal k
-  else
-    normal gg
-  endif
-  let b:bnum_to_delete = bufnr('%')
-  normal gf
+  " TODO: TIMEUP
+  " - l:fromとファイル名をつなげる必要があるなど
+  " ^ https://github.com/mattn/vim-fz 等ほかの方法(CtrlpMRU とか)でいい気がしてきた
+  " if exists('a:1')
+  "   execute 'silent! /' . substitute(a:1, '/', '.', 'g')
+  "   normal k
+  " else
+  "   normal gg
+  " endif
+  " let w:bnum_to_delete = bufnr('%')
+  " normal gf
+  " let b:dir = l:from " 通常ファイルに移動するが対象が見つからないケース対応
 endfunction
 
 
 " 同一フォルダで更新履歴が１つ前のファイルを開く
 " - `ls -rt` で並びを指定して、1つ上の行のファイルを開く
-" - 一時的に使うだけなのでバッファ一覧から削除する
+" - pipeするとtermの結果が返ってこないときがある(system()と同様か)
 command! -nargs=* TMovePrevFile call s:TMovePrevFile(<f-args>)
 function! s:TMovePrevFile(...)
   let l:from  = Curdir()
-  execute 'MyTermSelf find ' . Curdir() . ' -maxdepth 1 -type f -print0 | xargs -0 ls -rt'
-  if jobwait([&channel], -1)[0] != 0
-    return
-  endif
+  execute 'MyTermSelf ls -lurt ' . Curdir()
 
-  if exists('a:1') && a:1 != ""
-    execute 'silent! /' . substitute(a:1, '/', '.', 'g')
-    normal k
-  else
-    normal G
-  endif
-  let b:bnum_to_delete = bufnr('%')
-  normal gf
+  " TODO: TIMEUP
+  " - l:fromとファイル名をつなげる必要があるなど
+  " ^ https://github.com/mattn/vim-fz 等ほかの方法(CtrlpMRU とか)でいい気がしてきた
+  " if exists('a:1')
+  "   execute 'silent! /' . substitute(a:1, '/', '.', 'g')
+  "   normal k
+  " endif
+  " let w:bnum_to_delete = bufnr('%')
+  " normal gf
+  " let b:dir = l:from " 通常ファイルに移動するが対象が見つからないケース対応
 endfunction
 
 
