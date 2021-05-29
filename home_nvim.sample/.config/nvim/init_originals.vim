@@ -70,7 +70,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " 新規バッファ
 " - d はディレクトリの意
 " - m はメモ用ファイル
-nnoremap <Leader>ee :e 
+nnoremap <Leader>ee :e<Space>
 nnoremap <Leader>ed :e <C-r>=Curdir()<CR>
 nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
@@ -133,57 +133,20 @@ nnoremap <Leader>h :TMovePrevFile <C-r>=expand('%')<CR><CR>
 
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
-nnoremap <Leader>0<Space> :OpenFileAtLine 0<CR>
-nnoremap <Leader>1<Space> :OpenFileAtLine 1<CR>
-nnoremap <Leader>2<Space> :OpenFileAtLine 2<CR>
-nnoremap <Leader>3<Space> :OpenFileAtLine 3<CR>
-nnoremap <Leader>4<Space> :OpenFileAtLine 4<CR>
-nnoremap <Leader>5<Space> :OpenFileAtLine 5<CR>
-nnoremap <Leader>6<Space> :OpenFileAtLine 6<CR>
-nnoremap <Leader>7<Space> :OpenFileAtLine 7<CR>
-nnoremap <Leader>8<Space> :OpenFileAtLine 8<CR>
-nnoremap <Leader>9<Space> :OpenFileAtLine 9<CR>
-nnoremap <Leader>10 :OpenFileAtLine 10<CR>
-nnoremap <Leader>11 :OpenFileAtLine 11<CR>
-nnoremap <Leader>12 :OpenFileAtLine 12<CR>
-nnoremap <Leader>13 :OpenFileAtLine 13<CR>
-nnoremap <Leader>14 :OpenFileAtLine 14<CR>
-nnoremap <Leader>15 :OpenFileAtLine 15<CR>
-nnoremap <Leader>16 :OpenFileAtLine 16<CR>
-nnoremap <Leader>17 :OpenFileAtLine 17<CR>
-nnoremap <Leader>18 :OpenFileAtLine 18<CR>
-nnoremap <Leader>19 :OpenFileAtLine 19<CR>
-nnoremap <Leader>20 :OpenFileAtLine 20<CR>
-nnoremap <Leader>21 :OpenFileAtLine 21<CR>
-nnoremap <Leader>22 :OpenFileAtLine 22<CR>
-nnoremap <Leader>23 :OpenFileAtLine 23<CR>
-nnoremap <Leader>24 :OpenFileAtLine 24<CR>
-nnoremap <Leader>25 :OpenFileAtLine 25<CR>
-nnoremap <Leader>26 :OpenFileAtLine 26<CR>
-nnoremap <Leader>27 :OpenFileAtLine 27<CR>
-nnoremap <Leader>28 :OpenFileAtLine 28<CR>
-nnoremap <Leader>29 :OpenFileAtLine 29<CR>
-nnoremap <Leader>30 :OpenFileAtLine 30<CR>
-nnoremap <Leader>31 :OpenFileAtLine 31<CR>
-nnoremap <Leader>32 :OpenFileAtLine 32<CR>
-nnoremap <Leader>33 :OpenFileAtLine 33<CR>
-nnoremap <Leader>34 :OpenFileAtLine 34<CR>
-nnoremap <Leader>35 :OpenFileAtLine 35<CR>
-nnoremap <Leader>36 :OpenFileAtLine 36<CR>
-nnoremap <Leader>37 :OpenFileAtLine 37<CR>
-nnoremap <Leader>38 :OpenFileAtLine 38<CR>
-nnoremap <Leader>39 :OpenFileAtLine 39<CR>
-nnoremap <Leader>40 :OpenFileAtLine 40<CR>
-nnoremap <Leader>41 :OpenFileAtLine 41<CR>
-nnoremap <Leader>42 :OpenFileAtLine 42<CR>
-nnoremap <Leader>43 :OpenFileAtLine 43<CR>
-nnoremap <Leader>44 :OpenFileAtLine 44<CR>
-nnoremap <Leader>45 :OpenFileAtLine 45<CR>
-nnoremap <Leader>46 :OpenFileAtLine 46<CR>
-nnoremap <Leader>47 :OpenFileAtLine 47<CR>
-nnoremap <Leader>48 :OpenFileAtLine 48<CR>
-nnoremap <Leader>49 :OpenFileAtLine 49<CR>
-nnoremap <Leader>50 :OpenFileAtLine 50<CR>
+for n in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  execute 'nnoremap <Leader>' . n . '<Space> :OpenFileAtLine ' . n '<CR>'
+  " e.g. nnoremap <Leader>0<Space> :OpenFileAtLine 0<CR>
+endfor
+
+for n in [
+    \ 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+    \ 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+    \ 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+    \ 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+    \ 50, 51, 52, 53, 54, 55, 56, 57, 58, 59]
+  execute 'nnoremap <Leader>' . n . ' :OpenFileAtLine ' . n '<CR>'
+  " e.g. nnoremap <Leader>10 :OpenFileAtLine 10<CR>
+endfor
 
 
 " ターミナル
@@ -217,8 +180,8 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 
 " 起動時 MRU
-"
-autocmd! VimEnter * CtrlPMRUFiles
+" - 設定すると netrw がバグる。未調査
+" autocmd! VimEnter * CtrlPMRUFiles
 
 
 " バッファ操作
@@ -357,7 +320,7 @@ endfunction
 " 行番号を指定ファイルオープン
 " - netrw を開いた際のファイル一覧に対しての操作
 "   `gf`でファイルが開いていないならフォルダなので`gd`実行
-command! -nargs=? OpenFileAtLine call s:OpenFileAtLine(<f-args>)
+command! -nargs=? OpenFileAtLine silent call s:OpenFileAtLine(<f-args>)
 function! s:OpenFileAtLine(query)
   if exists('b:bnum_to_delete')
     let l:bnum_to_delete = b:bnum_to_delete
