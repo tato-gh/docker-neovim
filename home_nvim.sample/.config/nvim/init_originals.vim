@@ -53,7 +53,7 @@ nnoremap ,p :rv<CR>"0p
 " - Windows側クリップボードからの貼り付け時にautoindent等を防止用途
 " - 抜けるときにset nopasteに自動で戻す
 nnoremap <Leader>i :set paste<CR>i
-autocmd InsertLeave * set nopaste
+autocmd! InsertLeave * set nopaste
 
 
 " 履歴移動
@@ -218,12 +218,18 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 " 起動時 MRU
 "
-autocmd VimEnter * nested if @% == '' | CtrlPMRUFiles | endif
+autocmd! VimEnter * CtrlPMRUFiles
 
-" 作業フォルダ保存
-"
-augroup vimrc_save_directory
+
+" バッファ操作
+" - バッファを抜けるときに削除フラグがあれば消す
+" - カーソル位置を保存
+" - 作業フォルダを保存
+augroup vimrc_inout_buffer
   autocmd!
+  autocmd BufLeave * if exists('b:bnum_to_delete') | execute 'bdelete! ' . b:bnum_to_delete | endif
+  autocmd BufLeave * let b:linenr = line('.')
+  autocmd BufWinEnter * if exists('b:linenr') | execute ':' . b:linenr | endif
   autocmd BufWinEnter * let b:dir = expand('%:h') . '/'
 augroup END
 
@@ -234,7 +240,6 @@ augroup vimrc_my_filetypes
   " autocmd BufNewFile,BufRead *.txt      set filetype=markdown
   autocmd BufNewFile,BufRead *.ruby     set filetype=ruby
   autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
-  " autocmd TermOpen * set filetype=terminal
 augroup END
 
 
@@ -244,14 +249,6 @@ augroup vimrc_remove_tailspaces
   autocmd!
   let ignores = ['vim']
   autocmd BufWritePre * if index(ignores, &ft) < 0 | :%s/\s\+$//ge
-augroup END
-
-
-" カーソル位置復元
-" - ファイルを開いた際に、以前のカーソル位置を復元する
-augroup vimrc_restore_cursor_position
-  autocmd!
-  autocmd BufWinEnter * silent! call s:RestoreCursorPostion()
 augroup END
 
 
@@ -279,15 +276,6 @@ function! s:YankAnd() range
   execute '!cat /tmp/yanked ' . memofile . ' > /tmp/.memo'
   execute '!mv /tmp/.memo ' . memofile
   execute '!sed -i 1i-----------------------------------------\\n ' . memofile
-endfunction
-
-
-" カーソル位置を最後の編集位置へ
-function! s:RestoreCursorPostion()
-  if line("'\"") <= line("$")
-    normal! g`"
-    return 1
-  endif
 endfunction
 
 
@@ -371,6 +359,10 @@ endfunction
 "   `gf`でファイルが開いていないならフォルダなので`gd`実行
 command! -nargs=? OpenFileAtLine call s:OpenFileAtLine(<f-args>)
 function! s:OpenFileAtLine(query)
+  if exists('b:bnum_to_delete')
+    let l:bnum_to_delete = b:bnum_to_delete
+  endif
+
   execute ":" . a:query
   normal gF
   if &filetype == 'netrw'
@@ -391,16 +383,20 @@ endfunction
 
 
 " find 同フォルダファイル一覧
-command! -nargs=* TDirectoryFiles call s:TDirectoryFiles(<f-args>)
+command! -nargs=* TDirectoryFiles silent! call s:TDirectoryFiles(<f-args>)
 function! s:TDirectoryFiles(...)
   let l:from = b:dir
   w
   execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1'
-  let l:wait_result = jobwait([&channel], -1)[0]
-  if l:wait_result == 0 && exists('a:2')
+  if jobwait([&channel], -1)[0] != 0
+    return
+  endif
+
+  let b:dir = l:from
+  let b:bnum_to_delete = bufnr('%')
+  if exists('a:2')
     execute 'silent /' . substitute(a:2, '/', '.', 'g')
   endif
-  let b:dir = l:from
 endfunction
 
 
@@ -420,10 +416,8 @@ function! s:TMovePostFile(...)
   else
     normal gg
   endif
-  let l:bnum = bufnr('%')
+  let b:bnum_to_delete = bufnr('%')
   normal gf
-  execute 'bdelete! ' . l:bnum
-  let b:dir = l:from
 endfunction
 
 
@@ -444,10 +438,8 @@ function! s:TMovePrevFile(...)
   else
     normal G
   endif
-  let l:bnum = bufnr('%')
+  let b:bnum_to_delete = bufnr('%')
   normal gf
-  execute 'bdelete! ' . l:bnum
-  let b:dir = l:from
 endfunction
 
 
