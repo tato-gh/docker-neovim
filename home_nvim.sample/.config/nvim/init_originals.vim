@@ -126,10 +126,10 @@ nnoremap <C-g>wa :TRipGrep<Space><C-r>=expand('<cword>')<CR><CR>
 nnoremap <C-g>yy :TRipGrep<Space><C-r>=@"<CR><Space><C-r>=Curdir()<CR><CR>
 nnoremap <C-g>ya :TRipGrep<Space><C-r>=@"<CR><CR>
 "   現バッファのファイル/フォルダ一覧
-nnoremap <Leader>j :TDirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>k :TDirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>l :TMovePostFile <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>h :TMovePrevFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
+nnoremap <Leader>l :MovePostFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>h :MovePrevFile <C-r>=expand('%')<CR><CR>
 
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
@@ -163,7 +163,7 @@ command! -nargs=* MyTermSelf terminal <args>
 
 " ヒューリスティック(便利機能案)
 " " 移動先を参照しながら、移動元に戻りたい(後から気づいたケース)
-nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
+nnoremap <Leader>r :wincmd v<CR>:MovePrevFile<CR>
 
 
 
@@ -186,24 +186,17 @@ nnoremap <Leader>r :wincmd v<CR>:TMovePrevFile<CR>
 
 " バッファ操作
 " - カーソル位置を保存/復元
-" - (特にターミナルの一時利用の)バッファ削除。w:bnum_to_delete 変数の有無で実施
-"   バッファ一覧がひどいことになるための対応
-"   ターミナルからnetrwに入ったときの`BufWinEnter`でのみターミナルのバッファが消せない
-"   （処理自体は走っている）
-"   netrwに限り自身から抜ける前に1つ前のバッファを削除する
-" - 作業フォルダを保存
+" - (特に一時利用netrw等)バッファ削除。w:bnum_to_delete 変数の有無で実施
+"   バッファ一覧があふれるため対応
 augroup vimrc_inout_buffer
   autocmd!
 
   autocmd BufLeave * let b:linenr = line('.')
   autocmd BufWinEnter * if exists('b:linenr') | execute ':' . b:linenr | endif
 
-  " autocmd BufLeave * if &filetype == 'netrw' && exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
-  " autocmd BufLeave * if &filetype == 'netrw' | let w:bnum_to_delete = bufnr('%') | endif
-  " autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
-  " autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
-
-  autocmd BufWinEnter * let b:dir = expand('%:h') . '/'
+  autocmd BufLeave * if &filetype == 'netrw' | let w:bnum_to_delete = bufnr('%') | endif
+  autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
+  autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
 augroup END
 
 
@@ -359,17 +352,9 @@ endfunction
 
 
 " find 同フォルダファイル一覧
-command! -nargs=* TDirectoryFiles silent! call s:TDirectoryFiles(<f-args>)
-function! s:TDirectoryFiles(...)
-  let l:from = b:dir
-  w
-  execute 'MyTermSelf find ' . a:1 . ' -maxdepth 1 -print0 |xargs -0 ls -Fd1'
-  if jobwait([&channel], -1)[0] != 0
-    return
-  endif
-
-  let b:dir = l:from
-  let w:bnum_to_delete = bufnr('%')
+command! -nargs=* DirectoryFiles silent! call s:DirectoryFiles(<f-args>)
+function! s:DirectoryFiles(...)
+  execute 'e ' . a:1
   if exists('a:2')
     execute 'silent /' . substitute(a:2, '/', '.', 'g')
   endif
@@ -377,47 +362,78 @@ endfunction
 
 
 " 同一フォルダで更新履歴が１つ後のファイルを開く
-" - `ls -t` で並びを指定して、1つ上の行のファイルを開く
-" - pipeするとtermの結果が返ってこないときがある(system()と同様か)
-command! -nargs=* TMovePostFile call s:TMovePostFile(<f-args>)
-function! s:TMovePostFile(...)
-  let l:from  = Curdir()
-  execute 'MyTermSelf ls -lut ' . Curdir()
-  let l:from  = Curdir()
-
-  " TODO: TIMEUP
-  " - l:fromとファイル名をつなげる必要があるなど
-  " ^ https://github.com/mattn/vim-fz 等ほかの方法(CtrlpMRU とか)でいい気がしてきた
-  " if exists('a:1')
-  "   execute 'silent! /' . substitute(a:1, '/', '.', 'g')
-  "   normal k
-  " else
-  "   normal gg
-  " endif
-  " let w:bnum_to_delete = bufnr('%')
-  " normal gf
-  " let b:dir = l:from " 通常ファイルに移動するが対象が見つからないケース対応
+" - `ls -lut` で並びを指定して、1つ下の行のファイルを開く
+" - pipeするとtermの結果が返ってこないときがある(system()と同様)
+command! -nargs=* MovePostFile call s:MovePostFile(<f-args>)
+function! s:MovePostFile(...)
+  if exists('a:1')
+    let l:curfile = fnamemodify(a:1, ":t")
+    let l:result = s:CurdirFilesPrevOrPost(l:curfile, -1)
+    execute 'e ' . l:result[0]
+    " 開くだけでは atime が変わらなかった！が一応元の時間をセット
+    call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+  else
+    let l:files = DirFiles(Curdir())
+    execute 'e ' . Curdir() . l:files[0]
+  endif
 endfunction
 
 
-" 同一フォルダで更新履歴が１つ前のファイルを開く
-" - `ls -rt` で並びを指定して、1つ上の行のファイルを開く
-" - pipeするとtermの結果が返ってこないときがある(system()と同様か)
-command! -nargs=* TMovePrevFile call s:TMovePrevFile(<f-args>)
-function! s:TMovePrevFile(...)
-  let l:from  = Curdir()
-  execute 'MyTermSelf ls -lurt ' . Curdir()
+" 同一フォルダでアクセス日時が１つ前のファイルを開く
+" - `ls -lut` で並びを指定して、1つ上の行のファイルを開く
+command! -nargs=* MovePrevFile silent call s:MovePrevFile(<f-args>)
+function! s:MovePrevFile(...)
+  if exists('a:1')
+    let l:curfile = fnamemodify(a:1, ":t")
+    let l:result = s:CurdirFilesPrevOrPost(l:curfile, 1)
+    execute 'e ' . l:result[0]
+    " 開くだけでは atime が変わらなかった！が一応元の時間をセット
+    call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+  else
+    let l:files = s:DirFiles(Curdir())
+    execute 'e ' . Curdir() . l:files[0]
+  endif
+endfunction
 
-  " TODO: TIMEUP
-  " - l:fromとファイル名をつなげる必要があるなど
-  " ^ https://github.com/mattn/vim-fz 等ほかの方法(CtrlpMRU とか)でいい気がしてきた
-  " if exists('a:1')
-  "   execute 'silent! /' . substitute(a:1, '/', '.', 'g')
-  "   normal k
-  " endif
-  " let w:bnum_to_delete = bufnr('%')
-  " normal gf
-  " let b:dir = l:from " 通常ファイルに移動するが対象が見つからないケース対応
+" 同一フォルダ ファイル移動用処理
+" - 指定したファイル `curfile` の同フォルダのアクセス履歴 moveDiff 番目のファイルパスとアクセス日時を返す
+function! s:CurdirFilesPrevOrPost(curfile, moveDiff)
+  let l:files = s:DirFiles(Curdir())
+  let l:ind = 0
+  let l:moveind = 0
+  for filename in l:files[0]
+    if a:curfile == filename
+      let l:moveind = l:ind + a:moveDiff
+      break
+    endif
+    let l:ind = l:ind + 1
+  endfor
+
+  if l:moveind >= len(l:files[0])
+    let l:moveind = 0
+  endif
+
+  return [Curdir() . l:files[0][l:moveind], l:files[1][l:moveind]]
+endfunction
+
+" 同一フォルダ ファイル移動用処理
+" - 指定したフォルダに含まれるファイルとアクセス日時をアクセス履歴順で返す
+function! s:DirFiles(dir)
+  let l:files = []
+  let l:timestamps = []
+  let l:rows = split(system('ls -lut --full-time ' . a:dir), "\n")
+  call remove(l:rows, 0) " total ~ の除去
+  for row in l:rows
+    " e.g. -rw-r--r--    1 nvim     nvim           162 2021-05-29 08:10:01 +0000 README.md
+    let l:is_dir = (row[0] == 'd')
+    if !l:is_dir
+      let data = split(row, ' ')
+      call add(l:files, data[-1])
+      call add(l:timestamps, data[-4] . ' ' . data[-3])
+    endif
+  endfor
+
+  return [l:files, l:timestamps]
 endfunction
 
 
