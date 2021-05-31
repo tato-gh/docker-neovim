@@ -8,6 +8,7 @@ WORKDIR /srv
 # REFS
 # https://hub.docker.com/r/thawk/neovim/dockerfile
 
+# python3-dev, py3-pip for deoplete
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \
@@ -29,7 +30,9 @@ RUN apk update && \
     byobu \
     sudo \
     bash \
-    ripgrep
+    ripgrep \
+    python3-dev \
+    py3-pip
 RUN rm -rf /var/cache/apk/*
 
 # nvim.appimage がうまく動作しないためビルドする
@@ -40,3 +43,6 @@ RUN git clone https://github.com/neovim/neovim.git \
   && make install \
   && cd ../ \
   && rm -rf neovim
+
+# for deoplete
+RUN pip3 install pynvim

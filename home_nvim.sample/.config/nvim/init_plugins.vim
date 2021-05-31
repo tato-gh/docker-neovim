@@ -21,6 +21,7 @@ Plug 'mattn/ctrlp-launcher'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tomtom/tcomment_vim'
 Plug 'hrsh7th/vim-vsnip'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 " ユーティリティ
 Plug 'kana/vim-textobj-user'
@@ -40,23 +41,17 @@ call plug#end()
 " colorscheme badwolf
 colorscheme iceberg
 
-" 色のカスタマイズ
-augroup MyColors
-  autocmd!
-  autocmd ColorScheme * call MyHighlights()
-augroup END
 
-function! MyHighlights() abort
-  " iceberg
-  " - 暗い紫がみにくいのでmagentaにする
-  " - コメントはむしろ目立つほうがいい(試用)。区切りにもなっている
-  " - TODO: rg結果がみにくいけれどどの色かわからない(terminal_color_Nとは違った)
-  " https://github.com/cocopon/iceberg.vim/blob/master/colors/iceberg.vim
-  " https://oki2a24.com/2019/02/15/make-mintty-theme-like-iceberg/
-  highlight Constant ctermfg=magenta
-  highlight Comment ctermfg=245
-  highlight LineNr ctermfg=245
-endfunction
+" カラー / iceberg
+" - 暗い紫がみにくいのでmagentaにする
+" - コメントはむしろ目立つほうがいい(試用)。区切りにもなっている
+" - TODO: rg結果がみにくいけれどどの色かわからない(terminal_color_Nとは違った)
+" https://github.com/cocopon/iceberg.vim/blob/master/colors/iceberg.vim
+" https://oki2a24.com/2019/02/15/make-mintty-theme-like-iceberg/
+highlight Constant ctermfg=magenta
+highlight Comment ctermfg=245
+highlight LineNr ctermfg=245
+
 
 
 " hop
@@ -107,6 +102,10 @@ imap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>
 smap <expr> <Tab>   vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
 imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
 
 
 " yankround
