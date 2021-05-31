@@ -19,6 +19,7 @@ let g:netrw_banner=0
 " set nonumber
 set number
 
+
 " 補完候補
 " see https://medium.com/usevim/set-complete-e76b9f196f0f
 " - include先までは必要ない。言語依存
@@ -88,13 +89,14 @@ set incsearch " 検索
 set splitright " ウィンドウ分割 右
 set splitbelow " ウィンドウ分割 下
 set lazyredraw " 遅延再描画
+set showtabline=2 " タブは必ず表示(ファイル名確認のため)
 
 
 " Originals (shortcut, etc)
 if filereadable(expand('~/.config/nvim/init_originals.vim'))
   source ~/.config/nvim/init_originals.vim
 endif
- 
+
 " Plugins
 if filereadable(expand('~/.config/nvim/init_plugins.vim'))
   source ~/.config/nvim/init_plugins.vim
