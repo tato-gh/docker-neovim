@@ -24,7 +24,7 @@ set number
 " see https://medium.com/usevim/set-complete-e76b9f196f0f
 " - include先までは必要ない。言語依存
 set complete-=i
-set completeopt=menuone,noinsert
+set completeopt=menuone,noinsert,noselect
 
 
 " テキスト幅とハイライトする列

@@ -18,10 +18,13 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/ctrlp-launcher'
 
 " コーディング
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tomtom/tcomment_vim'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+"   languate: elixir
+Plug 'elixir-editors/vim-elixir'
 
 " ユーティリティ
 Plug 'kana/vim-textobj-user'
@@ -30,6 +33,7 @@ Plug 'tpope/vim-surround'
 Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
+Plug 't9md/vim-quickhl'
 
 call plug#end()
 " ------------------------------------
@@ -77,19 +81,19 @@ nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
 nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 
 
-" treesitter
-" - 試用段階
-" - elixir が取れない様子
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "all",   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = {}, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = {},  -- list of language that will be disabled
-  },
-}
-EOF
+" " treesitter
+" " - 試用段階
+" " - elixir が取れない様子
+" lua <<EOF
+" require'nvim-treesitter.configs'.setup {
+"   ensure_installed = "all",   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+"   ignore_install = {}, -- List of parsers to ignore installing
+"   highlight = {
+"     enable = true,              -- false will disable the whole extension
+"     disable = {},  -- list of language that will be disabled
+"   },
+" }
+" EOF
 
 
 " vim-vsnip
@@ -112,3 +116,12 @@ let g:deoplete#enable_at_startup = 1
 nmap p <Plug>(yankround-p)
 nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
+
+
+" vim-quickhl
+let g:quickhl_manual_keywords = [
+      \  { 'pattern': '\C\<\(TODO\|FIXME\|NOTE\|INFO\)\>', 'regexp': 1 },
+      \]
+nnoremap <C-h>e :<C-u>QuickhlManualEnable<CR>
+nnoremap <C-h>d :<C-u>QuickhlManualDisable<CR>
+nnoremap <C-h>a :<C-u>QuickhlManualAdd<Space>

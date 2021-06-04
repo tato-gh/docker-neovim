@@ -40,6 +40,7 @@ nnoremap <CR> o<Esc>
 " yank
 " - いろいろするのでfunctionへ
 vnoremap y y:YankAnd<CR>
+vnoremap b d:DeletedBackup<CR>
 
 
 " paste
@@ -119,8 +120,7 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 " ターミナル関係
 "   grep! grep!
-nnoremap <C-g>rr :TRipGrep<Space>
-nnoremap <C-g>ra :TRipGrep<Space><C-r>=Curdir()<CR><Space>
+nnoremap <C-g>r :TRipGrep<Space>
 nnoremap <C-g>ww :TRipGrep<Space><C-r>=expand('<cword>')<CR><Space><C-r>=Curdir()<CR><CR>
 nnoremap <C-g>wa :TRipGrep<Space><C-r>=expand('<cword>')<CR><CR>
 nnoremap <C-g>yy :TRipGrep<Space><C-r>=@"<CR><Space><C-r>=Curdir()<CR><CR>
@@ -128,8 +128,9 @@ nnoremap <C-g>ya :TRipGrep<Space><C-r>=@"<CR><CR>
 "   現バッファのファイル/フォルダ一覧
 nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>l :MovePostFile <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>h :MovePrevFile <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>f :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
+nnoremap <Leader>l :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>h :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
 "   行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
@@ -152,18 +153,21 @@ endfor
 " ターミナル
 tnoremap <C-j> <C-\><C-n>
 nnoremap <C-t> :MyTerm<Space>
-nnoremap <C-g>ll :MyTerm git log -p %<CR>
+nnoremap <C-g>ll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
 nnoremap <C-g>la :MyTerm git log -p<CR>
-nnoremap <C-g>dd :MyTerm git diff %<CR>
+nnoremap <C-g>dd :MyTerm git diff <C-r>=expand('%')<CR><CR>
 nnoremap <C-g>da :MyTerm git diff<CR>
 nnoremap <C-g>st :MyTerm git status<CR>
-command! -nargs=* MyTerm split | wincmd j | resize 20 | terminal <args>
+command! -nargs=* MyTerm wincmd v | terminal <args>
 command! -nargs=* MyTermSelf terminal <args>
 
 
 " ヒューリスティック(便利機能案)
-" " 移動先を参照しながら、移動元に戻りたい(後から気づいたケース)
-nnoremap <Leader>r :wincmd v<CR>:MovePrevFile<CR>
+" " 別ファイル参照 / 画面分割してファイル一覧
+nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%')<CR><CR>
+" " 別ファイル移動 / 現フォルダの最後に変更したファイル
+nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
+
 
 
 
@@ -228,7 +232,6 @@ augroup END
 " Yank に付随する追加処理用
 " - Vim間コピーのため、viminfo に書き出し (`wv`)
 " - WSLでのホストへのコピーのため、/tmp/yanked に書き出し
-" - メモのため、.memo に書き出し。消すのをためらうもの等
 command! -range YankAnd silent call s:YankAnd()
 function! s:YankAnd() range
   wv
@@ -237,10 +240,21 @@ function! s:YankAnd() range
   silent echo getreg("0")
   redir end
   !sed -e '1,1d' ~/.yanked > /tmp/yanked
+endfunction
+
+
+" Delete に付随する追加処理用
+" - メモのため、.memo に書き出し。消すのをためらうもの等
+command! -range DeletedBackup silent call s:DeletedBackup()
+function! s:DeletedBackup() range
+  redir! > /tmp/.deleted
+  silent echo getreg("0")
+  redir end
+  !sed -i -e '1,1d' /tmp/.deleted
 
   let memofile = Curdir() . '.memo'
   execute '!touch ' . memofile
-  execute '!cat /tmp/yanked ' . memofile . ' > /tmp/.memo'
+  execute '!cat /tmp/.deleted ' . memofile . ' > /tmp/.memo'
   execute '!mv /tmp/.memo ' . memofile
   execute '!sed -i 1i-----------------------------------------\\n ' . memofile
 endfunction
@@ -344,14 +358,13 @@ endfunction
 " ターミナルを使用
 command! -nargs=? TRipGrep silent call s:TRipGrep(<f-args>)
 function! s:TRipGrep(query)
-  w
-  let l:from = b:dir
-  execute 'MyTermSelf rg ' . a:query
+  let l:from = Curdir()
+  execute 'MyTermSelf rg -A 1 -B 1 ' . a:query
   let b:dir = l:from
 endfunction
 
 
-" find 同フォルダファイル一覧
+" 同フォルダファイル一覧
 command! -nargs=* DirectoryFiles silent! call s:DirectoryFiles(<f-args>)
 function! s:DirectoryFiles(...)
   execute 'e ' . a:1
@@ -361,44 +374,63 @@ function! s:DirectoryFiles(...)
 endfunction
 
 
-" 同一フォルダで更新履歴が１つ後のファイルを開く
-" - `ls -lut` で並びを指定して、1つ下の行のファイルを開く
+" find ファイル名検索
+command! -nargs=* FindDirectoryFiles silent call s:FindDirectoryFiles(<f-args>)
+function! s:FindDirectoryFiles(...)
+  let l:from = Curdir()
+  execute 'MyTermSelf find ' . a:1 . ' -name "*' . a:2 . '*"'
+  let b:dir = l:from
+endfunction
+
+
+" 同一フォルダでアクセス/編集日時が１つ後のファイルを開く
+" - `ls` で並びを指定して、1つ下の行のファイルを開く
 " - pipeするとtermの結果が返ってこないときがある(system()と同様)
 command! -nargs=* MovePostFile call s:MovePostFile(<f-args>)
 function! s:MovePostFile(...)
-  if exists('a:1')
-    let l:curfile = fnamemodify(a:1, ":t")
-    let l:result = s:CurdirFilesPrevOrPost(l:curfile, -1)
+  if exists('a:2')
+    let l:curfile = fnamemodify(a:2, ":t")
+    let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, -1)
     execute 'e ' . l:result[0]
-    " 開くだけでは atime が変わらなかった！が一応元の時間をセット
-    call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+
+    if a:1 == 'atime'
+      " alpine には `-a` がなかったので想定した動作にならない
+      call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+    else
+      call system('touch -m --date "' . l:result[1] . '" ' . l:result[0])
+    endif
   else
-    let l:files = DirFiles(Curdir())
+    let l:files = DirFiles(a:1, Curdir())
     execute 'e ' . Curdir() . l:files[0]
   endif
 endfunction
 
 
-" 同一フォルダでアクセス日時が１つ前のファイルを開く
-" - `ls -lut` で並びを指定して、1つ上の行のファイルを開く
+" 同一フォルダでアクセス/編集日時が１つ前のファイルを開く
+" - `ls` で並びを指定して、1つ上の行のファイルを開く
 command! -nargs=* MovePrevFile silent call s:MovePrevFile(<f-args>)
 function! s:MovePrevFile(...)
-  if exists('a:1')
-    let l:curfile = fnamemodify(a:1, ":t")
-    let l:result = s:CurdirFilesPrevOrPost(l:curfile, 1)
+  if exists('a:2')
+    let l:curfile = fnamemodify(a:2, ":t")
+    let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, 1)
     execute 'e ' . l:result[0]
-    " 開くだけでは atime が変わらなかった！が一応元の時間をセット
-    call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+
+    if a:1 == 'atime'
+      " alpine には `-a` がなかったので想定した動作にならない
+      call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
+    else
+      call system('touch -m --date "' . l:result[1] . '" ' . l:result[0])
+    endif
   else
-    let l:files = s:DirFiles(Curdir())
-    execute 'e ' . Curdir() . l:files[0]
+    let l:files = s:DirFiles(a:1, Curdir())
+    execute 'e ' . Curdir() . l:files[0][0]
   endif
 endfunction
 
 " 同一フォルダ ファイル移動用処理
 " - 指定したファイル `curfile` の同フォルダのアクセス履歴 moveDiff 番目のファイルパスとアクセス日時を返す
-function! s:CurdirFilesPrevOrPost(curfile, moveDiff)
-  let l:files = s:DirFiles(Curdir())
+function! s:CurdirFilesPrevOrPost(order, curfile, moveDiff)
+  let l:files = s:DirFiles(a:order, Curdir())
   let l:ind = 0
   let l:moveind = 0
   for filename in l:files[0]
@@ -418,10 +450,16 @@ endfunction
 
 " 同一フォルダ ファイル移動用処理
 " - 指定したフォルダに含まれるファイルとアクセス日時をアクセス履歴順で返す
-function! s:DirFiles(dir)
+function! s:DirFiles(order, dir)
   let l:files = []
   let l:timestamps = []
-  let l:rows = split(system('ls -lut --full-time ' . a:dir), "\n")
+
+  if a:order == 'atime'
+    let l:rows = split(system('ls -lut --full-time ' . a:dir), "\n")
+  else
+    let l:rows = split(system('ls -lt --full-time ' . a:dir), "\n")
+  endif
+
   call remove(l:rows, 0) " total ~ の除去
   for row in l:rows
     " e.g. -rw-r--r--    1 nvim     nvim           162 2021-05-29 08:10:01 +0000 README.md
@@ -442,7 +480,7 @@ function! Curdir()
   if exists('b:dir')
     return b:dir
   endif
-  if exists('b:netrw_curdir')
+  if exists('b:netrw_curdir') && &filetype == 'netrw'
     return b:netrw_curdir . '/'
   endif
   return expand('%:h') . '/'
