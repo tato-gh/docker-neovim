@@ -118,21 +118,23 @@ nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 
-" ターミナル関係
-"   grep! grep!
+" Grep
 nnoremap <C-g>r :TRipGrep<Space>
 nnoremap <C-g>ww :TRipGrep<Space><C-r>=expand('<cword>')<CR><Space><C-r>=Curdir()<CR><CR>
 nnoremap <C-g>wa :TRipGrep<Space><C-r>=expand('<cword>')<CR><CR>
 nnoremap <C-g>yy :TRipGrep<Space><C-r>=@"<CR><Space><C-r>=Curdir()<CR><CR>
 nnoremap <C-g>ya :TRipGrep<Space><C-r>=@"<CR><CR>
-"   現バッファのファイル/フォルダ一覧
+
+
+" 現バッファのファイル/フォルダ一覧
 nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>f :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
 nnoremap <Leader>l :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>h :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
-"   行番号を指定してファイル移動
+
+" 行番号を指定してファイル移動
 "   50行まで。ぱっと見でわからない場合は検索して直接行に移動するだけ
 for n in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
   execute 'nnoremap <Leader>' . n . '<Space> :OpenFileAtLine ' . n '<CR>'
@@ -151,6 +153,8 @@ endfor
 
 
 " ターミナル
+" - git周りの情報出力
+" - どうもnowrapが効かなくて改行されるので vsplit ではなくssplit で出力が無難
 tnoremap <C-j> <C-\><C-n>
 nnoremap <C-t> :MyTerm<Space>
 nnoremap <C-g>ll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
@@ -167,6 +171,10 @@ command! -nargs=* MyTermSelf terminal <args>
 nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%')<CR><CR>
 " " 別ファイル移動 / 現フォルダの最後に変更したファイル
 nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
+" " 現在のファイル:行をファイル出力 (テスト利用)。
+" " 結果も同一ファイルに書き込まれることを想定 // ...アナログ感
+nnoremap <Leader>qq :WriteCurrentLine /srv/tmp/.test<CR>
+nnoremap <Leader>qa :tabnew /srv/tmp/.test<CR>
 
 
 
@@ -472,6 +480,15 @@ function! s:DirFiles(order, dir)
   endfor
 
   return [l:files, l:timestamps]
+endfunction
+
+
+" 指定ファイルに現カーソル位置を出力
+command! -nargs=1 WriteCurrentLine silent! call s:WriteCurrentLine(<f-args>)
+function! s:WriteCurrentLine(filepath)
+  execute ':redir! >' . a:filepath
+  :silent! echon expand('%') . ':' . line('.')
+  redir END
 endfunction
 
 
