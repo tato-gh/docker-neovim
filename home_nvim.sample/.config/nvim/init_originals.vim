@@ -40,7 +40,13 @@ nnoremap <CR> o<Esc>
 " yank
 " - いろいろするのでfunctionへ
 vnoremap y y:YankAnd<CR>
-vnoremap b d:DeletedBackup<CR>
+
+
+" メモ
+" - プロジェクト中では同じフォルダの.memoを使い、
+" - ライブラリの閲覧中などは固定の.memoを使う想定
+vnoremap bb :Memo <C-r>=Curdir()<CR>.memo<CR>
+vnoremap ba :Memo /srv/tmp/.memo<CR>
 
 
 " paste
@@ -73,12 +79,14 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " - m はメモ用ファイル
 nnoremap <Leader>ee :e <C-r>=Curdir()<CR>
 nnoremap <Leader>ea :e<Space>
-nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>ebb :e <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>eba :e /srv/tmp/.memo<CR>
 nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
 nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
 nnoremap <Leader>tt :tabnew <C-r>=Curdir()<CR>
 nnoremap <Leader>ta :tabnew<Space>
-nnoremap <Leader>tm :tabnew <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>tbb :tabnew <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>tba :tabnew /srv/tmp/.memo<CR>
 
 
 " ファイル/フォルダ ショートカット
@@ -251,20 +259,22 @@ function! s:YankAnd() range
 endfunction
 
 
-" Delete に付随する追加処理用
-" - メモのため、.memo に書き出し。消すのをためらうもの等
-command! -range DeletedBackup silent call s:DeletedBackup()
-function! s:DeletedBackup() range
-  redir! > /tmp/.deleted
-  silent echo getreg("0")
-  redir end
-  !sed -i -e '1,1d' /tmp/.deleted
-
-  let memofile = Curdir() . '.memo'
-  execute '!touch ' . memofile
-  execute '!cat /tmp/.deleted ' . memofile . ' > /tmp/.memo'
-  execute '!mv /tmp/.memo ' . memofile
-  execute '!sed -i 1i-----------------------------------------\\n ' . memofile
+" メモ: .memo に書き出し
+" - コードリーディング中の重要箇所
+" - 消すと戻すのに手間取りそうな箇所
+command! -nargs=1 -range Memo silent call s:Memo(<f-args>)
+function! s:Memo(filepath) range
+  let chk = getftype(a:filepath)
+  if chk == ""
+    execute '!echo "----" > ' . a:filepath
+  endif
+  let location = expand('%') . ':' . line('.')
+  let selection = join(GetVisualSelection(), '\n')
+  let normalized = substitute(selection, '\#', '\\\#', 'g')
+  " let hr = '\n--------------------\n'
+  " execute '!sed -i 1i"' . location . hr . normalized . hr . '" ' . a:filepath
+  execute '!sed -i 1i"\`\`\`:' . location . '\n' . normalized . '\n\`\`\`\n\n" ' . a:filepath
+  call <SID>AutoMarkrementBig()
 endfunction
 
 
@@ -501,4 +511,18 @@ function! Curdir()
     return b:netrw_curdir . '/'
   endif
   return expand('%:h') . '/'
+endfunction
+
+
+" 現visual領域取得
+function! GetVisualSelection()
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)
+    if lnum1 == 0 && lnum2 == 0 && col1 == 0 && col2 == 0
+        return ''
+    endif
+    let lines[-1] = lines[-1][:col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return lines
 endfunction
