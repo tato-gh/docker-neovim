@@ -69,20 +69,20 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 
 " 新規バッファ
-" - d はディレクトリの意
+" - a は全体の意
 " - m はメモ用ファイル
-nnoremap <Leader>ee :e<Space>
-nnoremap <Leader>ed :e <C-r>=Curdir()<CR>
+nnoremap <Leader>ee :e <C-r>=Curdir()<CR>
+nnoremap <Leader>ea :e<Space>
 nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
 nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
-nnoremap <Leader>tt :tabnew<Space>
-nnoremap <Leader>td :tabnew <C-r>=Curdir()<CR>
+nnoremap <Leader>tt :tabnew <C-r>=Curdir()<CR>
+nnoremap <Leader>ta :tabnew<Space>
 nnoremap <Leader>tm :tabnew <C-r>=Curdir()<CR>.memo<CR>
 
 
 " ファイル/フォルダ ショートカット
-" - vim からよくある操作は直下ファイル/フォルダ作成
+" - vim からよくある操作は直下ファイル(f)/フォルダ(d)作成
 nnoremap <Leader>cf :silent !touch <C-r>=Curdir()<CR>
 nnoremap <Leader>cd :silent !mkdir -p <C-r>=Curdir()<CR>
 nnoremap <Leader>df :silent !rm <C-r>=Curdir()<CR>
