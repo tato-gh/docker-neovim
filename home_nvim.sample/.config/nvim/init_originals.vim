@@ -377,6 +377,9 @@ endfunction
 command! -nargs=? TRipGrep silent call s:TRipGrep(<f-args>)
 function! s:TRipGrep(query)
   let l:from = Curdir()
+  if getbufinfo(bufnr('%'))[0].changed
+    w
+  endif
   execute 'MyTermSelf rg -A 1 -B 1 ' . a:query
   let b:dir = l:from
 endfunction
@@ -385,6 +388,9 @@ endfunction
 " 同フォルダファイル一覧
 command! -nargs=* DirectoryFiles silent! call s:DirectoryFiles(<f-args>)
 function! s:DirectoryFiles(...)
+  if getbufinfo(bufnr('%'))[0].changed
+    w
+  endif
   execute 'e ' . a:1
   if exists('a:2')
     execute 'silent /' . substitute(a:2, '/', '.', 'g')
@@ -396,6 +402,10 @@ endfunction
 command! -nargs=* FindDirectoryFiles silent call s:FindDirectoryFiles(<f-args>)
 function! s:FindDirectoryFiles(...)
   let l:from = Curdir()
+
+  if getbufinfo(bufnr('%'))[0].changed
+    w
+  endif
   execute 'MyTermSelf find ' . a:1 . ' -name "*' . a:2 . '*"'
   let b:dir = l:from
 endfunction
@@ -409,6 +419,10 @@ function! s:MovePostFile(...)
   if exists('a:2')
     let l:curfile = fnamemodify(a:2, ":t")
     let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, -1)
+
+    if getbufinfo(bufnr('%'))[0].changed
+      w
+    endif
     execute 'e ' . l:result[0]
 
     if a:1 == 'atime'
@@ -431,6 +445,10 @@ function! s:MovePrevFile(...)
   if exists('a:2')
     let l:curfile = fnamemodify(a:2, ":t")
     let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, 1)
+
+    if getbufinfo(bufnr('%'))[0].changed
+      w
+    endif
     execute 'e ' . l:result[0]
 
     if a:1 == 'atime'
