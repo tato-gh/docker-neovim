@@ -114,7 +114,9 @@ nnoremap <silent><Leader>b :ls<CR>:b<Space>
 
 
 " マーク 一覧移動用
-nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>mm :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>ml :<C-u>call <SID>JumpMark(1)<CR>
+nnoremap <silent><Leader>mh :<C-u>call <SID>JumpMark(-1)<CR>
 
 
 " マーク 自動採番
@@ -208,6 +210,8 @@ nnoremap <Leader>qa :tabnew /srv/tmp/.test<CR>
 " - カーソル位置を保存/復元
 " - (特に一時利用netrw等)バッファ削除。w:bnum_to_delete 変数の有無で実施
 "   バッファ一覧があふれるため対応
+" - 自動マーキング
+"   ただし、マークを使った移動時(g:flug_mark_jump)は除く
 augroup vimrc_inout_buffer
   autocmd!
 
@@ -217,6 +221,8 @@ augroup vimrc_inout_buffer
   autocmd BufLeave * if &filetype == 'netrw' | let w:bnum_to_delete = bufnr('%') | endif
   autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
   autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
+
+  autocmd BufNewFile,BufRead * if &filetype != 'netrw' && !g:flug_mark_jump | call s:AutoMarkrementBig() | endif
 augroup END
 
 
@@ -274,7 +280,6 @@ function! s:Memo(filepath) range
   " let hr = '\n--------------------\n'
   " execute '!sed -i 1i"' . location . hr . normalized . hr . '" ' . a:filepath
   execute '!sed -i 1i"\`\`\`:' . location . '\n' . normalized . '\n\`\`\`\n\n" ' . a:filepath
-  call <SID>AutoMarkrementBig()
 endfunction
 
 
@@ -343,13 +348,27 @@ function! s:AutoMarkrement()
 endfunction
 
 function! s:AutoMarkrementBig()
-  if !exists('b:markrement_pos_big')
-    let b:markrement_pos_big = 0
+  if !exists('g:markrement_pos_big')
+    let g:markrement_pos_big = 0
   else
-    let b:markrement_pos_big = (b:markrement_pos_big + 1) % len(g:markrement_bigchar)
+    let g:markrement_pos_big = (g:markrement_pos_big + 1) % len(g:markrement_bigchar)
   endif
-  execute 'mark' g:markrement_bigchar[b:markrement_pos_big]
-  echo 'marked' g:markrement_bigchar[b:markrement_pos_big]
+  execute 'mark' g:markrement_bigchar[g:markrement_pos_big]
+  echo 'marked' g:markrement_bigchar[g:markrement_pos_big]
+endfunction
+
+
+" マーキングジャンプ
+if !exists('g:flug_jump')
+  let g:flug_mark_jump = 0
+endif
+
+function! s:JumpMark(direction)
+  let g:markrement_pos_big = (g:markrement_pos_big + a:direction) % len(g:markrement_bigchar)
+  let l:marked_char = g:markrement_bigchar[g:markrement_pos_big]
+  let g:flug_mark_jump = 1
+  execute 'normal! `' . l:marked_char
+  let g:flug_mark_jump = 0
 endfunction
 
 
@@ -463,6 +482,7 @@ function! s:MovePrevFile(...)
   endif
 endfunction
 
+
 " 同一フォルダ ファイル移動用処理
 " - 指定したファイル `curfile` の同フォルダのアクセス履歴 moveDiff 番目のファイルパスとアクセス日時を返す
 function! s:CurdirFilesPrevOrPost(order, curfile, moveDiff)
@@ -483,6 +503,7 @@ function! s:CurdirFilesPrevOrPost(order, curfile, moveDiff)
 
   return [Curdir() . l:files[0][l:moveind], l:files[1][l:moveind]]
 endfunction
+
 
 " 同一フォルダ ファイル移動用処理
 " - 指定したフォルダに含まれるファイルとアクセス日時をアクセス履歴順で返す
