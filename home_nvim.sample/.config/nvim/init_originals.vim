@@ -139,7 +139,9 @@ nnoremap <C-g>ya :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 " 現バッファのファイル/フォルダ一覧
 nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>f :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
+nnoremap <Leader>ff :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
+nnoremap <Leader>fa :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
+nnoremap <Leader>fg :FindGitFiles<Space>
 nnoremap <Leader>l :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>h :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
@@ -426,6 +428,19 @@ function! s:FindDirectoryFiles(...)
     w
   endif
   execute 'MyTermSelf find ' . a:1 . ' -name "*' . a:2 . '*"'
+  let b:dir = l:from
+endfunction
+
+
+" find git管理下検索
+command! -nargs=* FindGitFiles silent call s:FindGitFiles(<f-args>)
+function! s:FindGitFiles(...)
+  let l:from = Curdir()
+
+  if getbufinfo(bufnr('%'))[0].changed
+    w
+  endif
+  execute 'MyTermSelf git ls-files |grep ' . a:1
   let b:dir = l:from
 endfunction
 
