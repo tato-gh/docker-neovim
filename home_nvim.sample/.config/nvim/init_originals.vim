@@ -128,10 +128,10 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 " Grep
 nnoremap <C-g>r :TRipGrep<Space>
-nnoremap <C-g>ww :TRipGrep<Space><C-r>=expand('<cword>')<CR><Space><C-r>=Curdir()<CR><CR>
-nnoremap <C-g>wa :TRipGrep<Space><C-r>=expand('<cword>')<CR><CR>
-nnoremap <C-g>yy :TRipGrep<Space><C-r>=@"<CR><Space><C-r>=Curdir()<CR><CR>
-nnoremap <C-g>ya :TRipGrep<Space><C-r>=@"<CR><CR>
+nnoremap <C-g>ww :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <C-g>wa :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
+nnoremap <C-g>yy :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <C-g>ya :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 
 
 " 現バッファのファイル/フォルダ一覧
