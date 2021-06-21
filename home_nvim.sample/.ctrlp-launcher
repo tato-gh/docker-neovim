@@ -1,0 +1,1 @@
+exview		let filepath=system('~/.ctrlp/exview.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . filepath)
