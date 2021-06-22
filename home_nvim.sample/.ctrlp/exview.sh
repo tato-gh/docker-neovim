@@ -3,7 +3,7 @@
 # $1: 現ファイルパス (%)
 # $2: カレントディレクトリ (cwd)
 
-# FILENAME=`echo $1 | sed 's/\.[^\/]*$//'`
+FILENAME=`echo $1 | sed 's/\.[^\/]*$//'`
 EXT_LIST=(".html.slimleex" ".html.slimeex" ".html.leex" ".html.eex")
 
 #   同一フォルダ内
