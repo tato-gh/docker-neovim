@@ -1,1 +1,7 @@
-exview		let filepath=system('~/.ctrlp/exview.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . filepath)
+# [タイトル(空白含んでOK)] [タブ文字(複数可能] [実行するコマンド]
+NewTimebox			let b:file=system('bash ./timebox/create.sh '.expand('%:p:h')) | execute "tabnew" b:file
+UpdateTimebox 	let b:file=system('bash ./timebox/update.sh '.expand('%')) | execute "e" b:file
+ExView					let b:file=system('~/.ctrlp/exview.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
+ExLive					let b:file=system('~/.ctrlp/exlive.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
+# vim:set ts=4
+# NOTE: C-v Tab でタブ文字は挿入可能

@@ -25,8 +25,8 @@
       "defp $1, do: $2"
     ]
   },
-  "io": {
-    "prefix": "io inspect",
+  "io inspect": {
+    "prefix": "ioi",
     "body": [
       "IO.inspect "
     ]
