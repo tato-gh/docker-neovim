@@ -143,9 +143,8 @@ nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 
 
 " 現バッファのファイル/フォルダ一覧
-" TODO: j ~同一名フォルダに入る
-" nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%:t')<CR><CR>
+nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(expand('%:r'), '/../', '/', '')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>f. :FindDirectoryFiles <C-r>=getcwd()<CR>/<C-r>=Curdir()<CR><Space>
 nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
