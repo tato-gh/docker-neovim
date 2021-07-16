@@ -1,31 +1,31 @@
 
-" NOTE
+" NOTE: 背景
 " - タブは `gt``gT` で扱えるように1~2つ程度を使用する
 "   多用するとタブで開くかどうかの選択でショートカットが増えすぎる
 "   (かつて多用していたがやめてみる...)
 " - ウィンドウ分割は <C-w> を素直に使用する
 " - tmuxである程度作業するフォルダを分離しているので前後フォルダ移動が早いほうがいい
 "   そのため fzf はさほど必要ないと思われる
-" - コーディング中に一時退避用ファイルとして .memo を作ることがある
+"   - 同じフォルダにあるファイルをさくっと開けるといい
+"   - 番号指定でファイルを開けるといい
+"   - 同じフォルダの前後に変更したファイルがさくっと開けるといい
+" - コーディング中に一時的にコードを退避させることがよくある
 "   .memo をさくっと開けるほうがいい
 "   .memo のみを対象とした検索があったほうがいい
-
-" 同フォルダのファイルを中心に作業する運用のショートカット要件
-" - 課題
-"   - `:e %:h` ではタブ補完後に入力が必要なのでひと手間かかる
-"   - fzf 系も基本的に入力が必要
-"   - netrw(等)は行移動でもいいのでやや楽
-" - 同じフォルダにあるファイルをさくっと開けること
-" - 番号指定でファイルを開けること
-" - 同じフォルダの前後に変更したファイルがさくっと開けること
 
 
 " -----------------------
 "
-" Command / Shortcut
-" - 何かを読み書きする処理系は ,<KEY> のようにカンマを前置する(マイルール)
-" - 表示/非表示等の切り替え系は s*y(es)/s*n(o) を意図して y/n を使う
-"   - 例えば行番号 表示/非表示は rt/rf を割り当てている
+" Command / Shortcut ルール
+" - 何かバッファに対して挿入する処理系は ,<KEY> のようにカンマを前置する(マイルール)
+" - 表示/非表示等の切り替え系は s(et)*y(es)/s(et)*n(o) を意図して y/n を使う
+"   - 例えば、行番号の表示/非表示は s(et)n(umber)y(es)/s(et)n(umber)n(o) を割り当てている
+" - 現バッファのフォルダはピリオド(.)、カレントディレクトリはスラッシュ(/)を用いる
+"   - 例えば、`:edit %:h` は `e.` で `:edit ./` は `e/`
+"
+" Leader or Ctrl
+" - 基本的にLeaderに割り当てる
+"
 " -----------------------
 
 " 日本語切り替え処理
@@ -45,8 +45,8 @@ vnoremap y y:YankAnd<CR>
 " メモ
 " - プロジェクト中では同じフォルダの.memoを使い、
 " - ライブラリの閲覧中などは固定の.memoを使う想定
-vnoremap bb :Memo <C-r>=Curdir()<CR>.memo<CR>
-vnoremap ba :Memo /srv/tmp/.memo<CR>
+vnoremap b. :Memo <C-r>=Curdir()<CR>.memo<CR>
+vnoremap b/ :Memo /srv/tmp/.memo<CR>
 
 
 " paste
@@ -77,16 +77,14 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " 新規バッファ
 " - a は全体の意
 " - m はメモ用ファイル
-nnoremap <Leader>ee :e <C-r>=Curdir()<CR>
-nnoremap <Leader>ea :e<Space>
-nnoremap <Leader>ebb :e <C-r>=Curdir()<CR>.memo<CR>
-nnoremap <Leader>eba :e /srv/tmp/.memo<CR>
-nnoremap <Leader>es :execute 'wincmd s' <CR> :e<Space>
-nnoremap <Leader>ev :execute 'wincmd v' <CR> :e<Space>
-nnoremap <Leader>tt :tabnew <C-r>=Curdir()<CR>
-nnoremap <Leader>ta :tabnew<Space>
-nnoremap <Leader>tbb :tabnew <C-r>=Curdir()<CR>.memo<CR>
-nnoremap <Leader>tba :tabnew /srv/tmp/.memo<CR>
+nnoremap <Leader>e. :e <C-r>=Curdir()<CR>
+nnoremap <Leader>e/ :e<Space>
+nnoremap <Leader>em. :e <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>em/ :e /srv/tmp/.memo<CR>
+nnoremap <Leader>t. :tabnew <C-r>=Curdir()<CR>
+nnoremap <Leader>t/ :tabnew<Space>
+nnoremap <Leader>tm. :tabnew <C-r>=Curdir()<CR>.memo<CR>
+nnoremap <Leader>tm/ :tabnew /srv/tmp/.memo<CR>
 
 
 " ファイル/フォルダ ショートカット
@@ -114,12 +112,16 @@ nnoremap <silent><Leader>b :ls<CR>:b<Space>
 
 
 " マーク 一覧移動用
-nnoremap <silent><Leader>mm :<C-u>marks<CR>:normal! `
-nnoremap <silent><Leader>ml :<C-u>call <SID>JumpMark(1)<CR>
-nnoremap <silent><Leader>mh :<C-u>call <SID>JumpMark(-1)<CR>
+" - 当初 `<Leader>ml/h` にしていたが便宜上 `<Leader>l/h` に変更
+" nnoremap <silent><Leader>mm :<C-u>marks<CR>:normal! `
+" nnoremap <silent><Leader>ml :<C-u>call <SID>JumpMark(1)<CR>
+" nnoremap <silent><Leader>mh :<C-u>call <SID>JumpMark(-1)<CR>
+nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
+nnoremap <silent><Leader>l :<C-u>call <SID>JumpMark(1)<CR>
+nnoremap <silent><Leader>h :<C-u>call <SID>JumpMark(-1)<CR>
 
 
-" マーク 自動採番
+" マーク 手動でのインクリメント採番
 nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
 nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 
@@ -129,21 +131,27 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 
 " Grep
-nnoremap <C-g>r :TRipGrep<Space>
-nnoremap <C-g>ww :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <C-g>wa :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
-nnoremap <C-g>yy :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <C-g>ya :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
+" gr(ep)
+nnoremap <Leader>gr :TRipGrep
+nnoremap <Leader>gr<Space> :TRipGrep<Space>
+nnoremap <Leader>grw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
+nnoremap <Leader>grw. :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
+nnoremap <Leader>gry :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
+nnoremap <Leader>gry. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 
 
 " 現バッファのファイル/フォルダ一覧
-nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+" TODO: j ~同一名フォルダに入る
+" nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>ff :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
-nnoremap <Leader>fa :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
+nnoremap <Leader>f. :FindDirectoryFiles <C-r>=getcwd()<CR>/<C-r>=Curdir()<CR><Space>
+nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
 nnoremap <Leader>fg :FindGitFiles<Space>
-nnoremap <Leader>l :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>h :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>fl :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>fh :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
 
 " 行番号を指定してファイル移動
@@ -169,11 +177,13 @@ endfor
 " - どうもnowrapが効かなくて改行されるので vsplit ではなくssplit で出力が無難
 tnoremap <C-j> <C-\><C-n>
 nnoremap <C-t> :MyTerm<Space>
-nnoremap <C-g>ll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
-nnoremap <C-g>la :MyTerm git log -p<CR>
-nnoremap <C-g>dd :MyTerm git diff <C-r>=expand('%')<CR><CR>
-nnoremap <C-g>da :MyTerm git diff<CR>
-nnoremap <C-g>st :MyTerm git status<CR>
+nnoremap <Space>gitll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
+nnoremap <Space>gitl. :MyTerm git log -p <C-r>=expand('%:h')<CR><CR>
+nnoremap <Space>gitl/ :MyTerm git log -p<CR>
+nnoremap <Space>gitdd :MyTerm git diff <C-r>=expand('%')<CR><CR>
+nnoremap <Space>gitd. :MyTerm git diff <C-r>=expand('%:h')<CR><CR>
+nnoremap <Space>gitd/ :MyTerm git diff<CR>
+nnoremap <Space>gitst :MyTerm git status<CR>
 command! -nargs=* MyTerm wincmd v | terminal <args>
 command! -nargs=* MyTermSelf terminal <args>
 
@@ -185,8 +195,8 @@ nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand(
 nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 " " 現在のファイル:行をファイル出力 (テスト利用)。
 " " 結果も同一ファイルに書き込まれることを想定 // ...アナログ感
-nnoremap <Leader>qq :WriteCurrentLine /srv/tmp/.test<CR>
-nnoremap <Leader>qa :tabnew /srv/tmp/.test<CR>
+nnoremap <Leader>qw :WriteCurrentLine /srv/tmp/.test<CR>
+nnoremap <Leader>qr :tabnew /srv/tmp/.test<CR>
 
 
 
