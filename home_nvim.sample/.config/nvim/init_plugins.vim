@@ -77,8 +77,8 @@ let g:ctrlp_map = '<Nop>'
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_lazy_update = 1
-nnoremap <Space>x :<C-u>CtrlPLauncher<CR>
-nnoremap <Space>fo :<C-u>CtrlPMRUFiles<CR>
+nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
+nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 
 
 " " treesitter

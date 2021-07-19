@@ -45,8 +45,8 @@ vnoremap y y:YankAnd<CR>
 " メモ
 " - プロジェクト中では同じフォルダの.memoを使い、
 " - ライブラリの閲覧中などは固定の.memoを使う想定
-vnoremap b. :Memo <C-r>=Curdir()<CR>.memo<CR>
-vnoremap b/ :Memo /srv/tmp/.memo<CR>
+vnoremap m. :Memo <C-r>=Curdir()<CR>.memo<CR>
+vnoremap m/ :Memo /srv/tmp/.memo<CR>
 
 
 " paste
@@ -79,6 +79,7 @@ cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 " - m はメモ用ファイル
 nnoremap <Leader>e. :e <C-r>=Curdir()<CR>
 nnoremap <Leader>e/ :e<Space>
+nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>em. :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>em/ :e /srv/tmp/.memo<CR>
 nnoremap <Leader>t. :tabnew <C-r>=Curdir()<CR>
@@ -146,7 +147,7 @@ nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%:t')<CR><CR>
 nnoremap <Leader>j :DirectoryFiles <C-r>=substitute(expand('%:r'), '/../', '/', '')<CR><CR>
 nnoremap <Leader>k :DirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>f. :FindDirectoryFiles <C-r>=getcwd()<CR>/<C-r>=Curdir()<CR><Space>
+nnoremap <Leader>f. :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
 nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
 nnoremap <Leader>fg :FindGitFiles<Space>
 nnoremap <Leader>fl :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
