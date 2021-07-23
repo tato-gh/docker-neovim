@@ -17,13 +17,17 @@ Plug 'easymotion/vim-easymotion'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/ctrlp-launcher'
 
+" LSP 設定集/インストール用UI
+Plug 'neovim/nvim-lsp'
+Plug 'kabouzeid/nvim-lspinstall'
+
 " コーディング
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tomtom/tcomment_vim'
 Plug 'hrsh7th/vim-vsnip'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'hrsh7th/nvim-compe'
 
-"   languate: elixir
+"   in elixir
 Plug 'elixir-editors/vim-elixir'
 
 " ユーティリティ
@@ -80,6 +84,47 @@ let g:ctrlp_lazy_update = 1
 nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
 nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 
+" LSP
+" - lspinstallを通して管理している言語をビルトインのLSPクライアントにsetup(通知)する
+
+lua << EOF
+
+-- Neovim doesn't support snippets out of the box, so we need to mutate the
+-- capabilities we send to the language server to let them know we want snippets.
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- A callback that will get called when a buffer connects to the language server.
+-- Here we create any key maps that we want to have on that buffer.
+local on_attach = function(_, bufnr)
+  local function map(...)
+    vim.api.nvim_buf_set_keymap(bufnr, ...)
+  end
+  local map_opts = {noremap = true, silent = true}
+
+  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", map_opts)
+  map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
+end
+
+--   elixir `:LspInstall eixir`
+require'lspconfig'.elixirls.setup{
+  cmd = { "/home/nvim/.local/share/nvim/lspinstall/elixir/elixir-ls/language_server.sh" },
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    elixirLS = {
+      dialyzerEnabled = false,
+    }
+  }
+}
+
+require'lspinstall'.setup() -- important
+local servers = require'lspinstall'.installed_servers()
+for _, server in pairs(servers) do
+  require'lspconfig'[server].setup{}
+end
+EOF
+
 
 " " treesitter
 " " - 試用段階
@@ -108,8 +153,34 @@ imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Ta
 smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 
-" deoplete
-let g:deoplete#enable_at_startup = 1
+" nvim-compe
+lua << EOT
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 2;
+  preselect = 'disabled';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = true;
+  source = {
+    path = true;
+    buffer = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    vsnip = true;
+    ultisnips = true;
+    luasnip = true;
+  };
+}
+EOT
 
 
 " yankround
