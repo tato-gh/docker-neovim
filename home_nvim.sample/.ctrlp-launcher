@@ -4,5 +4,6 @@ UpdateTimebox 	let b:file=system('~/.ctrlp/timebox/update.sh '.expand('%')) | ex
 OpenTimebox			let b:file=system('~/.ctrlp/timebox/open.sh '.expand('%:p:h')) | execute "e" b:file
 SwitchExView		let b:file=system('~/.ctrlp/exview.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
 SwitchExLive		let b:file=system('~/.ctrlp/exlive.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
+NewDatefile			let b:file=system('~/.ctrlp/create_date_file.sh '.expand('%:p:h')) | execute "e" b:file
 # vim:set ts=4
 # NOTE: C-v Tab でタブ文字は挿入可能
