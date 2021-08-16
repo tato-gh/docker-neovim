@@ -135,12 +135,15 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 " gr(ep)
 nnoremap <Leader>gr :TRipGrep
 nnoremap <Leader>gr<Space> :TRipGrep<Space>
-nnoremap <Leader>grw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
+nnoremap <Leader>grw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'
+nnoremap <Leader>grw<Space> :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
 nnoremap <Leader>grw. :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
-nnoremap <Leader>gry :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
+" nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
+nnoremap <Leader>gry :TRipGrep<Space>'<C-r>=@"<CR>'
+nnoremap <Leader>gry<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
 nnoremap <Leader>gry. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
+" nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
+nnoremap <Leader>grg :MyTerm git grep<Space>
 
 
 " 現バッファのファイル/フォルダ一覧
@@ -177,15 +180,16 @@ endfor
 " - どうもnowrapが効かなくて改行されるので vsplit ではなくssplit で出力が無難
 tnoremap <C-j> <C-\><C-n>
 nnoremap <C-t> :MyTerm<Space>
-nnoremap <Space>gitll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
-nnoremap <Space>gitl. :MyTerm git log -p <C-r>=expand('%:h')<CR><CR>
-nnoremap <Space>gitl/ :MyTerm git log -p<CR>
-nnoremap <Space>gitdd :MyTerm git diff <C-r>=expand('%')<CR><CR>
-nnoremap <Space>gitd. :MyTerm git diff <C-r>=expand('%:h')<CR><CR>
-nnoremap <Space>gitd/ :MyTerm git diff<CR>
-nnoremap <Space>gitst :MyTerm git status<CR>
-command! -nargs=* MyTerm wincmd v | terminal <args>
-command! -nargs=* MyTermSelf terminal <args>
+nnoremap <Leader>gitll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>gitl. :MyTerm git log -p <C-r>=expand('%:h')<CR><CR>
+nnoremap <Leader>gitl/ :MyTerm git log -p<CR>
+nnoremap <Leader>gitdd :MyTerm git diff <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>gitd. :MyTerm git diff <C-r>=expand('%:h')<CR><CR>
+nnoremap <Leader>gitd/ :MyTerm git diff<CR>
+nnoremap <Leader>gitst :MyTerm git status<CR>
+nnoremap <Leader>gitgr :MyTerm git grep<Space>
+command! -nargs=* -complete=file MyTerm wincmd v | terminal <args>
+command! -nargs=* -complete=file MyTermSelf terminal <args>
 
 
 " ヒューリスティック(便利機能案)
@@ -244,7 +248,8 @@ augroup vimrc_my_filetypes
   " autocmd BufNewFile,BufRead *.txt      set filetype=markdown
   autocmd BufNewFile,BufRead *.ruby     set filetype=ruby
   autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
-  autocmd TermOpen * set filetype=terminal
+  " 下記を設定すると `:e term://ls` 等が表示されなくなる現象あり
+  " autocmd TermOpen * set filetype=terminal
 augroup END
 
 
@@ -405,7 +410,7 @@ endfunction
 
 " ripgrep
 " ターミナルを使用
-command! -nargs=? TRipGrep silent call s:TRipGrep(<f-args>)
+command! -nargs=? -complete=file TRipGrep silent call s:TRipGrep(<f-args>)
 function! s:TRipGrep(query)
   let l:from = Curdir()
   if getbufinfo(bufnr('%'))[0].changed
