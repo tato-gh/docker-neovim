@@ -285,18 +285,14 @@ endfunction
 " メモ: .memo に書き出し
 " - コードリーディング中の重要箇所
 " - 消すと戻すのに手間取りそうな箇所
-command! -nargs=1 -range Memo silent call s:Memo(<f-args>)
+" command! -nargs=1 -range Memo silent call s:Memo(<f-args>)
+command! -nargs=1 -range Memo call s:Memo(<f-args>)
 function! s:Memo(filepath) range
-  let chk = getftype(a:filepath)
-  if chk == ""
-    execute '!echo "----" > ' . a:filepath
-  endif
   let location = expand('%') . ':' . line('.')
-  let selection = join(GetVisualSelection(), '\n')
-  let normalized = substitute(selection, '\#', '\\\#', 'g')
-  " let hr = '\n--------------------\n'
-  " execute '!sed -i 1i"' . location . hr . normalized . hr . '" ' . a:filepath
-  execute '!sed -i 1i"\`\`\`:' . location . '\n' . normalized . '\n\`\`\`\n\n" ' . a:filepath
+  let sentence = ["", "```:" . location] + GetVisualSelection() + ["```", ""]
+  call writefile(sentence, "/tmp/.memo")
+  call system("cat " . a:filepath . " >> /tmp/.memo")
+  call system("mv /tmp/.memo " . a:filepath)
 endfunction
 
 
