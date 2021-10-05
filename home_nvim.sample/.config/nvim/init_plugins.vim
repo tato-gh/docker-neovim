@@ -16,6 +16,7 @@ Plug 'easymotion/vim-easymotion'
 " - 外部スクリプト実行インターフェース
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/ctrlp-launcher'
+Plug 'tacahiroy/ctrlp-funky'
 
 " LSP 設定集/インストール用UI
 Plug 'neovim/nvim-lsp'
@@ -83,6 +84,8 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_lazy_update = 1
 nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
 nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
+nnoremap <C-g> :<C-u>CtrlPFunky<CR>
+" nnoremap <C-g> :execute 'CtrlPFunky ' . expand('<cword>')<CR>
 
 " LSP
 " - lspinstallを通して管理している言語をビルトインのLSPクライアントにsetup(通知)する
