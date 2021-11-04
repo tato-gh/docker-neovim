@@ -12,6 +12,9 @@ Plug 'cocopon/iceberg.vim'
 " Plug 'phaazon/hop.nvim'
 Plug 'easymotion/vim-easymotion'
 
+" エコシステム
+Plug 'vim-denops/denops.vim'
+
 " ランチャー / MRU
 " - 外部スクリプト実行インターフェース
 Plug 'ctrlpvim/ctrlp.vim'
@@ -26,7 +29,16 @@ Plug 'kabouzeid/nvim-lspinstall'
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tomtom/tcomment_vim'
 Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/nvim-compe'
+"   completion framework
+Plug 'Shougo/ddc.vim'
+"   completion sources
+Plug 'Shougo/ddc-around'
+Plug 'Shougo/ddc-nvim-lsp'
+Plug 'delphinus/ddc-tmux'
+"   completion utils
+Plug 'matsui54/denops-popup-preview.vim'
+Plug 'Shougo/ddc-matcher_head'
+Plug 'Shougo/ddc-sorter_rank'
 
 "   in elixir
 Plug 'elixir-editors/vim-elixir'
@@ -38,7 +50,7 @@ Plug 'tpope/vim-surround'
 Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
-Plug 't9md/vim-quickhl'
+" Plug 't9md/vim-quickhl'
 
 call plug#end()
 " ------------------------------------
@@ -156,34 +168,39 @@ imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Ta
 smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 
-" nvim-compe
-lua << EOT
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 2;
-  preselect = 'disabled';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
-  source = {
-    path = true;
-    buffer = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    vsnip = true;
-    ultisnips = true;
-    luasnip = true;
-  };
-}
-EOT
+" ddc and other arounds
+
+"   ddc sources
+call ddc#custom#patch_global('sources', ['around', 'nvim-lsp', 'tmux'])
+
+"   ddc settings
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': {
+      \   'matchers': ['matcher_head'],
+      \   'sorters': ['sorter_rank']},
+      \ 'around': {'mark': 'A'},
+      \ 'nvim-lsp': {
+      \   'mark': 'lsp',
+      \   'forceCompletionPattern': '\.\w*|:\w*|->\w*' },
+      \ 'tmux': {'mark': 'T'},
+      \ })
+call ddc#custom#patch_global('sourceParams', {
+      \ 'around': {'maxSize': 500},
+      \ 'nvim-lsp': {'kindLabels': {'Function': '', 'Keyword': '', 'Snippet': ''}},
+      \ })
+
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+\ pumvisible() ? '<C-n>' :
+\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+\ '<TAB>' : ddc#map#manual_complete()
+
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
+
+" Use ddc.
+call ddc#enable()
+call popup_preview#enable()
 
 
 " yankround
@@ -192,10 +209,11 @@ nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
 
 
-" vim-quickhl
-let g:quickhl_manual_keywords = [
-      \  { 'pattern': '\C\<\(TODO\|FIXME\|NOTE\|INFO\)\>', 'regexp': 1 },
-      \]
-nnoremap <C-h>e :<C-u>QuickhlManualEnable<CR>
-nnoremap <C-h>d :<C-u>QuickhlManualDisable<CR>
-nnoremap <C-h>a :<C-u>QuickhlManualAdd<Space>
+" " vim-quickhl
+" let g:quickhl_manual_keywords = [
+"       \  { 'pattern': '\C\<\(TODO\|FIXME\|NOTE\|INFO\)\>', 'regexp': 1 },
+"       \]
+" nnoremap <C-h>e :<C-u>QuickhlManualEnable<CR>
+" nnoremap <C-h>d :<C-u>QuickhlManualDisable<CR>
+" nnoremap <C-h>a :<C-u>QuickhlManualAdd<Space>
+
