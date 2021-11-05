@@ -90,6 +90,7 @@ set splitright " ウィンドウ分割 右
 set splitbelow " ウィンドウ分割 下
 set lazyredraw " 遅延再描画
 set showtabline=2 " タブは必ず表示(ファイル名確認のため)
+set nofoldenable
 
 
 " Originals (shortcut, etc)
