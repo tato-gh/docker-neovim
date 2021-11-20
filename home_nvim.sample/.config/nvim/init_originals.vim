@@ -54,6 +54,9 @@ vnoremap m/ :Memo /srv/tmp/.memo<CR>
 " viminfo読み込み
 " - Vim間(コピー)ペースト用
 nnoremap ,p :rv<CR>"0p
+" コピー後に元位置にもどる
+" - gv みたいな操作感なので gp とした
+nnoremap gp :normal! `[<CR>
 
 
 " set paste
@@ -198,7 +201,8 @@ command! -nargs=* -complete=file MyTermSelf terminal <args>
 " " 別ファイル参照 / 画面分割してファイル一覧
 nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/../', '/', '')<CR><CR>
-nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
+" nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
+nnoremap <Leader>k :wincmd v<CR>:e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
 " " 別ファイル移動 / 現フォルダの最後に変更したファイル
 nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 " " 現在のファイル:行をファイル出力 (テスト利用)。
