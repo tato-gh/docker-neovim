@@ -61,4 +61,16 @@ RUN curl -fsSL https://github.com/denoland/deno/releases/download/v${DENO_VERSIO
     chmod 777 deno && \
     mv deno /bin/deno
 
+# # Go lang for efm-langserver
+# WORKDIR /tmp
+# ENV GO_VERSION=1.17.3
+# RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
+#     tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && \
+#     ln -s /usr/local/go/bin/go /usr/bin/go
+# 
+# # mix credo for elixir package
+# # - ちょっと遅いので現状悩ましい
+# RUN mix escript.install --force hex credo && \
+#     cp /root/.mix/escripts/credo /usr/local/bin/
+
 WORKDIR /srv
