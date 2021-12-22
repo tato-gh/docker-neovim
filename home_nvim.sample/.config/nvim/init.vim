@@ -63,8 +63,9 @@ set shell=/bin/bash\ -l\ -O\ expand_aliases
 
 " word 区切り文字
 " - 言語ごとに設定が望ましい
-set iskeyword-=_
-set iskeyword-=-
+" - 当初設定していたが、この処理はプラグインに任せることにした
+" set iskeyword-=_
+" set iskeyword-=-
 
 
 " ファイル名補完

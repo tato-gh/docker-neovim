@@ -46,7 +46,8 @@ Plug 'elixir-editors/vim-elixir'
 " ユーティリティ
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
-Plug 'tpope/vim-surround'
+Plug 'rhysd/vim-textobj-anyblock'
+Plug 'machakann/vim-sandwich'
 Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
@@ -85,7 +86,7 @@ highlight LineNr ctermfg=245
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0 "Disable default mappings
-nmap s <Plug>(easymotion-bd-w)
+nmap gs <Plug>(easymotion-bd-w)
 nmap gl <Plug>(easymotion-bd-jk)
 
 
@@ -138,6 +139,12 @@ local servers = require'lspinstall'.installed_servers()
 for _, server in pairs(servers) do
   require'lspconfig'[server].setup{}
 end
+
+-- require'lspconfig'.efm.setup({
+--   capabilities = capabilities,
+--   on_attach = on_attach,
+--   filetypes = {"elixir"}
+-- })
 EOF
 
 
@@ -208,6 +215,9 @@ nmap p <Plug>(yankround-p)
 nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
 
+" machakann/vim-sandwich
+
+
 
 " " vim-quickhl
 " let g:quickhl_manual_keywords = [
@@ -216,4 +226,3 @@ nmap <C-n> <Plug>(yankround-next)
 " nnoremap <C-h>e :<C-u>QuickhlManualEnable<CR>
 " nnoremap <C-h>d :<C-u>QuickhlManualDisable<CR>
 " nnoremap <C-h>a :<C-u>QuickhlManualAdd<Space>
-
