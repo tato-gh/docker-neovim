@@ -4,7 +4,7 @@
 # $2: カレントディレクトリ (cwd)
 
 FILENAME=`echo $1 | sed 's/\.[^\/]*$//'`
-EXT_LIST=(".html.slimleex" ".html.slimeex" ".html.leex" ".html.eex")
+EXT_LIST=(".html.heex" ".html.leex")
 
 #   同一フォルダ内
 for extname in ${EXT_LIST[@]}; do

@@ -256,6 +256,7 @@ augroup vimrc_my_filetypes
   " autocmd BufNewFile,BufRead *.txt      set filetype=markdown
   autocmd BufNewFile,BufRead *.ruby     set filetype=ruby
   autocmd BufNewFile,BufRead *.jbuilder set filetype=ruby
+  autocmd BufNewFile,BufRead *.html.heex set filetype=html
   " 下記を設定すると `:e term://ls` 等が表示されなくなる現象あり
   " autocmd TermOpen * set filetype=terminal
 augroup END

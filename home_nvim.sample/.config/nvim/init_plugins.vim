@@ -43,6 +43,9 @@ Plug 'Shougo/ddc-sorter_rank'
 "   in elixir
 Plug 'elixir-editors/vim-elixir'
 
+"   in html
+Plug 'mattn/emmet-vim'
+
 " ユーティリティ
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
@@ -86,7 +89,7 @@ highlight LineNr ctermfg=245
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0 "Disable default mappings
-nmap gs <Plug>(easymotion-bd-w)
+nmap gh <Plug>(easymotion-bd-w)
 nmap gl <Plug>(easymotion-bd-jk)
 
 
