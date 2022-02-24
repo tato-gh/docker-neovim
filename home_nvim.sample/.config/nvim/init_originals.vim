@@ -199,7 +199,7 @@ command! -nargs=* -complete=file MyTermSelf terminal <args>
 
 " ヒューリスティック(便利機能案)
 " " 別ファイル参照 / 画面分割してファイル一覧
-nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%:t')<CR><CR>
 nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/../', '/', '')<CR><CR>
 " nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>k :wincmd v<CR>:e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
@@ -438,7 +438,7 @@ function! s:DirectoryFiles(...)
   endif
   execute 'e ' . a:1
   if exists('a:2')
-    execute 'silent /' . substitute(a:2, '/', '.', 'g')
+    execute 'silent /' . a:2
   endif
 endfunction
 

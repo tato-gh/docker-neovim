@@ -219,6 +219,7 @@ nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
 
 " machakann/vim-sandwich
+nmap saiwc :normal saiwfconsole.log<CR>
 
 
 

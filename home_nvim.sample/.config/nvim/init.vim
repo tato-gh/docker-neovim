@@ -19,6 +19,9 @@ let g:netrw_banner=0
 " set nonumber
 set number
 
+" " 自動での折り返しを禁止
+" set nowrap
+
 
 " 補完候補
 " see https://medium.com/usevim/set-complete-e76b9f196f0f
@@ -30,7 +33,9 @@ set completeopt=menuone,noinsert,noselect
 " テキスト幅とハイライトする列
 " - 160+1列目に色がつくので記述は控える
 " - 現代は横幅のあるディスプレイが多いので目安
-set textwidth=160
+" set textwidth=160
+" set formatoptions=q
+set textwidth=0
 set colorcolumn=+1
 
 
