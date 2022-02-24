@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 日付＋採番のファイルを該当フォルダに作成する
+# 年月＋採番のファイルを該当フォルダに作成する
 
 # usage e.g. ctrlp-launcher
 
@@ -12,9 +12,8 @@ DIR=$1
 
 YEAR=`date +%Y`
 MONTH=`date +%m`
-DAY=`date +%d`
 
-DATEFILE=$DIR/${YEAR}${MONTH}${DAY}
+DATEFILE=$DIR/${YEAR}${MONTH}
 
 if ls ${DATEFILE}* > /dev/null 2>&1; then
   NUMFILE=`ls -1 ${DATEFILE}* | wc -l`
