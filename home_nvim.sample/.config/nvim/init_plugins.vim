@@ -218,9 +218,24 @@ nmap p <Plug>(yankround-p)
 nmap <C-p> <Plug>(yankround-prev)
 nmap <C-n> <Plug>(yankround-next)
 
-" machakann/vim-sandwich
-nmap saiwc :normal saiwfconsole.log<CR>
 
+" mattn/emmet
+let g:user_emmet_leader_key=',y'
+
+
+" machakann/vim-sandwich
+" およびその他ショートカット
+nmap saiwc saiwfconsole.log<CR>
+" " シンボル/アトムと文字列の切り替え
+" " `:hoge` と `"hoge"`
+nmap ,s:" bea:<Esc>sr:"
+nmap ,s": sr":eex
+" " 簡易的なマップキー変換ショートカット
+" " `hoge:` と `"hoge" => `
+nmap ,sk" bi"<Esc>elr"a =><Esc>
+nmap ,sk: bhxelr:w3x
+" " @spec 記述用 (elixir)
+nmap ,s@spec yykpciw@spec<Esc>f(
 
 
 " " vim-quickhl

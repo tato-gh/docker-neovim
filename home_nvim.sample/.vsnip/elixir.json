@@ -3,6 +3,7 @@
     "prefix": "def",
     "body": [
       "def $1 do",
+      "  $2",
       "end"
     ]
   },
@@ -16,6 +17,7 @@
     "prefix": "defp",
     "body": [
       "defp $1 do",
+      "  $2",
       "end"
     ]
   },
@@ -23,6 +25,30 @@
     "prefix": "defpi",
     "body": [
       "defp $1, do: $2"
+    ]
+  },
+  "defmacro using": {
+    "prefix": "defusing",
+    "body": [
+      "defmacro __using__(which) when is_atom(which) do",
+      "  apply(__MODULE__, which, [])",
+      "end"
+    ]
+  },
+  "doc": {
+    "prefix": "doc",
+    "body": [
+      "@doc \"\"\"",
+      "$1",
+      "\"\"\""
+    ]
+  },
+  "doc examples": {
+    "prefix": "docex",
+    "body": [
+      "## Examples",
+      "",
+      "    iex> $1"
     ]
   },
   "io inspect": {
@@ -35,6 +61,36 @@
     "prefix": "cioi",
     "body": [
       "|> IO.inspect()"
+    ]
+  },
+  "live view socket.assigns": {
+    "prefix": "sa",
+    "body": [
+      "socket.assigns."
+    ]
+  },
+  "live view assign inline": {
+    "prefix": "asi",
+    "body": [
+      "|> assign($1)"
+    ]
+  },
+  "live view handle_event": {
+    "prefix": "he",
+    "body": [
+      "@impl true",
+      "def handle_event(\"$1\", $2params, socket) do",
+      "  $3",
+      "end"
+    ]
+  },
+  "live view handle_info": {
+    "prefix": "hi",
+    "body": [
+      "@impl true",
+      "def handle_info({:$1}, socket) do",
+      "  $2",
+      "end"
     ]
   }
 }
