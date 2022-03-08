@@ -23,7 +23,8 @@ Plug 'tacahiroy/ctrlp-funky'
 
 " LSP 設定集/インストール用UI
 Plug 'neovim/nvim-lsp'
-Plug 'kabouzeid/nvim-lspinstall'
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 
 " コーディング
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -136,12 +137,6 @@ require'lspconfig'.elixirls.setup{
     }
   }
 }
-
-require'lspinstall'.setup() -- important
-local servers = require'lspinstall'.installed_servers()
-for _, server in pairs(servers) do
-  require'lspconfig'[server].setup{}
-end
 
 -- require'lspconfig'.efm.setup({
 --   capabilities = capabilities,

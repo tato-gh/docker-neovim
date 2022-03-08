@@ -55,7 +55,7 @@ RUN wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
 
 # Deno for denops
 WORKDIR /tmp
-ENV DENO_VERSION=1.15.3
+ENV DENO_VERSION=1.19.2
 RUN curl -fsSL https://github.com/denoland/deno/releases/download/v${DENO_VERSION}/deno-x86_64-unknown-linux-gnu.zip --output deno.zip && \
     unzip deno.zip && \
     chmod 777 deno && \
