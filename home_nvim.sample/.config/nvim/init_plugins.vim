@@ -128,7 +128,7 @@ end
 
 --   elixir `:LspInstall eixir`
 require'lspconfig'.elixirls.setup{
-  cmd = { "/home/nvim/.local/share/nvim/lspinstall/elixir/elixir-ls/language_server.sh" },
+  cmd = { "/home/nvim/.local/share/nvim/lsp_servers/elixir/elixir-ls/language_server.sh" },
   capabilities = capabilities,
   on_attach = on_attach,
   settings = {
