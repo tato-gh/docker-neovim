@@ -154,7 +154,7 @@ nnoremap <Leader>grg :MyTerm git grep<Space>
 
 
 " 現バッファのファイル/フォルダ一覧
-nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/../', '/', '')<CR> <C-r>=expand('%:t')<CR><CR>
+nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/\.\./', '/', '')<CR> <C-r>=expand('%:t')<CR><CR>
 nnoremap <Leader>f. :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
 nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
 nnoremap <Leader>fg :FindGitFiles<Space>
@@ -200,7 +200,7 @@ command! -nargs=* -complete=file MyTermSelf terminal <args>
 " ヒューリスティック(便利機能案)
 " " 別ファイル参照 / 画面分割してファイル一覧
 nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%:t')<CR><CR>
-nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/../', '/', '')<CR><CR>
+nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/\.\./', '/', '')<CR><CR>
 " nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>k :wincmd v<CR>:e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
 " " 別ファイル移動 / 現フォルダの最後に変更したファイル
