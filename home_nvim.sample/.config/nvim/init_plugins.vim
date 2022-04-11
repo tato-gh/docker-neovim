@@ -223,12 +223,13 @@ let g:user_emmet_leader_key=',y'
 nmap saiwc saiwfconsole.log<CR>
 " " シンボル/アトムと文字列の切り替え
 " " `:hoge` と `"hoge"`
-nmap ,s:" bea:<Esc>sr:"
-nmap ,s": sr":eex
+" " 次の書き方がエラーになる/ nmap ,s :call setreg('a', 'F:r"ea"')
+nmap ,s:" F:r"ea"<Esc>
+nmap ,s": sr":f:x
 " " 簡易的なマップキー変換ショートカット
 " " `hoge:` と `"hoge" => `
-nmap ,sk" bi"<Esc>elr"a =><Esc>
-nmap ,sk: bhxelr:w3x
+nmap ,sk" ebi"<Esc>f:r"a =><Esc>
+nmap ,sk: ebhxelr:w3x
 " " @spec 記述用 (elixir)
 nmap ,s@spec yykpciw@spec<Esc>f(
 

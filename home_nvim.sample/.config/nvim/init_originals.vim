@@ -40,6 +40,7 @@ nnoremap <CR> o<Esc>
 " yank
 " - いろいろするのでfunctionへ
 vnoremap y y:YankAnd<CR>
+nnoremap Y y$
 
 
 " メモ
@@ -47,7 +48,6 @@ vnoremap y y:YankAnd<CR>
 " - ライブラリの閲覧中などは固定の.memoを使う想定
 vnoremap m. :Memo <C-r>=Curdir()<CR>.memo<CR>
 vnoremap m/ :Memo /srv/tmp/.memo<CR>
-
 
 " paste
 "
