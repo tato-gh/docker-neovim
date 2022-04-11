@@ -246,7 +246,7 @@ augroup vimrc_inout_buffer
   autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
   autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
 
-  autocmd BufNewFile,BufRead * if &filetype != 'netrw' && !g:flug_mark_jump | call s:AutoMarkrementBig() | endif
+  autocmd BufWinEnter * if &filetype != 'netrw' && !g:flug_mark_jump | call s:AutoMarkrementBig() | endif
 augroup END
 
 
