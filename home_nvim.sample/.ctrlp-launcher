@@ -1,10 +1,10 @@
 # [タイトル(空白含んでOK)] [タブ文字(複数可能] [実行するコマンド]
-NewTimebox			let b:file=system('~/.ctrlp/timebox/create.sh '.expand('%:p:h')) | execute "e" b:file
-UpdateTimebox 	let b:file=system('~/.ctrlp/timebox/update.sh '.expand('%')) | execute "e" b:file
-OpenTimebox			let b:file=system('~/.ctrlp/timebox/open.sh '.expand('%:p:h')) | execute "e" b:file
+NewTimebox			let b:file=system('~/.ctrlp/timebox/create.sh '.expand('%:p:h')) | execute "vsplit " b:file
+UpdateTimebox 	let b:file=system('~/.ctrlp/timebox/update.sh '.expand('%')) | execute "e " b:file
+OpenTimebox			let b:file=system('~/.ctrlp/timebox/open.sh '.expand('%:p:h')) | execute "vsplit " b:file
 SwitchExView		let b:file=system('~/.ctrlp/exview.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
 SwitchExLive		let b:file=system('~/.ctrlp/exlive.sh ' . expand("%") . ' '. getcwd()) | execute('e ' . b:file)
-NewDatefile			let b:file=system('~/.ctrlp/create_date_file.sh '.expand('%:p:h')) | execute "e" b:file
+NewDatefile			let b:file=system('~/.ctrlp/create_date_file.sh '.expand('%:p:h')) | execute "vsplit " b:file
 NeovimConfig		vsplit ~/.config/nvim
 # vim:set ts=4
 # NOTE: C-v Tab でタブ文字は挿入可能
