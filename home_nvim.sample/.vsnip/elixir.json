@@ -1,4 +1,10 @@
 {
+  "chain": {
+    "prefix": "c",
+    "body": [
+      "|> "
+    ]
+  },
   "def": {
     "prefix": "def",
     "body": [
@@ -27,16 +33,32 @@
       "defp $1, do: $2"
     ]
   },
+  "defn": {
+    "prefix": "defn",
+    "body": [
+      "defn $1 do",
+      "  $2",
+      "end"
+    ]
+  },
   "defmacro using": {
-    "prefix": "defusing",
+    "prefix": "defmu",
     "body": [
       "defmacro __using__(which) when is_atom(which) do",
       "  apply(__MODULE__, which, [])",
       "end"
     ]
   },
-  "doc": {
-    "prefix": "doc",
+  "@moduledoc": {
+    "prefix": "@mod",
+    "body": [
+      "@moduledoc \"\"\"",
+      "$1",
+      "\"\"\""
+    ]
+  },
+  "@doc": {
+    "prefix": "@doc",
     "body": [
       "@doc \"\"\"",
       "$1",
@@ -44,7 +66,7 @@
     ]
   },
   "doc examples": {
-    "prefix": "docex",
+    "prefix": "doce",
     "body": [
       "## Examples",
       "",
@@ -70,13 +92,13 @@
     ]
   },
   "live view assign inline": {
-    "prefix": "asi",
+    "prefix": "cas",
     "body": [
       "|> assign($1)"
     ]
   },
   "live view handle_event": {
-    "prefix": "he",
+    "prefix": "defhe",
     "body": [
       "@impl true",
       "def handle_event(\"$1\", $2params, socket) do",
@@ -85,12 +107,18 @@
     ]
   },
   "live view handle_info": {
-    "prefix": "hi",
+    "prefix": "defhi",
     "body": [
       "@impl true",
       "def handle_info({:$1}, socket) do",
       "  $2",
       "end"
+    ]
+  },
+  "phx-target myself": {
+    "prefix": "phxm",
+    "body": [
+      "phx-target={@myself}"
     ]
   }
 }
