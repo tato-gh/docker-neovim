@@ -207,8 +207,9 @@ nnoremap <Leader>k :wincmd v<CR>:e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<C
 nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 " " 現在のファイル:行をファイル出力 (テスト利用)。
 " " 結果も同一ファイルに書き込まれることを想定 // ...アナログ感
-nnoremap <Leader>qw :WriteCurrentLine /srv/tmp/.test<CR>
-nnoremap <Leader>qr :tabnew /srv/tmp/.test<CR>
+nnoremap t: :WriteCurrentLine tmp/.test<CR>
+nnoremap t. :WriteCurrentFile tmp/.test<CR>
+nnoremap <Leader>tt :tabnew tmp/.test<CR>
 
 
 
@@ -247,6 +248,7 @@ augroup vimrc_inout_buffer
   autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
 
   autocmd BufWinEnter * if &filetype != 'netrw' && !g:flug_mark_jump | call s:AutoMarkrementBig() | endif
+  autocmd WinEnter * checktime
 augroup END
 
 
@@ -576,6 +578,14 @@ command! -nargs=1 WriteCurrentLine silent! call s:WriteCurrentLine(<f-args>)
 function! s:WriteCurrentLine(filepath)
   execute ':redir! >' . a:filepath
   :silent! echon expand('%') . ':' . line('.')
+  redir END
+endfunction
+
+" 指定ファイルに現ファイルを出力
+command! -nargs=1 WriteCurrentFile silent! call s:WriteCurrentFile(<f-args>)
+function! s:WriteCurrentFile(filepath)
+  execute ':redir! >' . a:filepath
+  :silent! echon expand('%')
   redir END
 endfunction
 
