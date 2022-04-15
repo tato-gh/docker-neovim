@@ -1,16 +1,15 @@
-FROM frolvlad/alpine-glibc
+FROM debian:bookworm-slim
 MAINTAINER Ta-To
 
-ENV LANG="ja_JP.UTF-8" LANGUAGE="ja_JP:ja" LC_ALL="ja_JP.UTF-8"
+# ENV LANG="ja_JP.UTF-8" LANGUAGE="ja_JP:ja" LC_ALL="ja_JP.UTF-8"
 COPY run.sh /root/run.sh
 
 # REFS
 # https://hub.docker.com/r/thawk/neovim/dockerfile
 
 # python3-dev, py3-pip for deoplete
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
+RUN apt update && \
+    apt install -y \
     git \
     curl \
     automake \
@@ -18,12 +17,11 @@ RUN apk update && \
     make \
     libtool \
     musl-dev\
-    zlib-dev \
+    zlib1g-dev \
     unzip \
     openssl \
     autoconf \
-    libintl \
-    gettext-dev \
+    gettext-base \
     gcc \
     g++ \
     byobu \
@@ -31,10 +29,10 @@ RUN apk update && \
     bash \
     ripgrep \
     python3-dev \
-    py3-pip \
+    python3-pip \
     elixir \
     ruby
-RUN rm -rf /var/cache/apk/*
+RUN rm -rf /var/cache/apt/*
 
 
 # Neovim
@@ -48,8 +46,8 @@ RUN rm -rf /var/cache/apk/*
 #   && rm -rf neovim
 
 WORKDIR /usr/local/src
-RUN wget https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && \
-    chmod a+x nvim.appimage && \
+COPY files/nvim.appimage /usr/local/src/
+RUN chmod a+x nvim.appimage && \
     ./nvim.appimage --appimage-extract && \
     ln -s /usr/local/src/squashfs-root/usr/bin/nvim /usr/bin/nvim
 

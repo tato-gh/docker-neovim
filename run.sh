@@ -4,7 +4,7 @@
 UID=`ls -1dl /srv |sed 's/[\t ]\+/\t/g' |cut -f3`
 GID=`ls -1dl /srv |sed 's/[\t ]\+/\t/g' |cut -f4`
 chown $UID:$GID /home/nvim -R
-adduser nvim -D -u $UID -h /home/nvim --shell /bin/bash
+adduser --system nvim --uid $UID --home /home/nvim --no-create-home --shell /bin/bash
 
 VIM_PLUG=/home/nvim/.local/share/nvim/site/autoload/plug.vim
 if [ ! -e $VIM_PLUG  ]; then
