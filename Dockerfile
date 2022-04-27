@@ -31,6 +31,7 @@ RUN apt update && \
     python3-dev \
     python3-pip \
     elixir \
+    erlang-edoc \
     ruby
 RUN rm -rf /var/cache/apt/*
 
