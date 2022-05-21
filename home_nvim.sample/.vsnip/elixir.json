@@ -9,12 +9,12 @@
     "prefix": "def",
     "body": [
       "def $1 do",
-      "  $2",
+      "  $0",
       "end"
     ]
   },
-  "def inline": {
-    "prefix": "defi",
+  "def short": {
+    "prefix": "defl",
     "body": [
       "def $1, do: $2"
     ]
@@ -23,29 +23,27 @@
     "prefix": "defp",
     "body": [
       "defp $1 do",
-      "  $2",
+      "  $0",
       "end"
     ]
   },
-  "defp inline": {
-    "prefix": "defpi",
+  "defp short": {
+    "prefix": "defpl",
     "body": [
       "defp $1, do: $2"
+    ]
+  },
+  "defdelegate": {
+    "prefix": "defd",
+    "body": [
+      "defdelegate $1, to: $2"
     ]
   },
   "defn": {
     "prefix": "defn",
     "body": [
       "defn $1 do",
-      "  $2",
-      "end"
-    ]
-  },
-  "defmacro using": {
-    "prefix": "defmu",
-    "body": [
-      "defmacro __using__(which) when is_atom(which) do",
-      "  apply(__MODULE__, which, [])",
+      "  $0",
       "end"
     ]
   },
@@ -53,7 +51,7 @@
     "prefix": "@mod",
     "body": [
       "@moduledoc \"\"\"",
-      "$1",
+      "$0",
       "\"\"\""
     ]
   },
@@ -61,7 +59,7 @@
     "prefix": "@doc",
     "body": [
       "@doc \"\"\"",
-      "$1",
+      "$0",
       "\"\"\""
     ]
   },
@@ -76,13 +74,117 @@
   "io inspect": {
     "prefix": "ioi",
     "body": [
-      "IO.inspect "
+      "IO.inspect($1, label: \"${0:\\n\\n}\")"
     ]
   },
-  "io inspect with chain": {
-    "prefix": "cioi",
+  "here for io label": {
+    "prefix": "here",
     "body": [
-      "|> IO.inspect()"
+      "\\n#{inspect __ENV__.context_modules}#{inspect __ENV__.function}\\n"
+    ]
+  },
+  "function": {
+    "prefix": "f",
+    "body": [
+      "fn $1 do",
+      "  $0",
+      "end"
+    ]
+  },
+  "function short": {
+    "prefix": "fl",
+    "body": [
+      "& &1"
+    ]
+  },
+  "then function": {
+    "prefix": "ct",
+    "body": [
+      "|> then(fn $1 do",
+      "  $0",
+      "end)"
+    ]
+  },
+  "then function short": {
+    "prefix": "ctl",
+    "body": [
+      "|> then(& $0)"
+    ]
+  },
+  "then with io inspection": {
+    "prefix": "ctioi",
+    "body": [
+      "|> then(fn item -> IO.inspect(item, label: \"${0:\\n\\n}\"); item end)"
+    ]
+  },
+  "Enum start": {
+    "prefix": "e",
+    "body": [
+      "Enum.$1($0)"
+    ]
+  },
+  "Enum start with chain": {
+    "prefix": "ce",
+    "body": [
+      "|> Enum.$1($0)"
+    ]
+  },
+  "Enum.map with chain": {
+    "prefix": "cem",
+    "body": [
+      "|> Enum.map(& &1$0)"
+    ]
+  },
+  "Map start": {
+    "prefix": "m",
+    "body": [
+      "Map.$1($0)"
+    ]
+  },
+  "Map start with chain": {
+    "prefix": "cm",
+    "body": [
+      "|> Map.$1($0)"
+    ]
+  },
+  "List start": {
+    "prefix": "l",
+    "body": [
+      "List$1"
+    ]
+  },
+  "List start with chain": {
+    "prefix": "cl",
+    "body": [
+      "|> List.$1($0)"
+    ]
+  },
+  "Keyword start": {
+    "prefix": "k",
+    "body": [
+      "Keyword.$1($0)"
+    ]
+  },
+  "Keyword start with chain": {
+    "prefix": "ck",
+    "body": [
+      "|> Keyword.$1($0)"
+    ]
+  },
+  "Flow map chain": {
+    "prefix": "flow",
+    "body": [
+      "|> Flow.from_enumerable()",
+      "|> Flow.map($0)",
+      "|> Enum.to_list()"
+    ]
+  },
+  "defmacro using": {
+    "prefix": "defmu",
+    "body": [
+      "defmacro __using__(which) when is_atom(which) do",
+      "  apply(__MODULE__, which, [])",
+      "end"
     ]
   },
   "live view socket.assigns": {
@@ -91,17 +193,17 @@
       "socket.assigns."
     ]
   },
-  "live view assign inline": {
-    "prefix": "cas",
+  "live view assign": {
+    "prefix": "as",
     "body": [
-      "|> assign($1)"
+      "assign($0)"
     ]
   },
   "live view handle_event": {
     "prefix": "defhe",
     "body": [
       "@impl true",
-      "def handle_event(\"$1\", $2params, socket) do",
+      "def handle_event(\"$1\", ${2:params}, socket) do",
       "  $3",
       "end"
     ]
@@ -113,12 +215,6 @@
       "def handle_info({:$1}, socket) do",
       "  $2",
       "end"
-    ]
-  },
-  "phx-target myself": {
-    "prefix": "phxm",
-    "body": [
-      "phx-target={@myself}"
     ]
   }
 }
