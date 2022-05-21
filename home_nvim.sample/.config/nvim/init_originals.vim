@@ -142,15 +142,17 @@ nnoremap <silent><Leader>o :browse :oldfiles<CR>
 " gr(ep)
 nnoremap <Leader>gr :TRipGrep
 nnoremap <Leader>gr<Space> :TRipGrep<Space>
-nnoremap <Leader>grw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'
-nnoremap <Leader>grw<Space> :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
-nnoremap <Leader>grw. :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
+nnoremap <Leader>gw<Space> :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
+nnoremap <Leader>gw. :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gwg :MyTerm git grep '<C-r>=expand('<cword>')<CR>'<CR>
 " nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
-nnoremap <Leader>gry :TRipGrep<Space>'<C-r>=@"<CR>'
-nnoremap <Leader>gry<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
-nnoremap <Leader>gry. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gy :TRipGrep<Space>'<C-r>=@"<CR>'
+nnoremap <Leader>gy<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
+nnoremap <Leader>gy. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gyg :MyTerm git grep '<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
 " nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
-nnoremap <Leader>grg :MyTerm git grep<Space>
+nnoremap <Leader>gg :MyTerm git grep<Space>
 
 
 " 現バッファのファイル/フォルダ一覧
@@ -210,7 +212,6 @@ nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 nnoremap t: :WriteCurrentLine tmp/.test<CR>
 nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>tt :tabnew tmp/.test<CR>
-
 
 
 
