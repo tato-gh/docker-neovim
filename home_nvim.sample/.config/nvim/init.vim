@@ -98,7 +98,6 @@ set lazyredraw " 遅延再描画
 set showtabline=2 " タブは必ず表示(ファイル名確認のため)
 set nofoldenable
 
-
 " Originals (shortcut, etc)
 if filereadable(expand('~/.config/nvim/init_originals.vim'))
   source ~/.config/nvim/init_originals.vim

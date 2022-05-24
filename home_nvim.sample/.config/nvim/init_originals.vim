@@ -150,7 +150,7 @@ nnoremap <Leader>gwg :MyTerm git grep '<C-r>=expand('<cword>')<CR>'<CR>
 nnoremap <Leader>gy :TRipGrep<Space>'<C-r>=@"<CR>'
 nnoremap <Leader>gy<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
 nnoremap <Leader>gy. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gyg :MyTerm git grep '<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gyg :MyTerm git grep '<C-r>=@"<CR>'<CR>
 " nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
 nnoremap <Leader>gg :MyTerm git grep<Space>
 
