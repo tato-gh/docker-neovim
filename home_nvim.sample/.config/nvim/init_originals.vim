@@ -63,6 +63,7 @@ nnoremap gp :normal! `[<CR>
 " - Windows側クリップボードからの貼り付け時にautoindent等を防止用途
 " - 抜けるときにset nopasteに自動で戻す
 nnoremap <Leader>i :set paste<CR>i
+nnoremap <Leader>o :set paste<CR>o
 autocmd! InsertLeave * set nopaste
 
 
@@ -135,7 +136,8 @@ nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 
 
 " oldfiles 一覧移動用
-nnoremap <silent><Leader>o :browse :oldfiles<CR>
+" "   ctrlp を使うようにしたので廃止予定
+" nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
 
 " Grep
