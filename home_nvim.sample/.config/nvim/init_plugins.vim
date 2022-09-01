@@ -216,6 +216,7 @@ nmap <C-n> <Plug>(yankround-next)
 
 
 " mattn/emmet
+" usage: ',y,'
 let g:user_emmet_leader_key=',y'
 
 

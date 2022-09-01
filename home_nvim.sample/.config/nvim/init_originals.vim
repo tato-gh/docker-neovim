@@ -86,10 +86,18 @@ nnoremap <Leader>e/ :e<Space>
 nnoremap <Leader>em :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>em. :e <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>em/ :e /srv/tmp/.memo<CR>
-nnoremap <Leader>t. :tabnew <C-r>=Curdir()<CR>
+nnoremap <Leader>t. :tabnew <C-r>=Curdir()<CR><CR>
 nnoremap <Leader>t/ :tabnew<Space>
+nnoremap <Leader>tf :tabnew %<CR>
 nnoremap <Leader>tm. :tabnew <C-r>=Curdir()<CR>.memo<CR>
 nnoremap <Leader>tm/ :tabnew /srv/tmp/.memo<CR>
+
+
+" タブ移動ショートカット
+" あまり増やしても操作性が落ちるので最大で３に絞る
+nnoremap <Leader>t1 :tabn 1<CR>
+nnoremap <Leader>t2 :tabn 2<CR>
+nnoremap <Leader>t3 :tabn 3<CR>
 
 
 " ファイル/フォルダ ショートカット
