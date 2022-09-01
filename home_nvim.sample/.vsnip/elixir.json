@@ -86,7 +86,7 @@
   "function": {
     "prefix": "f",
     "body": [
-      "fn $1 do",
+      "fn $1 ->",
       "  $0",
       "end"
     ]
@@ -100,7 +100,7 @@
   "then function": {
     "prefix": "ct",
     "body": [
-      "|> then(fn $1 do",
+      "|> then(fn $1 ->",
       "  $0",
       "end)"
     ]
@@ -133,6 +133,14 @@
     "prefix": "cem",
     "body": [
       "|> Enum.map(& &1$0)"
+    ]
+  },
+  "Enum.reduce with chain": {
+    "prefix": "cer",
+    "body": [
+      "|> Enum.reduce(fn &1 ->",
+      "  $0",
+      "end)"
     ]
   },
   "Map start": {
@@ -197,6 +205,24 @@
     "prefix": "as",
     "body": [
       "assign($0)"
+    ]
+  },
+  "live view mount": {
+    "prefix": "defm",
+    "body": [
+      "@impl true",
+      "def mount(_params, _session, socket) do",
+      "  {:ok, socket}",
+      "end"
+    ]
+  },
+  "live view update": {
+    "prefix": "defu",
+    "body": [
+      "@impl true",
+      "def update(assigns, socket) do",
+      "  {:ok, socket |> assign(assigns)}",
+      "end"
     ]
   },
   "live view handle_event": {
