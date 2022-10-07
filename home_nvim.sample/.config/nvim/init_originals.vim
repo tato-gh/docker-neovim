@@ -154,15 +154,15 @@ nnoremap <Leader>gr :TRipGrep
 nnoremap <Leader>gr<Space> :TRipGrep<Space>
 nnoremap <Leader>gw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
 nnoremap <Leader>gw<Space> :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
-nnoremap <Leader>gw. :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gwg :MyTerm git grep '<C-r>=expand('<cword>')<CR>'<CR>
+nnoremap <Leader>gw. :tabnew<CR>:TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
+nnoremap <Leader>gwg :MyTermTab git grep '<C-r>=expand('<cword>')<CR>'<CR>
 " nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
 nnoremap <Leader>gy :TRipGrep<Space>'<C-r>=@"<CR>'
 nnoremap <Leader>gy<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
 nnoremap <Leader>gy. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gyg :MyTerm git grep '<C-r>=@"<CR>'<CR>
+nnoremap <Leader>gyg :MyTermTab git grep '<C-r>=@"<CR>'<CR>
 " nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
-nnoremap <Leader>gg :MyTerm git grep<Space>
+nnoremap <Leader>gg :MyTermTab git grep<Space>
 
 
 " 現バッファのファイル/フォルダ一覧
@@ -193,20 +193,21 @@ endfor
 
 
 " ターミナル
+command! -nargs=* -complete=file MyTerm silent wincmd v | terminal <args>
+command! -nargs=* -complete=file MyTermSelf silent terminal <args>
+command! -nargs=* -complete=file MyTermTab silent tabnew | terminal <args>
 " - git周りの情報出力
 " - どうもnowrapが効かなくて改行されるので vsplit ではなくssplit で出力が無難
 tnoremap <C-j> <C-\><C-n>
 nnoremap <C-t> :MyTerm<Space>
-nnoremap <Leader>gitll :MyTerm git log -p <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>gitl. :MyTerm git log -p <C-r>=expand('%:h')<CR><CR>
-nnoremap <Leader>gitl/ :MyTerm git log -p<CR>
-nnoremap <Leader>gitdd :MyTerm git diff <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>gitd. :MyTerm git diff <C-r>=expand('%:h')<CR><CR>
-nnoremap <Leader>gitd/ :MyTerm git diff<CR>
-nnoremap <Leader>gitst :MyTerm git status<CR>
-nnoremap <Leader>gitgr :MyTerm git grep<Space>
-command! -nargs=* -complete=file MyTerm wincmd v | terminal <args>
-command! -nargs=* -complete=file MyTermSelf terminal <args>
+nnoremap <Leader>gitll :MyTermTab git log -p <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>gitl. :MyTermTab git log -p <C-r>=expand('%:h')<CR><CR>
+nnoremap <Leader>gitl/ :MyTermTab git log -p<CR>
+nnoremap <Leader>gitdd :MyTermTab git diff <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>gitd. :MyTermTab git diff <C-r>=expand('%:h')<CR><CR>
+nnoremap <Leader>gitd/ :MyTermTab git diff<CR>
+nnoremap <Leader>gitst :MyTermTab git status<CR>
+nnoremap <Leader>gitgr :MyTermTab git grep<Space>
 
 
 " ヒューリスティック(便利機能案)
