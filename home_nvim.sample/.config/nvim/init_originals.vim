@@ -215,7 +215,7 @@ nnoremap <Leader>gitgr :MyTermTab git grep<Space>
 nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%:t')<CR><CR>
 nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/\.\./', '/', '')<CR><CR>
 " nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
-nnoremap <Leader>k :wincmd v<CR>:e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
+nnoremap <Leader>k :e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
 " " 別ファイル移動 / 現フォルダの最後に変更したファイル
 nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 " " 現在のファイル:行をファイル出力 (テスト利用)。
