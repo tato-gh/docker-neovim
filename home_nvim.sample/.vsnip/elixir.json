@@ -74,7 +74,7 @@
   "io inspect": {
     "prefix": "ioi",
     "body": [
-      "IO.inspect($1, label: \"${2:\\n\\n}\")$0"
+      "IO.inspect($1, label: \"${2:DEBUG}\")$0"
     ]
   },
   "here for io label": {
@@ -114,7 +114,19 @@
   "then with io inspection": {
     "prefix": ["ctioi", "cioi"],
     "body": [
-      "|> then(fn item -> IO.inspect($1item, label: \"${2:\\n\\n}\"); item end)$0"
+      "|> then(fn item -> IO.inspect($1item, label: \"${2:DEBUG}\"); item end)$0"
+    ]
+  },
+  "debug": {
+    "prefix": "d",
+    "body": [
+      "dbg()"
+    ]
+  },
+  "debug with chain": {
+    "prefix": "cd",
+    "body": [
+      "|> dbg()"
     ]
   },
   "Enum start": {
@@ -138,7 +150,7 @@
   "Enum.reduce with chain": {
     "prefix": "cer",
     "body": [
-      "|> Enum.reduce(fn &1 ->",
+      "|> Enum.reduce($1, fn $2, acc ->",
       "  $0",
       "end)"
     ]
