@@ -1,5 +1,5 @@
 FROM debian:bookworm-slim
-MAINTAINER Ta-To
+MAINTAINER ta.to.
 
 # ENV LANG="ja_JP.UTF-8" LANGUAGE="ja_JP:ja" LC_ALL="ja_JP.UTF-8"
 COPY run.sh /root/run.sh
@@ -32,7 +32,9 @@ RUN apt update && \
     python3-pip \
     elixir \
     erlang-edoc \
-    ruby
+    ruby \
+    nodejs \
+    npm
 RUN rm -rf /var/cache/apt/*
 
 
@@ -59,6 +61,9 @@ RUN curl -fsSL https://github.com/denoland/deno/releases/download/v${DENO_VERSIO
     unzip deno.zip && \
     chmod 777 deno && \
     mv deno /bin/deno
+
+# typescript-language-server
+RUN npm i -g typescript typescript-language-server
 
 # # Go lang for efm-langserver
 # WORKDIR /tmp

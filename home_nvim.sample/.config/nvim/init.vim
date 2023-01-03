@@ -1,6 +1,7 @@
 syntax enable
 filetype plugin indent on
 set nocompatible
+set mouse=
 
 " <LEADER> 設定
 let mapleader = "\<Space>"

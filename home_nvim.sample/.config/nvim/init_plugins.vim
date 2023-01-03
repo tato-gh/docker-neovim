@@ -32,6 +32,7 @@ Plug 'tomtom/tcomment_vim'
 Plug 'hrsh7th/vim-vsnip'
 "   completion framework
 Plug 'Shougo/ddc.vim'
+Plug 'Shougo/ddc-ui-native'
 "   completion sources
 Plug 'Shougo/ddc-around'
 Plug 'Shougo/ddc-nvim-lsp'
@@ -43,6 +44,13 @@ Plug 'Shougo/ddc-sorter_rank'
 
 "   in elixir
 Plug 'elixir-editors/vim-elixir'
+
+"   in JavaScript/TypeScript
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+" Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
+" see https://qiita.com/park-jh/items/b353319efb1823c36c05#tern_for_vim
+
 
 "   in html
 Plug 'mattn/emmet-vim'
@@ -126,7 +134,7 @@ local on_attach = function(_, bufnr)
   map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
 end
 
---   elixir `:LspInstall eixir`
+--   elixir `:LspInstall eixirls`
 require'lspconfig'.elixirls.setup{
   cmd = { "/home/nvim/.local/share/nvim/lsp_servers/elixir/elixir-ls/language_server.sh" },
   capabilities = capabilities,
@@ -137,6 +145,15 @@ require'lspconfig'.elixirls.setup{
     }
   }
 }
+
+--   TypeScript `:LspInstall tsserver`
+require'lspconfig'.tsserver.setup {
+  cmd = { "typescript-language-server", "--stdio" },
+  capabilities = capabilities,
+  on_attach = on_attach,
+  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "typescript.tsx" }
+}
+
 
 -- require'lspconfig'.efm.setup({
 --   capabilities = capabilities,
@@ -174,6 +191,7 @@ smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Ta
 
 
 " ddc and other arounds
+call ddc#custom#patch_global('ui', 'native')
 
 "   ddc sources
 call ddc#custom#patch_global('sources', ['around', 'nvim-lsp', 'tmux'])
