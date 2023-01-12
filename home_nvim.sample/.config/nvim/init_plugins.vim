@@ -90,6 +90,7 @@ highlight LineNr ctermfg=245
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0 "Disable default mappings
+let g:EasyMotion_keys='h;klyuiopnm,wertcvbasdgjf'
 nmap gh <Plug>(easymotion-bd-w)
 nmap gl <Plug>(easymotion-bd-jk)
 
