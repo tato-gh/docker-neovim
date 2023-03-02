@@ -6,6 +6,8 @@
 	gr = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
 	co = checkout
 	st = status
+	dd = diff
+	ddc = diff --cached
 [core]
 	editor = /usr/bin/vim
 	pager = ""

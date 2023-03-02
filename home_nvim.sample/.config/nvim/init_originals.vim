@@ -223,7 +223,8 @@ nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 nnoremap t: :WriteCurrentLine tmp/.test<CR>
 nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>tt :tabnew tmp/.test<CR>
-
+" " ヘルプ ショートカット
+nnoremap <C-h> :Help<Space>
 
 
 " -----------------------
@@ -625,4 +626,36 @@ function! GetVisualSelection()
     let lines[-1] = lines[-1][:col2 - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][col1 - 1:]
     return lines
+endfunction
+
+
+
+" コード等のメモ群を参照するための方法
+command -nargs=+ Help silent! call s:FindHelpFiles(<f-args>)
+
+function! s:FindHelpFiles(...)
+  let search_terms = a:000
+  let search_dir = "~/.help/"
+  let search_expr = "-path '*".join(search_terms, "*")."*'"
+
+  let find_cmd = "find ".search_dir." ".search_expr." -print -type f"
+  let files = split(system(find_cmd), "\n")
+  let size = len(files)
+
+  if size > 0 && size <= 4
+    for file in files
+      tabnew
+      execute "edit " . fnameescape(file)
+    endfor
+  endif
+
+  if size == 0
+    echo "No matching files found."
+  endif
+
+  if size != 0 && size > 4
+    echo "".size." matching files found. Open first one only."
+    tabnew
+    execute "edit " . files[0]
+  endif
 endfunction
