@@ -10,5 +10,5 @@
 	ddc = diff --cached
 [core]
 	editor = /usr/bin/vim
-	pager = ""
+	pager = lv -c
 	excludesfile = ~/.gitignore
