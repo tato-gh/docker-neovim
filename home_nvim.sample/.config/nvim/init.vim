@@ -2,6 +2,10 @@ syntax enable
 filetype plugin indent on
 set nocompatible
 
+" 右クリック貼り付け時にメニューが出るのを抑止
+set mouse=
+
+
 " <LEADER> 設定
 let mapleader = "\<Space>"
 
