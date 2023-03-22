@@ -77,6 +77,12 @@
       "IO.inspect($1, label: \"${2:DEBUG}\")$0"
     ]
   },
+  "io inspect in html": {
+    "prefix": "hioi",
+    "body": [
+      "<% IO.inspect($1, label: \"${2:DEBUG}\") %>$0"
+    ]
+  },
   "here for io label": {
     "prefix": "here",
     "body": [
@@ -252,6 +258,16 @@
       "@impl true",
       "def handle_info({:$1}, socket) do",
       "  $2",
+      "end"
+    ]
+  },
+  "live view handle_params": {
+    "prefix": "defhp",
+    "body": [
+      "@impl true",
+      "def handle_params(params, url, socket) do",
+      "  $1",
+      "  {:ok, socket}",
       "end"
     ]
   }

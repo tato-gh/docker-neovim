@@ -214,7 +214,7 @@ nnoremap t: :WriteCurrentLine tmp/.test<CR>
 nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>tt :tabnew tmp/.test<CR>
 " " ヘルプ ショートカット
-nnoremap <C-h> :Help<Space>
+nnoremap <Leader>h :Help<Space>
 
 
 " -----------------------
