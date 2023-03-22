@@ -129,18 +129,8 @@ nnoremap <silent><Leader>b :ls<CR>:b<Space>
 
 
 " マーク 一覧移動用
-" - 当初 `<Leader>ml/h` にしていたが便宜上 `<Leader>l/h` に変更
-" nnoremap <silent><Leader>mm :<C-u>marks<CR>:normal! `
-" nnoremap <silent><Leader>ml :<C-u>call <SID>JumpMark(1)<CR>
-" nnoremap <silent><Leader>mh :<C-u>call <SID>JumpMark(-1)<CR>
 nnoremap <silent><Leader>m :<C-u>marks<CR>:normal! `
-nnoremap <silent><Leader>l :<C-u>call <SID>JumpMark(1)<CR>
-nnoremap <silent><Leader>h :<C-u>call <SID>JumpMark(-1)<CR>
-
-
-" マーク 手動でのインクリメント採番
 nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
-nnoremap <silent>M :<C-u>call <SID>AutoMarkrementBig()<CR>
 
 
 " oldfiles 一覧移動用
@@ -260,7 +250,6 @@ augroup vimrc_inout_buffer
   autocmd BufWinEnter * if exists('w:bnum_to_delete') | execute 'bwipeout! ' . w:bnum_to_delete | endif
   autocmd BufWinEnter * if &filetype != 'netrw' | unlet! w:bnum_to_delete | endif
 
-  autocmd BufWinEnter * if &filetype != 'netrw' && !g:flug_mark_jump | call s:AutoMarkrementBig() | endif
   autocmd WinEnter * checktime
 augroup END
 
@@ -371,12 +360,6 @@ if !exists('g:markrement_char')
   \     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
   \ ]
 endif
-if !exists('g:markrement_bigchar')
-  let g:markrement_bigchar = [
-  \     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-  \     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-  \ ]
-endif
 
 function! s:AutoMarkrement()
   if !exists('b:markrement_pos')
@@ -386,30 +369,6 @@ function! s:AutoMarkrement()
   endif
   execute 'mark' g:markrement_char[b:markrement_pos]
   echo 'marked' g:markrement_char[b:markrement_pos]
-endfunction
-
-function! s:AutoMarkrementBig()
-  if !exists('g:markrement_pos_big')
-    let g:markrement_pos_big = 0
-  else
-    let g:markrement_pos_big = (g:markrement_pos_big + 1) % len(g:markrement_bigchar)
-  endif
-  execute 'mark' g:markrement_bigchar[g:markrement_pos_big]
-  echo 'marked' g:markrement_bigchar[g:markrement_pos_big]
-endfunction
-
-
-" マーキングジャンプ
-if !exists('g:flug_jump')
-  let g:flug_mark_jump = 0
-endif
-
-function! s:JumpMark(direction)
-  let g:markrement_pos_big = (g:markrement_pos_big + a:direction) % len(g:markrement_bigchar)
-  let l:marked_char = g:markrement_bigchar[g:markrement_pos_big]
-  let g:flug_mark_jump = 1
-  execute 'normal! `' . l:marked_char
-  let g:flug_mark_jump = 0
 endfunction
 
 
