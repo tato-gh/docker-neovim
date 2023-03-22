@@ -22,3 +22,5 @@ home_nvim.sample/.byobu/*
 
 node_modules/
 tmp/
+
+.gitmodules

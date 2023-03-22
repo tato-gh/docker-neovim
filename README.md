@@ -29,3 +29,17 @@ yankwatch.sh &`
 
 neovimの設定として用意する
 
+
+**.helpについて**
+
+vimからすぐに開けるメモ書きをおいているサブリポジトリ（private）
+
+.gitmodules はコミット対象にしていないので作成が必要
+
+```.gitmodules
+[submodule "home_nvim.sample/.help"]
+  path = home_nvim.sample/.help
+  url = <your repository>
+```
+
+その後、`git submodule init` `git submodule update` を行うこと
