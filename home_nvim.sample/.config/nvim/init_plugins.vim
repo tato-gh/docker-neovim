@@ -24,7 +24,8 @@ Plug 'tacahiroy/ctrlp-funky'
 " LSP 設定集/インストール用UI
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 
 " コーディング
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -105,6 +106,7 @@ nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 nnoremap <C-g> :<C-u>CtrlPFunky<CR>
 " nnoremap <C-g> :execute 'CtrlPFunky ' . expand('<cword>')<CR>
 
+
 " LSP
 " - lspinstallを通して管理している言語をビルトインのLSPクライアントにsetup(通知)する
 
@@ -127,9 +129,17 @@ local on_attach = function(_, bufnr)
   map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
 end
 
+
+local mason = require('mason')
+local mason_lspconfig = require('mason-lspconfig')
+mason.setup()
+
+local home = vim.fn.getenv("HOME")
+
 --   elixir `:LspInstall eixir`
+
 require'lspconfig'.elixirls.setup{
-  cmd = { "/home/nvim/.local/share/nvim/lsp_servers/elixir/elixir-ls/language_server.sh" },
+  cmd = { home .. "/.local/share/nvim/mason/packages/elixir-ls/language_server.sh" },
   capabilities = capabilities,
   on_attach = on_attach,
   settings = {
