@@ -34,6 +34,7 @@ Plug 'hrsh7th/vim-vsnip'
 "   completion framework
 Plug 'Shougo/ddc.vim'
 "   completion sources
+Plug 'Shougo/ddc-ui-native'
 Plug 'Shougo/ddc-around'
 Plug 'Shougo/ddc-nvim-lsp'
 Plug 'delphinus/ddc-tmux'
@@ -126,7 +127,10 @@ local on_attach = function(_, bufnr)
   local map_opts = {noremap = true, silent = true}
 
   map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", map_opts)
+  map("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", map_opts)
   map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
+  map("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<cr>", map_opts)
+  map("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<cr>", map_opts)
 end
 
 
@@ -185,6 +189,8 @@ smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Ta
 
 
 " ddc and other arounds
+
+call ddc#custom#patch_global('ui', 'native')
 
 "   ddc sources
 call ddc#custom#patch_global('sources', ['around', 'nvim-lsp', 'tmux'])
