@@ -8,6 +8,7 @@ home_nvim.sample/*
 !home_nvim.sample/.ctrlp-launcher
 !home_nvim.sample/.ctrlp/
 !home_nvim.sample/.help
+!home_nvim.sample/.bashrc.sample
 
 home_nvim.sample/.config/*
 !home_nvim.sample/.config/nvim/

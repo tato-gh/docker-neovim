@@ -1,0 +1,11 @@
+HISTSIZE=5000
+HISTFILESIZE=10000
+
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
+
+export MANPAGER='nvim +Man!'
+alias nvim='GIT_PAGER="" nvim'
+
+export PATH=$PATH:$(go env GOPATH)/bin
+export CHATGPT_API_KEY=
