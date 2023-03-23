@@ -215,6 +215,10 @@ nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>tt :tabnew tmp/.test<CR>
 " " ヘルプ ショートカット
 nnoremap <Leader>h :Help<Space>
+" " 関数の頭を大文字に変換するショートカット
+" " hoge.foo.bar => Hoge.Foo.Bar
+" " hoge.foo_bar => Hoge.FooBar
+inoremap <C-u> <C-o>:call ConvertToModuleInsertMode()<CR>
 
 
 " -----------------------
@@ -588,7 +592,6 @@ function! GetVisualSelection()
 endfunction
 
 
-
 " コード等のメモ群を参照するための方法
 command -nargs=+ Help silent! call s:FindHelpFiles(<f-args>)
 
@@ -617,4 +620,36 @@ function! s:FindHelpFiles(...)
     tabnew
     execute "edit " . files[0]
   endif
+endfunction
+
+
+" 関数形式に変換する処理
+" created by ChatGPT(v4)
+function! ConvertToModuleInsertMode()
+  let l:col = col('.')
+  call feedkeys("\<Esc>", 'n')
+  call ConvertToModule()
+  call cursor(line('.'), l:col)
+  startinsert
+endfunction
+
+function! ConvertToModule()
+  let l:cword = expand('<cWORD>')
+  let l:words = split(l:cword, '\.')
+  let l:result = []
+
+  for l:word in l:words
+    let l:subwords = split(l:word, '_')
+    let l:subresult = []
+
+    for l:subword in l:subwords
+      let l:titlecased = toupper(substitute(l:subword[0], '\(\k\)', '\u\1', '')) . l:subword[1:]
+      call add(l:subresult, l:titlecased)
+    endfor
+
+    call add(l:result, join(l:subresult, ''))
+  endfor
+
+  let l:new_line = join(l:result, '.')
+  call setline('.', l:new_line)
 endfunction

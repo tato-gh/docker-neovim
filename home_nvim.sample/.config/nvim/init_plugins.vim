@@ -58,6 +58,7 @@ Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
 " Plug 't9md/vim-quickhl'
+Plug 'mattn/vim-chatgpt'
 
 call plug#end()
 " ------------------------------------
@@ -102,6 +103,8 @@ let g:ctrlp_map = '<Nop>'
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_lazy_update = 1
+let g:ctrlp_working_path_mode = 'ra'
+" let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|.git'
 nnoremap <C-e> :<C-u>CtrlPLauncher<CR>
 nnoremap <C-f> :<C-u>CtrlPMRUFiles<CR>
 nnoremap <C-g> :<C-u>CtrlPFunky<CR>
