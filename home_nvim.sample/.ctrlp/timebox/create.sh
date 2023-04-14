@@ -19,16 +19,16 @@ else
   DIFF=$(( 7-$WEEKDAY ))
 
   # date@busybox では不可
-  # SUNDAY=`date -d "$DIFF days"`
-  # YEAR=`date -d $SUNDAY +%Y`
-  # MONTH=`date -d $SUNDAY +%m`
-  # DAY=`date -d $SUNDAY +%d`
+  SUNDAY=`date -d "$DIFF days"`
+  YEAR=`date -d "$SUNDAY" +%Y`
+  MONTH=`date -d "$SUNDAY" +%m`
+  DAY=`date -d "$SUNDAY" +%d`
 
-  # for busybox date command
-  DAY_ARG="1970.01.01-00:00:$(( $( date +%s ) + $(( $DIFF * 24 * 60 * 60 )) ))"
-  YEAR=`date -d $DAY_ARG +%Y`
-  MONTH=`date -d $DAY_ARG +%m`
-  DAY=`date -d $DAY_ARG +%d`
+  # # for busybox date command
+  # DAY_ARG="1970.01.01-00:00:$(( $( date +%s ) + $(( $DIFF * 24 * 60 * 60 )) ))"
+  # YEAR=`date -d $DAY_ARG +%Y`
+  # MONTH=`date -d $DAY_ARG +%m`
+  # DAY=`date -d $DAY_ARG +%d`
 fi
 
 FILE_PREFIX=$DIR/${YEAR}${MONTH}${DAY}
@@ -37,7 +37,8 @@ if ls $FILE_PREFIX* > /dev/null 2>&1; then
   # 存在するため何もしない
   FILE=`ls $FILE_PREFIX*`
 else
-  FILE="${FILE_PREFIX}_pX_dY.md"
+  # FILE="${FILE_PREFIX}_pX_dY.md"
+  FILE="${FILE_PREFIX}.md"
   touch $FILE
 fi
 

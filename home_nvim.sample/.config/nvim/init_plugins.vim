@@ -58,7 +58,9 @@ Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
 " Plug 't9md/vim-quickhl'
-Plug 'mattn/vim-chatgpt'
+" 会話が続けられないプラグイン
+" Plug 'mattn/vim-chatgpt', {'branch': 'develop'}
+" Plug 'zalgo3/vim-chatgpt', {'branch': 'nvim'}
 
 call plug#end()
 " ------------------------------------

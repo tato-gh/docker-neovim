@@ -6,6 +6,8 @@ HISTFILESIZE=10000
 
 export MANPAGER='nvim +Man!'
 alias nvim='GIT_PAGER="" nvim'
+alias dr='docker'
+alias drc='docker compose'
 
 export PATH=$PATH:$(go env GOPATH)/bin
 export CHATGPT_API_KEY=
