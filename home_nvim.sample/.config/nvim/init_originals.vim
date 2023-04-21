@@ -137,6 +137,9 @@ nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
 " "   ctrlp を使うようにしたので廃止予定
 " nnoremap <silent><Leader>o :browse :oldfiles<CR>
 
+" Ctrl+w+fとgfの動作をF相当に変更
+nnoremap gf gF
+nnoremap <C-W>f <C-W>F
 
 " Grep
 " gr(ep)
@@ -145,14 +148,14 @@ nnoremap <Leader>gr<Space> :TRipGrep<Space>
 nnoremap <Leader>gw :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
 nnoremap <Leader>gw<Space> :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space>
 nnoremap <Leader>gw. :tabnew<CR>:TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gwg :MyTermTab git grep '<C-r>=expand('<cword>')<CR>'<CR>
+nnoremap <Leader>gwg :MyTermTab git grep -n '<C-r>=expand('<cword>')<CR>'<CR>
 " nnoremap <Leader>grw/ :TRipGrep<Space>'<C-r>=expand('<cword>')<CR>'<CR>
 nnoremap <Leader>gy :TRipGrep<Space>'<C-r>=@"<CR>'
 nnoremap <Leader>gy<Space> :TRipGrep<Space>'<C-r>=@"<CR>'<Space>
 nnoremap <Leader>gy. :TRipGrep<Space>'<C-r>=@"<CR>'<Space><C-r>=Curdir()<CR><CR>
-nnoremap <Leader>gyg :MyTermTab git grep '<C-r>=@"<CR>'<CR>
+nnoremap <Leader>gyg :MyTermTab git grep -n '<C-r>=@"<CR>'<CR>
 " nnoremap <Leader>gry/ :TRipGrep<Space>'<C-r>=@"<CR>'<CR>
-nnoremap <Leader>gg :MyTermTab git grep<Space>
+nnoremap <Leader>gg :MyTermTab git grep -n<Space>
 
 
 " 現バッファのファイル/フォルダ一覧
@@ -197,7 +200,7 @@ nnoremap <Leader>gitdd :MyTermTab git diff <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>gitd. :MyTermTab git diff <C-r>=expand('%:h')<CR><CR>
 nnoremap <Leader>gitd/ :MyTermTab git diff<CR>
 nnoremap <Leader>gitst :MyTermTab git status<CR>
-nnoremap <Leader>gitgr :MyTermTab git grep<Space>
+nnoremap <Leader>gitgr :MyTermTab git grep -n<Space>
 
 
 " ヒューリスティック(便利機能案)
@@ -650,6 +653,6 @@ function! ConvertToModule()
     call add(l:result, join(l:subresult, ''))
   endfor
 
-  let l:new_line = join(l:result, '.')
-  call setline('.', l:new_line)
+  normal! diW
+  execute "normal! a" . join(l:result, '.')
 endfunction
