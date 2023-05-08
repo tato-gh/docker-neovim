@@ -77,12 +77,6 @@
       "IO.inspect($1, label: \"${2:DEBUG}\")$0"
     ]
   },
-  "io inspect in html": {
-    "prefix": "hioi",
-    "body": [
-      "<% IO.inspect($1, label: \"${2:DEBUG}\") %>$0"
-    ]
-  },
   "here for io label": {
     "prefix": "here",
     "body": [
@@ -228,7 +222,6 @@
   "live view mount": {
     "prefix": "defm",
     "body": [
-      "@impl true",
       "def mount(_params, _session, socket) do",
       "  {:ok, socket}",
       "end"
@@ -237,7 +230,6 @@
   "live view update": {
     "prefix": "defu",
     "body": [
-      "@impl true",
       "def update(assigns, socket) do",
       "  {:ok, socket |> assign(assigns)}",
       "end"
@@ -246,7 +238,6 @@
   "live view handle_event": {
     "prefix": "defhe",
     "body": [
-      "@impl true",
       "def handle_event(\"$1\", ${2:params}, socket) do",
       "  $3",
       "end"
@@ -255,7 +246,6 @@
   "live view handle_info": {
     "prefix": "defhi",
     "body": [
-      "@impl true",
       "def handle_info({:$1}, socket) do",
       "  $2",
       "end"
@@ -264,11 +254,34 @@
   "live view handle_params": {
     "prefix": "defhp",
     "body": [
-      "@impl true",
       "def handle_params(params, url, socket) do",
       "  $1",
       "  {:ok, socket}",
       "end"
+    ]
+  },
+  "heex io inspect": {
+    "prefix": "hioi",
+    "body": [
+      "<% IO.inspect($1, label: \"${2:DEBUG}\") %>$0"
+    ]
+  },
+  "heex phx-target myself": {
+    "prefix": "phxt",
+    "body": [
+      "phx-target={@myself}"
+    ]
+  },
+  "test assert view": {
+    "prefix": "arv",
+    "body": [
+      "assert render(c.view) =~ $0"
+    ]
+  },
+  "test assert raise": {
+    "prefix": "arr",
+    "body": [
+      "assert_raise MatchError, fn -> $0 end"
     ]
   }
 }
