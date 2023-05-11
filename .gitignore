@@ -9,7 +9,9 @@ home_nvim.sample/*
 !home_nvim.sample/.ctrlp/
 !home_nvim.sample/.help
 !home_nvim.sample/.bashrc.sample
-!home_nvim.sample/.docker
+!home_nvim.sample/.docker/
+home_nvim.sample/.docker/*
+!home_nvim.sample/.docker/config.json
 
 home_nvim.sample/.config/*
 !home_nvim.sample/.config/nvim/

@@ -239,7 +239,8 @@
     "prefix": "defhe",
     "body": [
       "def handle_event(\"$1\", ${2:params}, socket) do",
-      "  $3",
+      "  $0",
+      "  {:noreply, socket}",
       "end"
     ]
   },
@@ -247,7 +248,8 @@
     "prefix": "defhi",
     "body": [
       "def handle_info({:$1}, socket) do",
-      "  $2",
+      "  $0",
+      "  {:noreply, socket}",
       "end"
     ]
   },
@@ -255,8 +257,8 @@
     "prefix": "defhp",
     "body": [
       "def handle_params(params, url, socket) do",
-      "  $1",
-      "  {:ok, socket}",
+      "  $0",
+      "  {:noreply, socket}",
       "end"
     ]
   },
