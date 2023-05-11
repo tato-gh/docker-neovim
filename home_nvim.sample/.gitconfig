@@ -12,3 +12,6 @@
 	editor = /usr/bin/vim
 	pager = lv -c
 	excludesfile = ~/.gitignore
+[user]
+	email = 61908291+tato-gh@users.noreply.github.com
+	name = tato
