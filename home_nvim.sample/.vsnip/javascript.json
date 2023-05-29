@@ -1,0 +1,20 @@
+{
+  "console log": {
+    "prefix": "col",
+    "body": [
+      "console.log($1)$0"
+    ]
+  },
+  "console error": {
+    "prefix": "coe",
+    "body": [
+      "console.error($1)$0"
+    ]
+  },
+  "console table": {
+    "prefix": "cot",
+    "body": [
+      "console.table($1)$0"
+    ]
+  }
+}

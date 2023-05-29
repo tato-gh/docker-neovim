@@ -215,7 +215,7 @@ nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
 " " 結果も同一ファイルに書き込まれることを想定 // ...アナログ感
 nnoremap t: :WriteCurrentLine tmp/.test<CR>
 nnoremap t. :WriteCurrentFile tmp/.test<CR>
-nnoremap <Leader>tt :tabnew tmp/.test<CR>
+nnoremap <Leader>to :terminal watch -n 1 -c cat tmp/.output<CR>
 " " ヘルプ ショートカット
 nnoremap <Leader>h :Help<Space>
 " " 関数の頭を大文字に変換するショートカット
