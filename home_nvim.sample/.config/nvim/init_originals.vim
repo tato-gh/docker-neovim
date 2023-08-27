@@ -556,7 +556,7 @@ endfunction
 command! -nargs=1 WriteCurrentLine silent! call s:WriteCurrentLine(<f-args>)
 function! s:WriteCurrentLine(filepath)
   execute ':redir! >' . a:filepath
-  :silent! echon expand('%') . ':' . line('.')
+  :silent! echon expand('%:.') . ':' . line('.')
   redir END
 endfunction
 
@@ -564,7 +564,7 @@ endfunction
 command! -nargs=1 WriteCurrentFile silent! call s:WriteCurrentFile(<f-args>)
 function! s:WriteCurrentFile(filepath)
   execute ':redir! >' . a:filepath
-  :silent! echon expand('%')
+  :silent! echon expand('%:.')
   redir END
 endfunction
 
