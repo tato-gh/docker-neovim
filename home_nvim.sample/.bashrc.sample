@@ -8,6 +8,7 @@ export MANPAGER='nvim +Man!'
 alias nvim='GIT_PAGER="" nvim'
 alias dr='docker'
 alias drc='docker compose'
+alias gitco='nvim -c Merginal -c only'
 
 export PATH=$PATH:$(go env GOPATH)/bin
 export CHATGPT_API_KEY=

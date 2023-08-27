@@ -49,6 +49,19 @@ Plug 'elixir-editors/vim-elixir'
 "   in html
 Plug 'mattn/emmet-vim'
 
+"   in markdown
+"
+"   markdown-preview mermaidjsが古いので別途取得必要
+"   cd ~/.config/nvim/plugged/markdown-preview.nvim/app/_static/
+"   wget https://cdn.jsdelivr.net/npm/mermaid@10.2.1/dist/mermaid.min.js
+"   and do `:call mkdp#util#install()` if not work.
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
+
+" git
+Plug 'tpope/vim-fugitive'
+Plug 'idanarye/vim-merginal'
+
 " ユーティリティ
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
