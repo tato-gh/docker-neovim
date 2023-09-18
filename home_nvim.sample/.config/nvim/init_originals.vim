@@ -223,6 +223,10 @@ nnoremap <Leader>h :Help<Space>
 " " hoge.foo_bar => Hoge.FooBar
 inoremap <C-u> <C-o>:call ConvertToModuleInsertMode()<CR>
 
+" " Elixir 関数チェイン変換
+nnoremap cfc :call ConvertToChain()<CR>
+nnoremap cfi :call ConvertToNonChain()<CR>
+
 
 " -----------------------
 " Auto Command
@@ -655,4 +659,102 @@ function! ConvertToModule()
 
   normal! diW
   execute "normal! a" . join(l:result, '.')
+endfunction
+
+
+" Elixirで関数をチェイン形式に変換
+" created by ChatGPT(v4)
+function! ConvertToChain()
+  let line = getline('.')
+  let indent = matchstr(line, '^\s*')
+  let open_paren = stridx(line, '(')
+  let close_paren = strridx(line, ')')
+  let func_name = strpart(line, strlen(indent), open_paren - strlen(indent))
+  let args = strpart(line, open_paren + 1, close_paren - open_paren - 1)
+
+  let first_arg = GetFirstArgument(args)
+  let remaining_args = strpart(args, len(first_arg) + 1)
+  let remaining_args = substitute(remaining_args, '^\s*', '', '')
+
+  if remaining_args != ''
+    let remaining_args .= ')'
+  endif
+
+  let chain_first_line = indent . first_arg
+  let chain_second_line = indent . "|> " . func_name . '(' . remaining_args
+
+  call setline('.', chain_first_line)
+  call append(line('.'), chain_second_line)
+endfunction
+
+function! GetFirstArgument(args)
+  let depth = 0
+  let curly_depth = 0
+  let square_depth = 0
+  let i = 0
+  while i < len(a:args)
+    let ch = a:args[i]
+    if ch == ',' && depth == 0 && curly_depth == 0 && square_depth == 0
+      return strpart(a:args, 0, i)
+    elseif ch == '('
+      let depth += 1
+    elseif ch == ')'
+      let depth -= 1
+    elseif ch == '{'
+      let curly_depth += 1
+    elseif ch == '}'
+      let curly_depth -= 1
+    elseif ch == '['
+      let square_depth += 1
+    elseif ch == ']'
+      let square_depth -= 1
+    endif
+    let i += 1
+  endwhile
+  return a:args
+endfunction
+
+" Elixirで関数をチェイン形式からまとめる
+" created by ChatGPT(v4)
+function! ConvertToNonChain()
+  " 現在行と次の行を取得
+  let line1 = getline('.')
+  let line2 = getline(line('.') + 1)
+
+  " 現在行のインデントを取得
+  let indent = matchstr(line1, '^\s*')
+
+  " '|>' が次の行に存在するか確認
+  if stridx(line2, '|>') == -1
+    echo "次の行にはチェーン記法 '|>' が見つかりません。"
+    return
+  endif
+
+  " '|>' 以降のテキストを取得
+  let chained_call = matchstr(line2, '|>\s*\zs.*')
+
+  " 関数名と引数を分割
+  let open_paren_idx = stridx(chained_call, '(')
+  let close_paren_idx = strridx(chained_call, ')')
+  let func_name = strpart(chained_call, 0, open_paren_idx)
+  let args = strpart(chained_call, open_paren_idx + 1, close_paren_idx - open_paren_idx - 1)
+
+  " 現在行のインデントを削除
+  let line1 = substitute(line1, '^\s*', '', '')
+
+  " 非チェーン記述を生成
+  let non_chained_call = func_name . '(' . line1
+  if len(args) > 0
+    let non_chained_call .= ', ' . args . ')'
+  else
+    let non_chained_call .= ')'
+  endif
+
+  " インデントを追加
+  let non_chained_call = indent . non_chained_call
+
+  " 現在行を非チェーン記述に更新し、次の行を削除
+  call setline('.', non_chained_call)
+  execute (line('.') + 1) . 'delete'
+  call cursor(line('.') - 1, len(indent) + 1)
 endfunction
