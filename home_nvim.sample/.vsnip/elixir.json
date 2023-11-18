@@ -83,6 +83,12 @@
       "\\n#{inspect __ENV__.context_modules}#{inspect __ENV__.function}\\n"
     ]
   },
+  "pry": {
+    "prefix": "pry",
+    "body": [
+      "require IEx; IEx.pry()"
+    ]
+  },
   "function": {
     "prefix": "f",
     "body": [
@@ -284,6 +290,12 @@
     "prefix": "arr",
     "body": [
       "assert_raise MatchError, fn -> $0 end"
+    ]
+  },
+  "test debug liveview render, io element": {
+    "prefix": "ioe",
+    "body": [
+      "element(lv, ~s($1)) |> render() |> then(& IO.inspect/1)$0"
     ]
   }
 }
