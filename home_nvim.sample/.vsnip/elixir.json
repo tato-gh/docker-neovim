@@ -135,6 +135,12 @@
       "|> dbg()"
     ]
   },
+  "map and value": {
+    "prefix": "mv",
+    "body": [
+      "$1: $1$0"
+    ]
+  },
   "Enum start": {
     "prefix": "e",
     "body": [
@@ -214,9 +220,17 @@
     ]
   },
   "live view socket.assigns": {
-    "prefix": "sa",
+    "prefix": "sa.",
     "body": [
       "socket.assigns."
+    ]
+  },
+  "live view socket.assigns open": {
+    "prefix": "sac",
+    "body": [
+      "%{",
+      "  current_user: current_user$0",
+      "} = socket.assigns"
     ]
   },
   "live view assign": {

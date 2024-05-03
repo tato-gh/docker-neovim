@@ -163,6 +163,7 @@ nnoremap <Leader>. :DirectoryFiles <C-r>=substitute(Curdir(), '/\.\./', '/', '')
 nnoremap <Leader>f. :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
 nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
 nnoremap <Leader>fg :FindGitFiles<Space>
+nnoremap <Leader>gf :FindGitFiles<Space>
 nnoremap <Leader>fl :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>fh :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
@@ -201,6 +202,8 @@ nnoremap <Leader>gitd. :MyTermTab git diff <C-r>=expand('%:h')<CR><CR>
 nnoremap <Leader>gitd/ :MyTermTab git diff<CR>
 nnoremap <Leader>gitst :MyTermTab git status<CR>
 nnoremap <Leader>gitgr :MyTermTab git grep -n<Space>
+nnoremap <Leader>gitbl :MyTermTab git blame <C-r>=expand('%')<CR><CR>
+nnoremap <Leader>gitsh :MyTermTab git show <C-r>=expand('<cword>')<CR><CR>
 
 
 " ヒューリスティック(便利機能案)
@@ -226,6 +229,11 @@ inoremap <C-u> <C-o>:call ConvertToModuleInsertMode()<CR>
 " " Elixir 関数チェイン変換
 nnoremap cfc :call ConvertToChain()<CR>
 nnoremap cfi :call ConvertToNonChain()<CR>
+
+" " 共通
+" 同名のmap value挿入が多いので@vで補完する
+" もっと良いものが欲しいが暫定として使用する
+nnoremap @v :execute "normal! 0f:Bhvt:yf:pa,"<CR>
 
 
 " -----------------------
