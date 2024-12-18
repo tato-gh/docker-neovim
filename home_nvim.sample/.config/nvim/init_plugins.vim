@@ -154,6 +154,15 @@ local on_attach = function(_, bufnr)
   map("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<cr>", map_opts)
 end
 
+-- diagnostic
+vim.diagnostic.config({
+  -- インサートモードでは診断しない
+  update_in_insert = false,
+  -- エラー行にアンダーライン表示
+  underline = true,
+  -- 仮想テキスト（エラーメッセージ）を表示
+  virtual_text = true
+})
 
 local mason = require('mason')
 local mason_lspconfig = require('mason-lspconfig')
