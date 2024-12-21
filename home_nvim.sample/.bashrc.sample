@@ -14,3 +14,6 @@ alias gitmp='git branch --contains | cut -d " " -f 2 |xargs -i git branch tmp/{}
 export MANPAGER='nvim +Man!'
 export PATH=$PATH:$(go env GOPATH)/bin
 export CHATGPT_API_KEY=
+
+# for elixir-ls documents
+export KERL_BUILD_DOCS=yes
