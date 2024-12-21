@@ -1,6 +1,9 @@
+" Basic settings
+
 syntax enable
 filetype plugin indent on
 set nocompatible
+
 
 " 右クリック貼り付け時にメニューが出るのを抑止
 set mouse=
@@ -22,6 +25,7 @@ let g:netrw_banner=0
 " - shortcut キーで切り替えられればいいかもしれない
 " set nonumber
 set number
+
 
 " " 自動での折り返しを禁止
 " set nowrap
@@ -61,7 +65,7 @@ set nobackup
 " set backupdir=/tmp
 
 
-" shellでaliasを有効化
+" shellでのaliasを有効化
 set shell=/bin/bash\ -l\ -O\ expand_aliases
 
 
@@ -102,10 +106,12 @@ set lazyredraw " 遅延再描画
 set showtabline=2 " タブは必ず表示(ファイル名確認のため)
 set nofoldenable
 
+
 " Originals (shortcut, etc)
 if filereadable(expand('~/.config/nvim/init_originals.vim'))
   source ~/.config/nvim/init_originals.vim
 endif
+
 
 " Plugins
 if filereadable(expand('~/.config/nvim/init_plugins.vim'))

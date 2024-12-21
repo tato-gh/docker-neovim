@@ -1,7 +1,7 @@
 
+" ------------------------------------
 " vim-plug
 " - 先に#endまで記述しないと、例えば `lua require'hop'` 等がエラーになる
-" ------------------------------------
 call plug#begin('~/.config/nvim/plugged')
 
 " カラースキーマ
@@ -9,10 +9,9 @@ call plug#begin('~/.config/nvim/plugged')
 Plug 'cocopon/iceberg.vim'
 
 " カーソル移動
-" Plug 'phaazon/hop.nvim'
 Plug 'easymotion/vim-easymotion'
 
-" エコシステム
+" エコシステム deno
 Plug 'vim-denops/denops.vim'
 
 " ランチャー / MRU
@@ -21,48 +20,15 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/ctrlp-launcher'
 Plug 'tacahiroy/ctrlp-funky'
 
-" LSP 設定集/インストール用UI
-Plug 'neovim/nvim-lsp'
-Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/mason.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
-
 " コーディング
-" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" -- 構文
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" -- コメントアウト
 Plug 'tomtom/tcomment_vim'
-Plug 'hrsh7th/vim-vsnip'
-"   completion framework
-Plug 'Shougo/ddc.vim'
-"   completion sources
-Plug 'Shougo/ddc-ui-native'
-Plug 'Shougo/ddc-around'
-Plug 'Shougo/ddc-nvim-lsp'
-Plug 'delphinus/ddc-tmux'
-"   completion utils
-Plug 'matsui54/denops-popup-preview.vim'
-Plug 'Shougo/ddc-matcher_head'
-Plug 'Shougo/ddc-sorter_rank'
 
-"   in elixir
-Plug 'elixir-editors/vim-elixir'
-
-"   in html
-Plug 'mattn/emmet-vim'
-
-"   in markdown
-"
-"   markdown-preview mermaidjsが古いので別途取得必要
-"   cd ~/.config/nvim/plugged/markdown-preview.nvim/app/_static/
-"   wget https://cdn.jsdelivr.net/npm/mermaid@10.2.1/dist/mermaid.min.js
-"   and do `:call mkdp#util#install()` if not work.
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
-
-
-" git
-Plug 'tpope/vim-fugitive'
-Plug 'idanarye/vim-merginal'
-
-" ユーティリティ
+" -- ユーティリティ
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
 Plug 'rhysd/vim-textobj-anyblock'
@@ -70,16 +36,43 @@ Plug 'machakann/vim-sandwich'
 Plug 'h1mesuke/vim-alignta'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'LeafCage/yankround.vim'
-" Plug 't9md/vim-quickhl'
-" 会話が続けられないプラグイン, Chatgpt古くて使えない
-" Plug 'mattn/vim-chatgpt', {'branch': 'develop'}
-" Plug 'zalgo3/vim-chatgpt', {'branch': 'nvim'}
+
+" -- スニペット
+Plug 'hrsh7th/vim-vsnip'
+
+" -- lang elixir
+Plug 'elixir-editors/vim-elixir'
+
+" -- lang html
+Plug 'mattn/emmet-vim'
+
+
+" LSP 設定
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'neovim/nvim-lspconfig'
+
+
+" completion
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+"Plug 'hrsh7th/cmp-path'
+"Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-vsnip'
+
+
+" markdown
+" markdown-preview mermaidjsが古いので別途取得必要
+"
+"   cd ~/.config/nvim/plugged/markdown-preview.nvim/app/_static/
+"   wget https://cdn.jsdelivr.net/npm/mermaid@10.2.1/dist/mermaid.min.js
+"   and do `:call mkdp#util#install()` if not work.
+"
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
 
 call plug#end()
 " ------------------------------------
-
-
-
 
 " カラー
 " colorscheme badwolf
@@ -96,14 +89,11 @@ highlight Constant ctermfg=magenta
 highlight Comment ctermfg=245
 highlight LineNr ctermfg=245
 
-
-
-" hop
-" - easymotionより軽いらしい(未計)
-" - 日本語に対応していない
-" nnoremap s :HopWord<CR>
-" nnoremap gl :HopLine<CR>
-" lua require'hop'.setup { keys = 'etovxqpdygfblzhckisura', term_seq_bias = 0.5 }
+" -- cmp
+highlight CmpItemAbbr ctermfg=245
+highlight CmpItemAbbrMatch ctermfg=245
+highlight CmpItemAbbrMatchFuzzy ctermfg=245
+highlight CmpItemKind ctermfg=245
 
 
 " vim-easymotion
@@ -129,72 +119,49 @@ nnoremap <C-g> :<C-u>CtrlPFunky<CR>
 " nnoremap <C-g> :execute 'CtrlPFunky ' . expand('<cword>')<CR>
 
 
-" LSP
-" - lspinstallを通して管理している言語をビルトインのLSPクライアントにsetup(通知)する
-
-lua << EOF
-
--- Neovim doesn't support snippets out of the box, so we need to mutate the
--- capabilities we send to the language server to let them know we want snippets.
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-
--- A callback that will get called when a buffer connects to the language server.
--- Here we create any key maps that we want to have on that buffer.
-local on_attach = function(_, bufnr)
-  local function map(...)
-    vim.api.nvim_buf_set_keymap(bufnr, ...)
-  end
-  local map_opts = {noremap = true, silent = true}
-
-  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", map_opts)
-  map("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", map_opts)
-  map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
-  map("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<cr>", map_opts)
-  map("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<cr>", map_opts)
-end
-
-
-local mason = require('mason')
-local mason_lspconfig = require('mason-lspconfig')
-mason.setup()
-
-local home = vim.fn.getenv("HOME")
-
---   elixir `:LspInstall eixir`
-
-require'lspconfig'.elixirls.setup{
-  cmd = { home .. "/.local/share/nvim/mason/packages/elixir-ls/language_server.sh" },
-  capabilities = capabilities,
-  on_attach = on_attach,
-  settings = {
-    elixirLS = {
-      dialyzerEnabled = false,
-    }
+" treesitter
+" - 試用段階
+" - elixir はいまいちか...?
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"vim", "markdown", "elixir", "ruby"},
+  -- List of parsers to ignore installing
+  ignore_install = {},
+  highlight = {
+    -- false will disable the whole extension
+    enable = true,
+    -- list of language that will be disabled
+    disable = {}
   }
 }
-
--- require'lspconfig'.efm.setup({
---   capabilities = capabilities,
---   on_attach = on_attach,
---   filetypes = {"elixir"}
--- })
 EOF
 
 
-" " treesitter
-" " - 試用段階
-" " - elixir が取れない様子
-" lua <<EOF
-" require'nvim-treesitter.configs'.setup {
-"   ensure_installed = "all",   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-"   ignore_install = {}, -- List of parsers to ignore installing
-"   highlight = {
-"     enable = true,              -- false will disable the whole extension
-"     disable = {},  -- list of language that will be disabled
-"   },
-" }
-" EOF
+" yankround
+nmap p <Plug>(yankround-p)
+nmap <C-p> <Plug>(yankround-prev)
+nmap <C-n> <Plug>(yankround-next)
+
+
+" machakann/vim-sandwich
+"
+" -- console.log
+nmap saiwc saiwfconsole.log<CR>
+
+" -- シンボル/アトムと文字列の切り替え
+" " `:hoge` <=> `"hoge"`
+" " 次の書き方がエラーになる/ nmap ,s :call setreg('a', 'F:r"ea"')
+nmap ,s:" F:r"ea"<Esc>
+nmap ,s": sr":f:x
+
+" -- 簡易的なマップキー変換ショートカット
+" " `hoge:` と `"hoge" => `
+nmap ,sk" ebi"<Esc>f:r"a =><Esc>
+nmap ,sk: ebhxelr:w3x
+
+" -- 関数前の @spec 記述 (elixir)
+nmap ,s@spec yykpciw@spec<Esc>f(
 
 
 " vim-vsnip
@@ -209,75 +176,85 @@ imap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Ta
 smap <expr> <S-Tab> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
 
-" ddc and other arounds
-
-call ddc#custom#patch_global('ui', 'native')
-
-"   ddc sources
-call ddc#custom#patch_global('sources', ['around', 'nvim-lsp', 'tmux'])
-
-"   ddc settings
-call ddc#custom#patch_global('sourceOptions', {
-      \ '_': {
-      \   'matchers': ['matcher_head'],
-      \   'sorters': ['sorter_rank']},
-      \ 'around': {'mark': 'A'},
-      \ 'nvim-lsp': {
-      \   'mark': 'lsp',
-      \   'forceCompletionPattern': '\.\w*|:\w*|->\w*' },
-      \ 'tmux': {'mark': 'T'},
-      \ })
-call ddc#custom#patch_global('sourceParams', {
-      \ 'around': {'maxSize': 500},
-      \ 'nvim-lsp': {'kindLabels': {'Function': '', 'Keyword': '', 'Snippet': ''}},
-      \ })
-
-" <TAB> and <S-TAB> are used on VSnip
-" " <TAB>: completion.
-" inoremap <silent><expr> <TAB>
-" \ pumvisible() ? '<C-n>' :
-" \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-" \ '<TAB>' : ddc#map#manual_complete()
-" 
-" " <S-TAB>: completion back.
-" inoremap <expr><S-TAB>  pumvisible() ? '<C-p>' : '<C-h>'
-
-" Use ddc.
-call ddc#enable()
-call popup_preview#enable()
-
-
-" yankround
-nmap p <Plug>(yankround-p)
-nmap <C-p> <Plug>(yankround-prev)
-nmap <C-n> <Plug>(yankround-next)
-
 
 " mattn/emmet
 " usage: ',y,'
 let g:user_emmet_leader_key=',y'
 
 
-" machakann/vim-sandwich
-" およびその他ショートカット
-nmap saiwc saiwfconsole.log<CR>
-" " シンボル/アトムと文字列の切り替え
-" " `:hoge` と `"hoge"`
-" " 次の書き方がエラーになる/ nmap ,s :call setreg('a', 'F:r"ea"')
-nmap ,s:" F:r"ea"<Esc>
-nmap ,s": sr":f:x
-" " 簡易的なマップキー変換ショートカット
-" " `hoge:` と `"hoge" => `
-nmap ,sk" ebi"<Esc>f:r"a =><Esc>
-nmap ,sk: ebhxelr:w3x
-" " @spec 記述用 (elixir)
-nmap ,s@spec yykpciw@spec<Esc>f(
+" LSP
+" - lspinstallを通して管理している言語をビルトインのLSPクライアントにsetup(通知)する
 
+lua << EOF
 
-" " vim-quickhl
-" let g:quickhl_manual_keywords = [
-"       \  { 'pattern': '\C\<\(TODO\|FIXME\|NOTE\|INFO\)\>', 'regexp': 1 },
-"       \]
-" nnoremap <C-h>e :<C-u>QuickhlManualEnable<CR>
-" nnoremap <C-h>d :<C-u>QuickhlManualDisable<CR>
-" nnoremap <C-h>a :<C-u>QuickhlManualAdd<Space>
+-- setup config
+
+require('mason').setup()
+require('mason-lspconfig').setup()
+
+-- completion
+
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+  }, {
+    { name = 'buffer' },
+  }),
+  mapping = cmp.mapping.preset.insert({
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ["<CR>"] = cmp.mapping.confirm { select = true },
+  }),
+  window = {
+    completion = {
+      winhighlight = "Normal:CmpNormal",
+    },
+    documentation = {
+      winhighlight = "Normal:CmpDocNormal",
+    }
+  }
+})
+
+-- lang
+
+local home = vim.fn.getenv("HOME")
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+local on_attach = function(_client, bufnr)
+  local function map(...)
+    vim.api.nvim_buf_set_keymap(bufnr, ...)
+  end
+  local map_opts = {noremap = true, silent = true}
+
+  map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", map_opts)
+  map("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", map_opts)
+  map("n", "<c-h>", "<cmd>lua vim.lsp.buf.hover()<cr>", map_opts)
+  map("n", "<space>f", "<cmd>lua vim.lsp.buf.format { async = true }<cr>", map_opts)
+  map("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<cr>", map_opts)
+end
+
+-- lang: elixir `:LspInstall eixir`
+
+require'lspconfig'.elixirls.setup{
+  cmd = { home .. "/.local/share/nvim/mason/packages/elixir-ls/language_server.sh" },
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    elixirLS = {
+      dialyzerEnabled = false,
+    }
+  }
+}
+
+EOF
+

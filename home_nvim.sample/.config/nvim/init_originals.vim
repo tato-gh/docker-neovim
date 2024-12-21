@@ -1,34 +1,28 @@
-
-" NOTE: 背景
+" 背景の思想
+"
 " - タブは `gt``gT` で扱えるように1~2つ程度を使用する
 "   多用するとタブで開くかどうかの選択でショートカットが増えすぎる
-"   (かつて多用していたがやめてみる...)
 " - ウィンドウ分割は <C-w> を素直に使用する
-" - tmuxである程度作業するフォルダを分離しているので前後フォルダ移動が早いほうがいい
-"   そのため fzf はさほど必要ないと思われる
-"   - 同じフォルダにあるファイルをさくっと開けるといい
-"   - 番号指定でファイルを開けるといい
-"   - 同じフォルダの前後に変更したファイルがさくっと開けるといい
+" - tmux(byobu)の利用を前提としている
 " - コーディング中に一時的にコードを退避させることがよくある
 "   .memo をさくっと開けるほうがいい
-"   .memo のみを対象とした検索があったほうがいい
 
 
-" -----------------------
-"
 " Command / Shortcut ルール
+"
 " - 何かバッファに対して挿入する処理系は ,<KEY> のようにカンマを前置する(マイルール)
 " - 表示/非表示等の切り替え系は s(et)*y(es)/s(et)*n(o) を意図して y/n を使う
 "   - 例えば、行番号の表示/非表示は s(et)n(umber)y(es)/s(et)n(umber)n(o) を割り当てている
 " - 現バッファのフォルダはピリオド(.)、カレントディレクトリはスラッシュ(/)を用いる
 "   - 例えば、`:edit %:h` は `e.` で `:edit ./` は `e/`
-"
-" Leader or Ctrl
-" - 基本的にLeaderに割り当てる
-"
-" -----------------------
 
-" 日本語切り替え処理
+
+" Leader or Ctrl
+"
+" - 基本的にLeaderに割り当てる
+
+
+" 切り替え処理
 " - デフォルトで <Esc>と<C-[>があるがやや押しにくい
 inoremap <silent> <C-j> <Esc>
 
@@ -38,7 +32,7 @@ nnoremap <CR> o<Esc>
 
 
 " yank
-" - いろいろするのでfunctionへ
+" - visualモード時はclipboardに連携
 vnoremap y y:YankAnd<CR>
 nnoremap Y y$
 
@@ -48,6 +42,7 @@ nnoremap Y y$
 " - ライブラリの閲覧中などは固定の.memoを使う想定
 vnoremap m. :Memo <C-r>=Curdir()<CR>.memo<CR>
 vnoremap m/ :Memo /srv/tmp/.memo<CR>
+
 
 " paste
 "
@@ -134,12 +129,14 @@ nnoremap <silent>m :<C-u>call <SID>AutoMarkrement()<CR>
 
 
 " oldfiles 一覧移動用
-" "   ctrlp を使うようにしたので廃止予定
+" "   ctrlp を使うようにしたので廃止
 " nnoremap <silent><Leader>o :browse :oldfiles<CR>
+
 
 " Ctrl+w+fとgfの動作をF相当に変更
 nnoremap gf gF
 nnoremap <C-W>f <C-W>F
+
 
 " Grep
 " gr(ep)
@@ -164,8 +161,6 @@ nnoremap <Leader>f. :FindDirectoryFiles <C-r>=Curdir()<CR><Space>
 nnoremap <Leader>f/ :FindDirectoryFiles <C-r>=getcwd()<CR><Space>
 nnoremap <Leader>fg :FindGitFiles<Space>
 nnoremap <Leader>gf :FindGitFiles<Space>
-nnoremap <Leader>fl :MovePostFile 'atime' <C-r>=expand('%')<CR><CR>
-nnoremap <Leader>fh :MovePrevFile 'atime' <C-r>=expand('%')<CR><CR>
 
 
 " 行番号を指定してファイル移動
@@ -212,15 +207,16 @@ nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand(
 nnoremap <Leader>j :wincmd v<CR>:DirectoryFiles <C-r>=substitute(expand('%:r'), '/\.\./', '/', '')<CR><CR>
 " nnoremap <Leader>k :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR>../<CR>
 nnoremap <Leader>k :e <C-r>=expand('%:h')<CR>.<C-r>=expand('%:e')<CR><CR>
-" " 別ファイル移動 / 現フォルダの最後に変更したファイル
-nnoremap <Leader>; :MovePostFile 'mtime' <C-r>=Curdir()<CR><CR>
-" " 現在のファイル:行をファイル出力 (テスト利用)。
+
+" " 現在のファイル:行をファイル出力 (自動テスト用途)
 " " 結果も同一ファイルに書き込まれることを想定 // ...アナログ感
 nnoremap t: :WriteCurrentLine tmp/.test<CR>
 nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>to :terminal watch -n 1 -c cat tmp/.output<CR>
+
 " " ヘルプ ショートカット
 nnoremap <Leader>h :Help<Space>
+
 " " 関数の頭を大文字に変換するショートカット
 " " hoge.foo.bar => Hoge.Foo.Bar
 " " hoge.foo_bar => Hoge.FooBar
@@ -241,17 +237,6 @@ nnoremap @v :execute "normal! 0f:Bhvt:yf:pa,"<CR>
 " - autocmd はファイルを読むたびに登録される
 " - 複数回の読み込みで上書きされるように、augroupで囲み、削除と追加を記述すること
 " -----------------------
-
-" " netrw カスタマイズ
-" " - netrw はいつからかWinBufEnterが発火しない
-" augroup vimrc_netrw_commands
-" augroup END
-
-
-" 起動時 MRU
-" - 設定すると netrw がバグる。未調査
-" autocmd! VimEnter * CtrlPMRUFiles
-
 
 " バッファ操作
 " - カーソル位置を保存/復元
@@ -292,7 +277,6 @@ augroup vimrc_remove_tailspaces
   let ignores = ['vim']
   autocmd BufWritePre * if index(ignores, &ft) < 0 | :%s/\s\+$//ge
 augroup END
-
 
 
 
@@ -462,108 +446,6 @@ function! s:FindGitFiles(...)
 endfunction
 
 
-" 同一フォルダでアクセス/編集日時が１つ後のファイルを開く
-" - `ls` で並びを指定して、1つ下の行のファイルを開く
-" - pipeするとtermの結果が返ってこないときがある(system()と同様)
-command! -nargs=* MovePostFile call s:MovePostFile(<f-args>)
-function! s:MovePostFile(...)
-  if exists('a:2')
-    let l:curfile = fnamemodify(a:2, ":t")
-    let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, -1)
-
-    if getbufinfo(bufnr('%'))[0].changed
-      w
-    endif
-    execute 'e ' . l:result[0]
-
-    if a:1 == 'atime'
-      " alpine には `-a` がなかったので想定した動作にならない
-      call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
-    else
-      call system('touch -m --date "' . l:result[1] . '" ' . l:result[0])
-    endif
-  else
-    let l:files = DirFiles(a:1, Curdir())
-    execute 'e ' . Curdir() . l:files[0]
-  endif
-endfunction
-
-
-" 同一フォルダでアクセス/編集日時が１つ前のファイルを開く
-" - `ls` で並びを指定して、1つ上の行のファイルを開く
-command! -nargs=* MovePrevFile silent call s:MovePrevFile(<f-args>)
-function! s:MovePrevFile(...)
-  if exists('a:2')
-    let l:curfile = fnamemodify(a:2, ":t")
-    let l:result = s:CurdirFilesPrevOrPost(a:1, l:curfile, 1)
-
-    if getbufinfo(bufnr('%'))[0].changed
-      w
-    endif
-    execute 'e ' . l:result[0]
-
-    if a:1 == 'atime'
-      " alpine には `-a` がなかったので想定した動作にならない
-      call system('touch -a --date "' . l:result[1] . '" ' . l:result[0])
-    else
-      call system('touch -m --date "' . l:result[1] . '" ' . l:result[0])
-    endif
-  else
-    let l:files = s:DirFiles(a:1, Curdir())
-    execute 'e ' . Curdir() . l:files[0][0]
-  endif
-endfunction
-
-
-" 同一フォルダ ファイル移動用処理
-" - 指定したファイル `curfile` の同フォルダのアクセス履歴 moveDiff 番目のファイルパスとアクセス日時を返す
-function! s:CurdirFilesPrevOrPost(order, curfile, moveDiff)
-  let l:files = s:DirFiles(a:order, Curdir())
-  let l:ind = 0
-  let l:moveind = 0
-  for filename in l:files[0]
-    if a:curfile == filename
-      let l:moveind = l:ind + a:moveDiff
-      break
-    endif
-    let l:ind = l:ind + 1
-  endfor
-
-  if l:moveind >= len(l:files[0])
-    let l:moveind = 0
-  endif
-
-  return [Curdir() . l:files[0][l:moveind], l:files[1][l:moveind]]
-endfunction
-
-
-" 同一フォルダ ファイル移動用処理
-" - 指定したフォルダに含まれるファイルとアクセス日時をアクセス履歴順で返す
-function! s:DirFiles(order, dir)
-  let l:files = []
-  let l:timestamps = []
-
-  if a:order == 'atime'
-    let l:rows = split(system('ls -lut --full-time ' . a:dir), "\n")
-  else
-    let l:rows = split(system('ls -lt --full-time ' . a:dir), "\n")
-  endif
-
-  call remove(l:rows, 0) " total ~ の除去
-  for row in l:rows
-    " e.g. -rw-r--r--    1 nvim     nvim           162 2021-05-29 08:10:01 +0000 README.md
-    let l:is_dir = (row[0] == 'd')
-    if !l:is_dir
-      let data = split(row, ' ')
-      call add(l:files, data[-1])
-      call add(l:timestamps, data[-4] . ' ' . data[-3])
-    endif
-  endfor
-
-  return [l:files, l:timestamps]
-endfunction
-
-
 " 指定ファイルに現カーソル位置を出力
 command! -nargs=1 WriteCurrentLine silent! call s:WriteCurrentLine(<f-args>)
 function! s:WriteCurrentLine(filepath)
@@ -571,6 +453,7 @@ function! s:WriteCurrentLine(filepath)
   :silent! echon expand('%:.') . ':' . line('.')
   redir END
 endfunction
+
 
 " 指定ファイルに現ファイルを出力
 command! -nargs=1 WriteCurrentFile silent! call s:WriteCurrentFile(<f-args>)
@@ -766,3 +649,4 @@ function! ConvertToNonChain()
   execute (line('.') + 1) . 'delete'
   call cursor(line('.') - 1, len(indent) + 1)
 endfunction
+
