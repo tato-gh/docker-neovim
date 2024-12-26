@@ -61,7 +61,6 @@ Plug 'hrsh7th/cmp-buffer'
 "Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-vsnip'
 
-
 " markdown
 " markdown-preview mermaidjsが古いので別途取得必要
 "
@@ -70,6 +69,13 @@ Plug 'hrsh7th/cmp-vsnip'
 "   and do `:call mkdp#util#install()` if not work.
 "
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install' }
+
+
+" Copilot
+Plug 'github/copilot.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
+
 
 call plug#end()
 " ------------------------------------
@@ -262,5 +268,50 @@ require'lspconfig'.elixirls.setup{
   }
 }
 
-EOF
+-- copilot
+require('CopilotChat').setup({
+  chat_autocomplete = false,
+  prompts = {
+    Explain = {
+      prompt = '> /COPILOT_EXPLAIN\n\nWrite an explanation for the selected code as paragraphs of text.',
+      mapping = '<leader>ce'
+    },
+    Review = {
+      prompt = '> /COPILOT_REVIEW\n\nReview the selected code.',
+      mapping = '<leader>cr'
+      -- see config.lua for implementation
+    },
+    Fix = {
+      prompt = '> /COPILOT_GENERATE\n\nThere is a problem in this code. Rewrite the code to show it with the bug fixed.',
+      mapping = '<leader>cf'
+    },
+    Optimize = {
+      prompt = '> /COPILOT_GENERATE\n\nOptimize the selected code to improve performance and readability.',
+      mapping = '<leader>co'
+    },
+    Docs = {
+      prompt = '> /COPILOT_GENERATE\n\nPlease add documentation comments to the selected code.',
+      mapping = '<leader>cd'
+    },
+    Tests = {
+      prompt = '> /COPILOT_GENERATE\n\nPlease generate tests for my code.',
+      mapping = '<leader>ct'
+    },
+    Commit = {
+      prompt = '> #git:staged\n\nWrite commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
+      mapping = '<leader>cg'
+    },
+    Functions = {
+      prompt = '> /COPILOT_GENERATE\n\nPlease generate functions for my test passed.',
+      mapping = '<leader>cf'
+    },
+    English = {
+      prompt = '/COPILOT_GENERATE\n\nPlease translate to english.',
+      -- system_prompt = 'You are very good at explaining stuff',
+      description = 'I am japanese',
+      mapping = '<leader>cl'
+    },
+  }
+})
 
+EOF
