@@ -274,44 +274,61 @@ require('CopilotChat').setup({
   prompts = {
     Explain = {
       prompt = '> /COPILOT_EXPLAIN\n\nWrite an explanation for the selected code as paragraphs of text.',
-      mapping = '<leader>ce'
+      mapping = '<leader>pe'
     },
     Review = {
       prompt = '> /COPILOT_REVIEW\n\nReview the selected code.',
-      mapping = '<leader>cr'
+      mapping = '<leader>pr'
       -- see config.lua for implementation
     },
     Fix = {
       prompt = '> /COPILOT_GENERATE\n\nThere is a problem in this code. Rewrite the code to show it with the bug fixed.',
-      mapping = '<leader>cf'
+      mapping = '<leader>pf'
     },
     Optimize = {
       prompt = '> /COPILOT_GENERATE\n\nOptimize the selected code to improve performance and readability.',
-      mapping = '<leader>co'
+      mapping = '<leader>po'
     },
     Docs = {
       prompt = '> /COPILOT_GENERATE\n\nPlease add documentation comments to the selected code.',
-      mapping = '<leader>cd'
+      mapping = '<leader>pd'
     },
     Tests = {
       prompt = '> /COPILOT_GENERATE\n\nPlease generate tests for my code.',
-      mapping = '<leader>ct'
+      mapping = '<leader>pt'
     },
     Commit = {
       prompt = '> #git:staged\n\nWrite commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.',
-      mapping = '<leader>cg'
+      mapping = '<leader>pg'
     },
     Functions = {
       prompt = '> /COPILOT_GENERATE\n\nPlease generate functions for my test passed.',
-      mapping = '<leader>cf'
+      mapping = '<leader>pf'
     },
     English = {
       prompt = '/COPILOT_GENERATE\n\nPlease translate to english.',
       -- system_prompt = 'You are very good at explaining stuff',
       description = 'I am japanese',
-      mapping = '<leader>cl'
+      mapping = '<leader>pl'
     },
   }
 })
 
 EOF
+
+" copilot
+autocmd VimEnter * Copilot disable | let g:copilot_enabled = 0
+nnoremap <silent> <Leader>pp :call ToggleCopilot()<CR>
+
+function! ToggleCopilot()
+  if g:copilot_enabled
+    Copilot disable
+    let g:copilot_enabled = 0
+    echo "Copilot Disabled"
+  else
+    Copilot enable
+    let g:copilot_enabled = 1
+    echo "Copilot Enabled"
+  endif
+endfunction
+
