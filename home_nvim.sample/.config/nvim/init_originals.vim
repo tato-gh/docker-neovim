@@ -200,7 +200,6 @@ nnoremap <Leader>gitgr :MyTermTab git grep -n<Space>
 nnoremap <Leader>gitbl :MyTermTab git blame <C-r>=expand('%')<CR><CR>
 nnoremap <Leader>gitsh :MyTermTab git show <C-r>=expand('<cword>')<CR><CR>
 
-
 " ヒューリスティック(便利機能案)
 " " 別ファイル参照 / 画面分割してファイル一覧
 nnoremap <Leader>r :wincmd v<CR>:DirectoryFiles <C-r>=Curdir()<CR> <C-r>=expand('%:t')<CR><CR>
@@ -226,10 +225,16 @@ inoremap <C-u> <C-o>:call ConvertToModuleInsertMode()<CR>
 nnoremap cfc :call ConvertToChain()<CR>
 nnoremap cfi :call ConvertToNonChain()<CR>
 
+" " Claude Code
+nnoremap <Leader>ch :call SendToClaude()<CR>
+nnoremap <Leader>cc :terminal claude -p -c 
+vnoremap <Leader>ch :<C-u>call SendToClaude()<CR>
+
 " " 共通
 " 同名のmap value挿入が多いので@vで補完する
 " もっと良いものが欲しいが暫定として使用する
 nnoremap @v :execute "normal! 0f:Bhvt:yf:pa,"<CR>
+
 
 
 " -----------------------
@@ -648,5 +653,50 @@ function! ConvertToNonChain()
   call setline('.', non_chained_call)
   execute (line('.') + 1) . 'delete'
   call cursor(line('.') - 1, len(indent) + 1)
+endfunction
+
+
+" Claude Code shortcut 
+function! SendToClaude()
+    " ファイルパスを取得
+    let filepath = expand('%')
+
+    " visual modeかどうかを判定してテキストを取得
+    let text_content = ''
+
+    " visual modeから抜ける
+    if mode() ==# 'v' || mode() ==# 'V' || mode() ==# "\<C-v>"
+        normal! gv
+        " 選択範囲を取得
+        let [line_start, column_start] = getpos("'<")[1:2]
+        let [line_end, column_end] = getpos("'>")[1:2]
+
+        if visualmode() ==# 'V'
+            let text_content = join(getline(line_start, line_end), "\n")
+        else
+            let lines = getline(line_start, line_end)
+            if len(lines) == 1
+                let text_content = lines[0][column_start-1:column_end-1]
+            else
+                let lines[0] = lines[0][column_start-1:]
+                let lines[-1] = lines[-1][:column_end-1]
+                let text_content = join(lines, "\n")
+            endif
+        endif
+        " visual modeから抜ける
+        execute "normal! \<Esc>"
+    else
+        let text_content = getline('.')
+    endif
+
+    let claude_input = '@' . filepath . ' ' . text_content
+
+    " テンポラリファイルに内容を書き込み
+    " -- エスケープの問題が厄介なため
+    let temp_file = tempname()
+    let claude_input = '@' . filepath . ' ' . text_content
+    call writefile(split(claude_input, "\n"), temp_file)
+
+    execute 'silent tabnew | terminal claude -p < ' . temp_file . ' && rm ' . temp_file
 endfunction
 
