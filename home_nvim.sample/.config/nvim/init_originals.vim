@@ -658,16 +658,29 @@ endfunction
 
 " Claude Code shortcut 
 function! SendToClaude()
-    " ファイルパスを取得
-    let filepath = expand('%')
+    " 現在のファイルパス
+    let current_filepath = expand('%')
+    " 開いているファイル一覧を取得
+    let open_files = []
+    " 全タブの全ウインドウを調査
+    for tab_nr in range(1, tabpagenr('$'))
+        for win_nr in range(1, tabpagewinnr(tab_nr, '$'))
+            let buf_nr = tabpagebuflist(tab_nr)[win_nr - 1]
+            let filepath = fnamemodify(bufname(buf_nr), ':p')
+            " ファイルが存在し、かつ通常のファイル（terminalなどを除外）
+            if filereadable(filepath) && getbufvar(buf_nr, '&buftype') == ''
+                if index(open_files, filepath) == -1
+                    call add(open_files, filepath)
+                endif
+            endif
+        endfor
+    endfor
 
     " visual modeかどうかを判定してテキストを取得
     let text_content = ''
 
-    " visual modeから抜ける
     if mode() ==# 'v' || mode() ==# 'V' || mode() ==# "\<C-v>"
         normal! gv
-        " 選択範囲を取得
         let [line_start, column_start] = getpos("'<")[1:2]
         let [line_end, column_end] = getpos("'>")[1:2]
 
@@ -683,19 +696,26 @@ function! SendToClaude()
                 let text_content = join(lines, "\n")
             endif
         endif
-        " visual modeから抜ける
         execute "normal! \<Esc>"
     else
         let text_content = getline('.')
     endif
 
-    let claude_input = '@' . filepath . ' ' . text_content
+    " Claude CLIに渡す内容を構築
+    let claude_input_lines = []
 
-    " テンポラリファイルに内容を書き込み
+    " 開いているファイルを@で指定
+    for filepath in open_files
+        call add(claude_input_lines, '@' . filepath)
+    endfor
+
+    " 指示内容を追加
+    call add(claude_input_lines, text_content)
+
+    " tmpファイルに書き込み
     " -- エスケープの問題が厄介なため
     let temp_file = tempname()
-    let claude_input = '@' . filepath . ' ' . text_content
-    call writefile(split(claude_input, "\n"), temp_file)
+    call writefile(claude_input_lines, temp_file)
 
     execute 'silent tabnew | terminal claude -p < ' . temp_file . ' && rm ' . temp_file
 endfunction
