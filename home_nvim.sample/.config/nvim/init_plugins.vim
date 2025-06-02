@@ -270,6 +270,7 @@ require'lspconfig'.elixirls.setup{
 
 -- copilot
 require('CopilotChat').setup({
+  model = 'gpt-4.1-mini',
   chat_autocomplete = false,
   prompts = {
     Explain = {
@@ -331,4 +332,3 @@ function! ToggleCopilot()
     echo "Copilot Enabled"
   endif
 endfunction
-

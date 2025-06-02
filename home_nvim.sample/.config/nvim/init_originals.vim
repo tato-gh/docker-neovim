@@ -226,9 +226,13 @@ nnoremap cfc :call ConvertToChain()<CR>
 nnoremap cfi :call ConvertToNonChain()<CR>
 
 " " Claude Code
-nnoremap <Leader>ch :call SendToClaude()<CR>
+nnoremap <Leader>cp :terminal claude -p
 nnoremap <Leader>cc :terminal claude -p -c 
+nnoremap <Leader>ch :call SendToClaude()<CR>
 vnoremap <Leader>ch :<C-u>call SendToClaude()<CR>
+" " " for elixir
+nnoremap <Leader>ct :terminal claude -p
+autocmd FileType elixir nnoremap <buffer> <Leader>ct :terminal claude -p /user:dev_elixir_onestep<CR>
 
 " " 共通
 " 同名のmap value挿入が多いので@vで補完する
