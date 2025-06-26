@@ -228,11 +228,16 @@ nnoremap cfi :call ConvertToNonChain()<CR>
 " " Claude Code
 nnoremap <Leader>cp :terminal claude -p
 nnoremap <Leader>cc :terminal claude -p -c 
-nnoremap <Leader>ch :call SendToClaude()<CR>
-vnoremap <Leader>ch :<C-u>call SendToClaude()<CR>
-" " " for elixir
-nnoremap <Leader>ct :terminal claude -p
-autocmd FileType elixir nnoremap <buffer> <Leader>ct :terminal claude -p /user:dev_elixir_onestep<CR>
+" " direction from Neovim
+nnoremap <Leader>co :call <SID>OpenOrReloadDirection()<CR>
+nnoremap <Leader>cf :SendListWindowFiles<CR>
+nnoremap <Leader>chm :SendDirection 
+vnoremap <Leader>chm :<C-u>SendDirectionV 
+nnoremap <Leader>chd :SendDirection 慎重に解説してください<CR>
+vnoremap <Leader>chd :<C-u>SendDirectionV 慎重に解説してください<CR>
+nnoremap <Leader>chc :SendDirection 該当部分の下書き（あるいはメモ）に従って、その意図する完成形を示してください<CR>
+vnoremap <Leader>chc :<C-u>SendDirectionV 該当部分の下書き（あるいはメモ）の不備や欠損、不足を補って完成形を示してください<CR>
+
 
 " " 共通
 " 同名のmap value挿入が多いので@vで補完する
@@ -660,67 +665,89 @@ function! ConvertToNonChain()
 endfunction
 
 
-" Claude Code shortcut 
-function! SendToClaude()
-    " 現在のファイルパス
-    let current_filepath = expand('%')
-    " 開いているファイル一覧を取得
-    let open_files = []
-    " 全タブの全ウインドウを調査
-    for tab_nr in range(1, tabpagenr('$'))
-        for win_nr in range(1, tabpagewinnr(tab_nr, '$'))
-            let buf_nr = tabpagebuflist(tab_nr)[win_nr - 1]
-            let filepath = fnamemodify(bufname(buf_nr), ':p')
-            " ファイルが存在し、かつ通常のファイル（terminalなどを除外）
-            if filereadable(filepath) && getbufvar(buf_nr, '&buftype') == ''
-                if index(open_files, filepath) == -1
-                    call add(open_files, filepath)
-                endif
-            endif
-        endfor
-    endfor
+" Claude Direction
 
-    " visual modeかどうかを判定してテキストを取得
-    let text_content = ''
-
-    if mode() ==# 'v' || mode() ==# 'V' || mode() ==# "\<C-v>"
-        normal! gv
-        let [line_start, column_start] = getpos("'<")[1:2]
-        let [line_end, column_end] = getpos("'>")[1:2]
-
-        if visualmode() ==# 'V'
-            let text_content = join(getline(line_start, line_end), "\n")
-        else
-            let lines = getline(line_start, line_end)
-            if len(lines) == 1
-                let text_content = lines[0][column_start-1:column_end-1]
-            else
-                let lines[0] = lines[0][column_start-1:]
-                let lines[-1] = lines[-1][:column_end-1]
-                let text_content = join(lines, "\n")
-            endif
-        endif
-        execute "normal! \<Esc>"
-    else
-        let text_content = getline('.')
-    endif
-
-    " Claude CLIに渡す内容を構築
-    let claude_input_lines = []
-
-    " 開いているファイルを@で指定
-    for filepath in open_files
-        call add(claude_input_lines, '@' . filepath)
-    endfor
-
-    " 指示内容を追加
-    call add(claude_input_lines, text_content)
-
-    " tmpファイルに書き込み
-    " -- エスケープの問題が厄介なため
-    let temp_file = tempname()
-    call writefile(claude_input_lines, temp_file)
-
-    execute 'silent tabnew | terminal claude -p < ' . temp_file . ' && rm ' . temp_file
+" " tmp/directionファイルへの書き込み関数
+function! s:WriteToDirection(content)
+  if !isdirectory('tmp')
+    call mkdir('tmp', 'p')
+  endif
+  call writefile([a:content], 'tmp/direction')
+  echo 'Written to tmp/direction'
 endfunction
+
+function! s:SendListWindowFiles()
+  let files = []
+  for winnr in range(1, winnr('$'))
+    let bufnr = winbufnr(winnr)
+    let filename = bufname(bufnr)
+    if filename != ''
+      call add(files, '@' . fnamemodify(filename, ':p'))
+    endif
+  endfor
+  
+  if len(files) > 0
+    call s:WriteToDirection(join(files, ' '))
+  else
+    echo 'No files found in current tab'
+  endif
+endfunction
+
+" " 現在の位置情報を取得する関数
+function! s:GetLocationInfo(mode)
+  let filename = expand('%:p')
+  
+  if a:mode ==# 'v' || a:mode ==# 'V'
+    let start_line = line("'<")
+    let end_line = line("'>")
+  else
+    let start_line = line('.')
+    let end_line = start_line
+  endif
+  
+  if start_line == end_line
+    return filename . ':' . start_line
+  else
+    return filename . ':' . start_line . '-' . end_line
+  endif
+endfunction
+
+" " SendDirectionコマンドの実装
+function! s:SendDirection(instruction, mode)
+  if &modified
+    " よく忘れるので現在のバッファを保存
+    write
+  endif
+
+  let location = s:GetLocationInfo(a:mode)
+  let content = location . ' ' . a:instruction
+  call s:WriteToDirection(content)
+endfunction
+
+"" tmp/directionを開く/再読み込みする
+function! s:OpenOrReloadDirection()
+  let direction_file = 'tmp/direction'
+  let winnr = bufwinnr(direction_file)
+  
+  if winnr != -1
+    " 既に開いている場合は再読み込み
+    execute winnr . 'wincmd w'
+    edit!
+    echo 'Reloaded tmp/direction'
+  else
+    " 開いていない場合は新規で開く
+    if filereadable(direction_file)
+      execute 'vsplit ' . direction_file
+      setlocal autoread
+      echo 'Opened tmp/direction with autoread'
+    else
+      echo 'tmp/direction not found'
+    endif
+  endif
+endfunction
+
+" " コマンド定義
+command! -nargs=1 SendDirection call s:SendDirection(<q-args>, mode())
+command! -nargs=1 SendDirectionV call s:SendDirection(<q-args>, 'v')
+command! SendListWindowFiles call s:SendListWindowFiles()
 
