@@ -10,8 +10,7 @@ home_nvim.sample/*
 !home_nvim.sample/.help
 !home_nvim.sample/.bashrc.sample
 !home_nvim.sample/.docker/
-home_nvim.sample/.docker/*
-!home_nvim.sample/.docker/config.json
+!home_nvim.sample/.claude/
 
 home_nvim.sample/.config/*
 !home_nvim.sample/.config/nvim/
@@ -23,6 +22,13 @@ home_nvim.sample/.config/nvim/*
 home_nvim.sample/.byobu/*
 !home_nvim.sample/.byobu/keybindings.tmux
 !home_nvim.sample/.byobu/.tmux.conf
+
+home_nvim.sample/.docker/*
+!home_nvim.sample/.docker/config.json
+
+home_nvim.sample/.claude/*
+!home_nvim.sample/.claude/commands
+
 
 node_modules/
 tmp/
