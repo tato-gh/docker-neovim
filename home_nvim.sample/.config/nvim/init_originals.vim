@@ -230,7 +230,7 @@ nnoremap <Leader>cp :terminal claude -p
 nnoremap <Leader>cc :terminal claude -p -c 
 " " direction from Neovim
 nnoremap <Leader>co :call <SID>OpenOrReloadDirection()<CR>
-nnoremap <Leader>cf :SendListWindowFiles<CR>
+nnoremap <Leader>chf :SendListWindowFiles<CR>
 nnoremap <Leader>chm :SendDirection 
 vnoremap <Leader>chm :<C-u>SendDirectionV 
 nnoremap <Leader>chd :SendDirection 慎重に解説してください<CR>
