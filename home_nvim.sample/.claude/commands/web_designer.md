@@ -111,7 +111,6 @@ docs/web_designer/
     ├── dashboard/
     │   ├── story.md            # 画面のストーリー・利用コンテキスト
     │   ├── dashboard-base.html  # ダッシュボード（データあり）
-    │   └── dashboard-empty.html # ダッシュボード（空状態）
     └── {画面名}/
         ├── story.md            # 画面のストーリー・利用コンテキスト
         ├── {画面名}-base.html   # 基本状態
@@ -121,7 +120,9 @@ docs/web_designer/
 **命名規則**:
 - 基本画面: `{画面名}/{画面名}-base.html`
 - 状態バリエーション: `{画面名}/{画面名}-{状態}.html`
-- 状態例: error, loading, empty, success, confirm など
+- 主に画面内の操作で大きく状態が変わるものを扱う
+- 状態例: with-, show-, hide-, error-, loading-, empty-, dialog-, confirm- など
+  - 単にデータが空のときの表示を示すだけならばbaseに含めること。ファイル分割より実用的
 
 **README.mdの構成**:
 - プロジェクト概要
