@@ -8,12 +8,13 @@
 - **{n}**: 実行回数（1, 2, 3...）
 - **{times-n}**: 作業ブランチのサフィックス（例: feature/auth-times-1, issue/0001-times-3）
 
-## ログファイル構造
+## ファイル構造
 
 ```
 .claude/works/
-├── commons.md         # プロジェクト全体の共通知識
-├── commons-{task}.md         # 各タスク別の共通知識（例: test.md, model.md）
+├── dictionary.md     # プロジェクト独自の語句定義
+├── commons.md        # プロジェクト全体の共通知識
+├── commons-{task}.md # 各タスク別の共通知識（例: test.md, model.md）
 └── {base}/           # ブランチ別ディレクトリ
     ├── issue.md      # ブランチのイシュー・蓄積された共通知識・未決定議題のまとめ
     └── times-{n}.md  # N回目の作業記録

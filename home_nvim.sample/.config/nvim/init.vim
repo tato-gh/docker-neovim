@@ -71,7 +71,7 @@ set shell=/bin/bash\ -l\ -O\ expand_aliases
 
 " クリップボード共有
 " - WSLがメインになった今ではあまり意味がない
-" set clipboard+=unnamedplus,unnamed
+set clipboard+=unnamedplus,unnamed
 
 
 " word 区切り文字
