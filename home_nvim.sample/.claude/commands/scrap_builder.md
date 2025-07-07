@@ -1,12 +1,12 @@
 # スクラップ＆ビルド
 
-このコマンドは、反復的な完全実装作業（スクラップ＆ビルド）のN回目を実行します。
+このコマンドは、反復的な実装作業（スクラップ＆ビルド）のN回目を実行します。
 
 ## 用語定義
 
 - **{base}**: 元となるブランチ名（例: feature/auth など）
 - **{n}**: 実行回数（1, 2, 3...）
-- **{times-n}**: 作業ブランチのサフィックス（例: feature/auth/times-1, issue/0001/times-3）
+- **{times-n}**: 作業ブランチのサフィックス（例: feature/auth-times-1, issue/0001-times-3）
 
 ## ログファイル構造
 
@@ -25,36 +25,42 @@
 
 現在のブランチを確認（`git rev-parse --abbrev-ref HEAD`）し、以下のルールで処理：
 
-1. 現在のブランチが `{base}/times-{n}` 形式の場合：
+1. 現在のブランチが `{base}-times-{n}` 形式の場合：
    - {base}と{n}を抽出
    - 次回作業のため n = n + 1 とする
+   - basedir はbaseの`/`は`-`で置換する
+     - 例: `feat/001/test`のとき`feat-001-test`がbasedir
 2. `main`や`develop`などの汎用ブランチの場合：
    - 実行を停止しユーザーに専用ブランチをきるように伝達
 3. それ以外のブランチの場合：
    - 現在のブランチを{base}とする
    - n = 1 とする（初回実行）
-   - 引数でタスク内容が指定されていれば、それを`.claude/works/{base}/issue.md`に追記
+   - basedir はbaseの`/`は`-`で置換する
+     - 例: `feat/001/test`のとき`feat-001-test`がbasedir
+   - 引数でタスク内容が指定されていれば、それを`.claude/works/{basedir}/issue.md`に追記
 
 作業ブランチの準備：
-- 現在のブランチが `{base}/times-{任意の数}` 形式の場合：
+- 現在のブランチが `{base}-times-{任意の数}` 形式の場合：
   1. 引継ぎ資料（`.claude/works/`配下）以外の変更をコミット。引継ぎ資料はそのまま保持
   2. {base}ブランチにチェックアウト
-- `{base}/times-{n}` ブランチを作成してチェックアウト
+- `{base}-times-{n}` ブランチを作成してチェックアウト
 
 引数処理：
-- 引数がある場合は、タスク内容あるいはフィードバックとして`.claude/works/{base}/issue.md`の末尾に追記
+- 引数がある場合は、タスク内容あるいはフィードバックとして`.claude/works/{basedir}/issue.md`の末尾に追記
 - 例: 「もっと具体的に」「エラー処理を追加して」など、前回作業への改善要望
 
 ### 2. 引継ぎ資料の読み込み
 
 以下の順序で読み込み（存在しない場合はスキップ）：
-1. `.claude/works/{base}/issue.md` - 現ブランチでの実施内容や教訓まとめ
+1. `.claude/works/{basedir}/issue.md` - 現ブランチでの実施内容や教訓まとめ
 2. `.claude/works/commons.md` - プロジェクト全体の共通知識
 3. `.claude/works/commons-{task}.md` - 後のステップで必要に応じて読み込み
 
+原則として過去の実装を直接見ることはしません。
+
 ### 3. N回目の計画立案
 
-読み込んだ資料を基に作業計画を立案し、`.claude/works/{base}/times-{n}.md`を新規作成：
+読み込んだ資料を基に作業計画を立案し、`.claude/works/{basedir}/times-{n}.md`を新規作成：
 
 ```markdown
 # {n}回目の作業記録
@@ -69,7 +75,7 @@
 2. ...
 
 ## 実装判断
-### [判断が必要だった事項]
+### [判断が必要な事項]
 - 選択肢: [A], [B], [C]
 - 選択: **[B]**
 - 理由: [選択理由]
@@ -81,13 +87,13 @@
 1. 該当する`.claude/works/commons-{task}.md`があれば再度読み込み、注意点を復唱出力
 2. 作業を実施
 3. ステップ完了ごとにコミット（メッセージ: `Step {n}: [ステップ名]`）
-4. 実装判断があれば`.claude/works/{base}/times-{n}.md`に追記
+4. 実装判断があれば`.claude/works/{basedir}/times-{n}.md`に追記
 
-### 5. 完了報告とイシューの更新
+### 5. 完了報告とイシューの更新、フィードバックによるイシューの更新
 
 1. 実施内容のサマリーを表示
 2. 実装判断があればその内容をユーザーに報告
-3. `.claude/works/{base}/times-{n}.md`に実装内容を追記：
+3. `.claude/works/{basedir}/times-{n}.md`に実装内容を追記：
    ```markdown
    ## 実装内容
    [実装の要約]
@@ -97,17 +103,27 @@
    [git diff {base}...HEAD の結果]
    ```
    ```
-4. `.claude/works/{base}/issue.md`を更新：
-   - 明記すべき作業内容
-   - 今回得られた教訓
+4. `.claude/works/{basedir}/issue.md` 更新と整理：
+   - 今回の実施内容を踏まえて同じ内容を再現するための画面設計、データ設計、機能設計
+   - これまでに得られた教訓や知見
+     - 特に続いていく回で以前の回に逆戻りしないように必要
    - 未決定の議題
+
+5. フィードバックに基づく更新と整理：
+   - ユーザーからフィードバックがあった場合は、**コードを引き継がない前提**で解釈が可能なように、下記の適当な資料に仕様として反映する
+   - ブランチ固有のものは`.claude/works/{basedir}/issue.md`
+   - taskで共通のものは`.claude/works/commons-{task}.md`
+   - 全体共通のものは`.claude/works/commons.md`
 
 ## 引継ぎ資料のコミット除外
 
 以下のファイルは引継ぎ資料のため、各作業ブランチでコミットしない：
 - `.claude/works/commons.md`
 - `.claude/works/commons-{task}.md`
-- `.claude/works/{base}/issue.md`
+- `.claude/works/{basedir}/issue.md`
+
+また以下のファイルも引き継ぐためコミットしない：
+- `.claude/settings.local.json`
 
 ## 使用例
 
