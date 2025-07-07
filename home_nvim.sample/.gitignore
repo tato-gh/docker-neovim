@@ -6,6 +6,8 @@
 /tmp
 .memo
 
+.env
+
 .iex.exs
 
 # Playwright
@@ -18,3 +20,5 @@ node_modules/
 # Claude tmps
 .claude/logs/
 .claude/works/
+!.claude/works/commons*
+
