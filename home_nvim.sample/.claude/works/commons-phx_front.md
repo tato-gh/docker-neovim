@@ -23,7 +23,7 @@
 
 大量データの扱い:
 - listはstreamを積極的に使用（メモリ効率）
-- 外部API呼び出しや重い処理はassign_asyncを使用
+- 外部サービスのAPI呼び出しやロードに明らかに時間がかかる処理はassign_asyncを使用
 
 状態管理の注意点:
 - フォームの状態はchangesetベースで管理
@@ -159,8 +159,8 @@ def mount(_params, _session, socket) do
    |> assign_async(:stats, fn ->
      {:ok, %{stats: calculate_expensive_stats()}}
    end)
-   |> assign_async(:recommendations, fn ->
-     {:ok, %{recommendations: fetch_from_external_api()}}
+   |> assign_async(:weather, fn ->
+     {:ok, %{weather: fetch_from_weather_external_service()}}
    end)}
 end
 
@@ -170,6 +170,8 @@ end
   <%= @stats.result.stats %>
 </div>
 ```
+
+**注意**: 通常のDBアクセス（同一アプリ内）ではassign_asyncは不要です。
 
 ### エラーハンドリングパターン
 
