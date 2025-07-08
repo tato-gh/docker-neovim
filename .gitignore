@@ -28,6 +28,7 @@ home_nvim.sample/.docker/*
 
 home_nvim.sample/.claude/*
 !home_nvim.sample/.claude/commands
+!home_nvim.sample/.claude/works
 !home_nvim.sample/.claude/CLAUDE.md
 
 
