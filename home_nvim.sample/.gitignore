@@ -19,6 +19,6 @@ node_modules/
 
 # Claude tmps
 .claude/logs/
-.claude/works/
+.claude/works/*
 !.claude/works/commons*
 

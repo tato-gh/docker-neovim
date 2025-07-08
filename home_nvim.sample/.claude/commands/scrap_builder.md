@@ -34,7 +34,7 @@
 
 現在のブランチを確認（`git rev-parse --abbrev-ref HEAD`）し、以下のルールで処理：
 
-1. 現在のブランチが `{base}-times-{n}` 形式の場合：
+1. 現在のブランチが `{base}-{task}-times-{n}`か`{base}-times-{n}`形式の場合：
    - {base}と{n}を抽出
    - 次回作業のため n = n + 1 とする
    - basedir はbaseの`/`は`-`で置換する
@@ -49,8 +49,9 @@
    - 引数でタスク内容が指定されていれば、それを`.claude/works/{basedir}/issue.md`に追記
 
 作業ブランチの準備：
-- 現在のブランチが `{base}-times-{任意の数}` 形式の場合、{base}ブランチにチェックアウト
-- `{base}-times-{n}` ブランチを作成してチェックアウト
+- 現在のブランチが `{base}-{task}-times-{任意の数}`か`{base}-times-{任意の数}` 形式の場合、{base}ブランチにチェックアウト
+- `{base}-{task}-times-{n}` ブランチを作成してチェックアウト
+  - taskが指定されていない場合は`{base}-times-{n}`となる
 
 ### 3. 引継ぎ資料の読み込み
 
