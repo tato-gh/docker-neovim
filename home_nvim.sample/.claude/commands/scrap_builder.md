@@ -7,8 +7,8 @@
 
 - **{base}**: 元となるブランチ名（例: feature/auth など）
 - **{n}**: 実行回数（1, 2, 3...）
-- **{task}**: 作業内容を表す（英単語）。指定なしも有。作業ブランチのサフィックス（例: feature/auth-test-times-1, issue/0001-times-3）
-- **{times-n}**: N回目を表す。作業ブランチのサフィックス（例: feature/auth-times-1, issue/0001-test-times-3）
+- **{task}**: 作業内容を表す（英単語）。指定なしも有。作業ブランチのサフィックス（例: feature/auth-times-1-test, issue/0001-times-3）
+- **{times-n}**: N回目を表す。作業ブランチのサフィックス（例: feature/auth-times-1, issue/0001-times-3-test）
 
 ## ファイル構造
 
@@ -35,7 +35,7 @@
 
 現在のブランチを確認（`git rev-parse --abbrev-ref HEAD`）し、以下のルールで処理：
 
-1. 現在のブランチが `{base}-{task}-times-{n}`か`{base}-times-{n}`形式の場合：
+1. 現在のブランチが `{base}-times-{n}-{task}`か`{base}-times-{n}`形式の場合：
    - {base}と{n}を抽出
    - 次回作業のため n = n + 1 とする
    - basedir はbaseの`/`は`-`で置換する
@@ -44,15 +44,15 @@
    - 実行を停止しユーザーに専用ブランチをきるように伝達
 3. それ以外のブランチの場合：
    - 現在のブランチを{base}とする
-   - 現在のブランチに対して`{base}-{task}-times-{n}`か`{base}-times-{n}`形式があれば n = n + 1とする
+   - 現在のブランチに対して`{base}-times-{n}-{task}`か`{base}-times-{n}`形式があれば n = n + 1とする
    - なければ n = 1 とする（初回実行）
    - basedir はbaseの`/`は`-`で置換する
      - 例: `feat/001/test`のとき`feat-001-test`がbasedir
    - 引数でタスク内容が指定されていれば、それを`.claude/works/{basedir}/issue.md`に追記
 
 作業ブランチの準備：
-- 現在のブランチが `{base}-{task}-times-{任意の数}`か`{base}-times-{任意の数}` 形式の場合、{base}ブランチにチェックアウト
-- `{base}-{task}-times-{n}` ブランチを作成してチェックアウト
+- 現在のブランチが `{base}-times-{任意の数}-{task}`か`{base}-times-{任意の数}` 形式の場合、{base}ブランチにチェックアウト
+- `{base}-times-{n}-{task}` ブランチを作成してチェックアウト
   - taskが指定されていない場合は`{base}-times-{n}`となる
 
 ### 3. 引継ぎ資料の読み込み
@@ -62,7 +62,10 @@
 2. `.claude/works/commons.md` - プロジェクト全体の共通事項
 3. `.claude/works/commons-{task}.md` - task単位の共通事項、後のステップで必要に応じて読み込み
 
-原則として過去の作業ブランチがあっても直接見ずに引継ぎ資料をもとにする。
+原則として過去N-x回の作業ブランチがあっても直接見ずに引継ぎ資料をもとにする。
+
+ただしissue.mdで指定された`git diff`で直接の前作業をすべて理解すること。
+場合によっては関係のない作業が一部含まれる可能性があるため、必要個所のみ理解すること。
 
 ### 4. ステップごとの作業実施
 
