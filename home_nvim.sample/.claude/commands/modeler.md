@@ -66,7 +66,7 @@
 
 **概要**: ビジネス要件に基づく概念的なデータモデル
 **形式**: Markdown
-**保存場所**: `docs/modeler/data-modeling.md`
+**保存場所**: `docs/model/data-modeling.md`
 **構成**:
 - 概要とスコープ
 - エンティティ一覧（説明付き）
@@ -78,7 +78,7 @@
 
 **概要**: 実装を見据えた物理的なデータ設計
 **形式**: Markdown
-**保存場所**: `docs/modeler/data-design.md`
+**保存場所**: `docs/model/data-design.md`
 **構成**:
 - 設計概要と対象データストア
 - 物理設計図（採用技術に応じた適切な形式）

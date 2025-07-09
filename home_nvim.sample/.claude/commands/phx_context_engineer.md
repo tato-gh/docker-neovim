@@ -107,7 +107,7 @@ C2カバレッジレベル（境界値を含む）の単体テストを実装し
 
 あなたは、あなた自身が記憶しておかないといけないことを下記に置いています。
 
-`.claude/logs/CLAUDE.phx_context_engineer.md`
+`.claude/works/commons-phx_context.md`
 
 いわばコマンド自身のPJ固有の記憶装置です。
 

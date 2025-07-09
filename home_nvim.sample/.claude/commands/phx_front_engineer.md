@@ -142,7 +142,7 @@ C1カバレッジレベルの画面テストを作成します。各画面要素
 
 あなたは、あなた自身が記憶しておかないといけないことを下記に置いています。
 
-`.claude/logs/CLAUDE.phx_front_engineer.md`
+`.claude/works/commons-phx_front.md`
 
 いわばコマンド自身のPJ固有の記憶装置です。
 

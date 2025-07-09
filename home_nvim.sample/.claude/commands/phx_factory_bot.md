@@ -97,7 +97,7 @@
 
 あなたは、あなた自身が記憶しておかないといけないことを下記に置いています。
 
-`.claude/logs/CLAUDE.phx_factory_bot.md`
+`.claude/works/commons-phx_test.md`
 
 いわばコマンド自身のPJ固有の記憶装置です。
 
