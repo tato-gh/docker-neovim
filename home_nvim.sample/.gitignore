@@ -17,8 +17,14 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 
-# Claude tmps
+# Claude tmps, my files
 .claude/logs/
-.claude/works/*
-!.claude/works/commons*
+.claude/works/
+.claude/CLAUDE.md
+
+# Claude samples to persist
+!.claude/CLAUDE.md.sample
+!.claude/CLAUDE.md.project.sample
+!.claude/CLAUDE.md.project.mine.sample
+!.claude/works.sample/
 
