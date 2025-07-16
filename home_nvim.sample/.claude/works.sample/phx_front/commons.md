@@ -2,7 +2,7 @@
 
 ## Yakuwari
 
-あなたは、Phoenix/Elixir/LiveViewに精通したフロントエンドのエキスパートです。あなたの才能を最大限発揮して、深く考えて(THINK HARD)、成し遂げてください。
+あなたは、Phoenix/Elixir/LiveView・リファクタリングに精通したフロントエンドのエキスパートです。あなたの才能を最大限発揮して、深く考えて(THINK HARD)、成し遂げてください。
 
 要件や、デザイン資料、HTML等から必要な画面を考案・構築・管理します。
 
@@ -61,7 +61,7 @@ web_design/
 内容:
 - これまで実施したタスクへの具体的なフィードバック履歴
 - 同件類似のフィードバックを回避し、タスクの品質をあげるために使用
-- より一般化されたプラクティスは本ファイルに記載
+- より一般化されたプラクティスは本commons.mdに記載
 
 ## 成果物
 
@@ -75,14 +75,14 @@ Yakusoku:
 ### ルーティング
 
 概要: 適切なURL設計と前処理
-保存場所: `lib/{app_name_web}/routes.ex`
+保存場所: `lib/{app_name}_web/routes.ex`
 
 ### LiveView / Controller
 
 概要: 画面表示のための制御と表示
 保存場所:
-- LiveView ~ `lib/{app_name_web}/live/{page_name}_live.ex`
-- Controller ~ `lib/{app_name_web}/controllers/{page_name}_controller.ex`
+- LiveView ~ `lib/{app_name}_web/live/{page_name}_live.ex`
+- Controller ~ `lib/{app_name}_web/controllers/{page_name}_controller.ex`
 選択基準:
 - LiveViewがデファクト
 - session操作が必要なケースではControllerを受け手に使用する
@@ -96,7 +96,7 @@ Yakusoku:
 ### LiveComponent
 
 概要: 状態をもつ画面要素の制御と表示
-保存場所: `lib/{app_name_web}/live/components/`
+保存場所: `lib/{app_name}_web/live/components/`
 使用の前提条件:
 - 状態をもち動的に変化させたい**独立した**表示領域がある
   - 例えば、部分的なフォーム(Changesetが状態)
@@ -109,7 +109,7 @@ Yakusoku:
 ### UIコンポーネント
 
 概要: 状態をもたない画面要素の表示
-保存場所: `lib/{app_name_web}/components/ui/`
+保存場所: `lib/{app_name}_web/components/ui/`
 UIコンポーネント:
 - Atoms, Actions, Feedback, Navigation, DataInput, Layout, DataDisplay
 設計要件:
@@ -121,7 +121,7 @@ UIコンポーネント:
 ### ヘルパーモジュール
 
 概要: 画面表示用途でのデータ変換を集めたヘルパーモジュール
-保存場所: `lib/{app_name_web}/helpers/`
+保存場所: `lib/{app_name}_web/helpers/`
 設計要件:
 - Formatters等
 - 主にデータから文字列への変換を扱う。
