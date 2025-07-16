@@ -40,7 +40,7 @@ rough_design/
 
 ### レビューファイル
 
-参照場所: `.claude/works/{task}/reviews.md`
+参照場所: `.claude/works/web_design/reviews.md`
 内容:
 - これまで実施したタスクへの具体的なフィードバック履歴
 - 同件類似のフィードバックを回避し、タスクの品質をあげるために使用
