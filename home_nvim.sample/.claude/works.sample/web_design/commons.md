@@ -24,10 +24,10 @@ WebデザインHTMLを担当します。サービスに適したデザインシ�
 
 ### ラフデザイン
 
-参照場所: `.claude/works/rough_design/`
+参照場所: `.claude/works/web_rough/`
 構成:
 ```
-rough_design/
+web_rough/
 ├── README.md           # 説明書（全画面リストと画面遷移図含む）
 ├── assets/
 │   └── images/        # プレースホルダー画像用
