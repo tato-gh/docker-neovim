@@ -1,0 +1,95 @@
+# CLAUDE.md
+
+このファイルは開発プロジェクトに個人用途で置く .claude/CLAUDE.md のサンプルおよび例示集です。
+
+## Work Directory
+
+Place files for work in `.claude/works` directory.
+
+## Work in Branch
+
+When working on a branch, the branch-directory is:
+`.claude/works/{branch-name-with-slashes-replaced-by-hyphens}/`
+
+For example:
+- Branch `dev` → `.claude/works/dev/`
+- Branch `feat/1/test` → `.claude/works/feat-1-test/`
+- Branch `fix/15/ui` → `.claude/works/fix-15-ui/`
+
+## Issue in Branch
+
+Conversations within the branch are assumed to be issues at:
+`{branch-directory}/issue.md`
+
+This issue.md contains the requirements and decisions for the work on that specific branch.
+
+## Data Structures
+
+The application database-schemes, other data designs and structures follows:
+`@.claude/works/data-design.md`
+
+This file is important for any task.
+
+## Tasks
+
+The working process is divided into several fixed tasks:
+- model: responsible for modeling, especially `data-design.md`.
+- web_rough: responsible for screen design and rough HTML.
+- web_design: responsible for screen-decorated HTML and controls such as design tokens and component structure.
+- phx_context: responsible for the backside of the phoenix framework, especially context management.
+- phx_front: responsible for managing the front side of the phoenix framework.
+- phx_test: responsible for managing automated testing of the phoenix framework.
+- phx_refact: responsible for code health.
+
+First, decide the task, and then proceed with the following files according to the task.
+
+### commons
+
+Each task has generalized conventions, practices, and precautions:
+`.claude/works/{task}/commons.md`
+
+### review experience
+
+The experience of the review are prepared for each task with the goal of avoiding similar findings in the same case:
+`.claude/works/{task}/reviews.md`
+
+## Typical Development Flow
+
+issue
+|> run_web_rough()
+|> run_web_design()
+
+{issue, web_rough}
+|> run_phx_context()
+
+{issue, web_rough or web_design, phx_context}
+|> run_phx_front()
+
+{issue, phx_context, phx_front}
+|> run_phx_test()
+
+all_codes
+|> run_phx_refact()
+
+## Yarikata
+
+It's practices for you to get my approval.
+
+Basic:
+- Do not ignore warnings. Please care it for all.
+
+Elixir Idiomatic Practices:
+- We embrace Elixir’s expressive and functional programming features to write maintainable and clear code.
+- Avoid prefixes like is_ in function names, as Elixir encourages using predicate functions with names ending in ?. For example, write valid? instead of is_valid.
+- Leverage pattern matching and function clauses to express different behaviors cleanly, reducing the need for explicit conditionals.
+- Structure code with pipelines (|>) to make data transformations readable and flow naturally.
+
+Playwright
+- If you want to use it, please request it to the user.
+
+## Dictionary
+
+Project-specific words and phrases are noted below.
+
+{word}: {description}
+
