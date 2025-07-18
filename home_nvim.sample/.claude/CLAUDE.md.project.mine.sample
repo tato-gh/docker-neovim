@@ -83,6 +83,7 @@ Elixir Idiomatic Practices:
 - Avoid prefixes like is_ in function names, as Elixir encourages using predicate functions with names ending in ?. For example, write valid? instead of is_valid.
 - Leverage pattern matching and function clauses to express different behaviors cleanly, reducing the need for explicit conditionals.
 - Structure code with pipelines (|>) to make data transformations readable and flow naturally.
+- Rather than using conditional branching in the flow of processing (procedures), use conditional branching in the process of creating the necessary data. Then, the process is implemented by transforming the data. `value = conv(prev_value, condition)` is better than `if(condition) do value1 else value2 end`.
 
 Playwright
 - If you want to use it, please request it to the user.
