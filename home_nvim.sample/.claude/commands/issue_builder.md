@@ -91,7 +91,7 @@ JWTベースの認証機能を実装する。
 ## ステップ1: ラフデザイン作成
 
 ### web_rough
-web_roughのcommons.mdを理解する。
+web_roughのcommons.md/reviews.mdを理解する。
 ログイン画面のラフをあげる。
 
 ### 具体的にやること
@@ -108,7 +108,7 @@ web_roughのcommons.mdを理解する。
 ## ステップ2: Webデザイン作成
 
 ### web_design
-web_designのcommons.mdを理解する。
+web_designのcommons.md/reviews.mdを理解する。
 デザインシステムに基づいて、画面をデザインする。
 
 ### 具体的にやること
@@ -129,7 +129,7 @@ web_designのcommons.mdを理解する。
 ## ステップ3: {概要}
 
 ### task
-taskのcommons.mdを理解する。
+taskのcommons.md/reviews.mdを理解する。
 **以下略**
 ```
 
