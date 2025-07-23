@@ -230,13 +230,13 @@ nnoremap <Leader>cp :terminal claude -p
 nnoremap <Leader>cc :terminal claude -p -c 
 " " direction from Neovim
 nnoremap <Leader>co :call <SID>OpenOrReloadDirection()<CR>
-nnoremap <Leader>chf :SendListWindowFiles<CR>
-nnoremap <Leader>chm :SendDirection 
-vnoremap <Leader>chm :<C-u>SendDirectionV 
-nnoremap <Leader>chd :SendDirection 慎重に解説してください<CR>
-vnoremap <Leader>chd :<C-u>SendDirectionV 慎重に解説してください<CR>
-nnoremap <Leader>chc :SendDirection 該当部分の下書き（あるいはメモ）に従って、その意図する完成形を示してください<CR>
-vnoremap <Leader>chc :<C-u>SendDirectionV 該当部分の下書き（あるいはメモ）の不備や欠損、不足を補って完成形を示してください<CR>
+nnoremap <Leader>chf :silent SendListWindowFiles<CR>
+nnoremap <Leader>chm :silent SendDirection 
+vnoremap <Leader>chm :silent <C-u>SendDirectionV 
+nnoremap <Leader>chd :silent SendDirection 慎重に解説してください<CR>
+vnoremap <Leader>chd :silent <C-u>SendDirectionV 慎重に解説してください<CR>
+nnoremap <Leader>chc :silent SendDirection 該当部分の下書き（あるいはメモ）に従って、その意図することを成してください<CR>
+vnoremap <Leader>chc :silent <C-u>SendDirectionV 該当部分の下書き（あるいはメモ）の不備や欠損、不足を補って意図することを成してください<CR>
 
 
 " " 共通
