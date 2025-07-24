@@ -34,11 +34,11 @@
 内容:
 - ユーザーインタラクションを表す。画面において、適切なUIとして用意する必要がある。
 
-### データ設計
+### data-modeling.md データモデリング
 
-参照場所: `.claude/works/data-design.md`
+参照場所: `.claude/works/pdm/data-modeling.md`
 内容:
-- 扱うデータ設計を表す。
+- ビジネス要件に基づく概念的なデータモデル
 
 ## 成果物
 
