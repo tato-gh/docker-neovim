@@ -110,6 +110,10 @@ Factory設計:
 
 {PJ進行とともに記載}
 
+### {見出し}
+
+{内容}
+
 ### 依存関係と参照関係の実例
 
 ```elixir
@@ -220,7 +224,92 @@ defmodule MyAppWeb.LiveViewTestHelpers do
 end
 ```
 
-### {見出し}
+### LiveComponentのイベントハンドラーテスト（必須）
 
-{内容}
+**LiveComponentのイベントハンドラーは必ずテストを作成する**
+- 新機能実装時は、基本的な操作パスを全てカバーするテストを書く
+- 基本的な操作（ボタンクリック、フォーム送信等）は機能の中核であり、エッジケースではない
+- イベントハンドラーのテスト欠落は重大なバグの原因となる
+
+**テスト実装の優先順位**:
+1. 基本的な操作（クリック、フォーム送信など）
+2. エラーケース
+3. エッジケース
+
+**LiveComponentテストの例**:
+```elixir
+test "button click event triggers expected behavior", %{conn: conn} do
+  {:ok, view, _} = live(conn, "/path/to/component")
+
+  # クリックイベントをシミュレート
+  assert view
+         |> element("[phx-click=\"action\"][phx-value-item-id=\"1\"]")
+         |> render_click()
+
+  # 期待される結果を確認
+  assert has_element?(view, "#result")
+end
+```
+
+### Phoenix LiveViewのパラメータ名規則
+
+**属性名の変換ルール**
+- Phoenix LiveViewの`phx-value-*`属性は、ハイフンをそのまま保持してイベントパラメータとして送信される
+- HTML属性: `phx-value-phrase-id` → イベントパラメータ: `{"phrase-id" => "11"}`
+
+**命名規則の統一**:
+- データベースフィールド: `item_id`（アンダースコア）
+- HTML属性: `phx-value-item-id`（ハイフン）
+- イベントパラメータ: `"item-id"`（ハイフンのまま）
+
+### コンテキスト層の責務（preload禁止）
+
+**層の責務を明確に分離**
+- コンテキスト層: ビジネスロジックとデータ永続化のみ
+- プレゼンテーション層（LiveView/LiveComponent）: 表示に必要なデータの準備（preload含む）
+- **コンテキストのcreate/update関数でpreloadは行わない**
+
+**正しい実装例**:
+```elixir
+# コンテキスト層（preloadなし）
+def create_item(user_id, attrs \\ %{}) do
+  %Item{user_id: user_id}
+  |> Item.changeset(attrs)
+  |> Repo.insert()
+end
+
+# LiveComponent層（必要に応じてpreload）
+def handle_event("save", %{"item" => attrs}, socket) do
+  case Context.create_item(user_id, attrs) do
+    {:ok, item} ->
+      # 表示に必要ならここでpreload
+      item = Repo.preload(item, [:user, :category])
+      {:noreply, assign(socket, item: item)}
+    # ...
+  end
+end
+```
+
+### データフローの明確化
+
+**モードごとのデータソース**
+- **newモード**: 新規作成時はassignsから必要な情報を取得
+- **editモード**: 編集時は既存のオブジェクトから情報を取得
+- 曖昧な`||`での複数ソースからの値取得は避ける
+
+```elixir
+# 明確なデータフロー
+def update(%{action: :edit} = assigns, socket) do
+  item = assigns.item
+  # editモードではitemからuser_idを明確に取得
+  related_data = Context.get_related_data(item.user_id)
+  # ...
+end
+
+def update(%{action: :new} = assigns, socket) do
+  # newモードではassignsからuser_idを取得
+  related_data = Context.get_related_data(assigns.user_id)
+  # ...
+end
+```
 
