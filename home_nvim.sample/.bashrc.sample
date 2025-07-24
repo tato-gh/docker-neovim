@@ -10,6 +10,7 @@ alias drc='docker compose'
 alias gitco='nvim -c Merginal -c only'
 alias gitup='git branch --contains | cut -d " " -f 2 |xargs -i git push origin {}'
 alias gitmp='git branch --contains | cut -d " " -f 2 |xargs -i git branch tmp/{}'
+alias nvimw='nvim ./.claude/works'
 
 export MANPAGER='nvim +Man!'
 export PATH=$PATH:$(go env GOPATH)/bin
