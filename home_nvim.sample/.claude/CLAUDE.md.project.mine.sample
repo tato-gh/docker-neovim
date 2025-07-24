@@ -23,52 +23,45 @@ Conversations within the branch are assumed to be issues at:
 
 This issue.md contains the requirements and decisions for the work on that specific branch.
 
-## Data Structures
+## Application Documents
 
-The application database-schemes, other data designs and structures follows:
-`@.claude/works/data-design.md`
-
-This file is important for any task.
+See below:
+- Project Proposal: `.claude/works/project-proposal.md`
+- Application Instraction: `.claude/works/application-instraction.md`
+- Data: `@.claude/works/data-design.md`
+- Screens: `@.claude/works/screens-design.md`
+- Functions: `@.claude/works/functions-design.md`
 
 ## Tasks
 
 The working process is divided into several fixed tasks:
+- pdm: responsible for application issues and documents as the top product manager.
 - model: responsible for modeling, especially `data-design.md`.
-- web_rough: responsible for screen design and rough HTML.
+- front: responsible for front-side documents, especially `screens-design.md` and rough htmls.
+- back: responsible for back-side documents, especially `functions-design.md`.
 - web_design: responsible for screen-decorated HTML and controls such as design tokens and component structure.
-- phx_context: responsible for the backside of the phoenix framework, especially context management.
 - phx_front: responsible for managing the front side of the phoenix framework.
+- phx_context: responsible for the backside of the phoenix framework, especially context management.
 - phx_test: responsible for managing automated testing of the phoenix framework.
-- phx_refact: responsible for code health.
 
 First, decide the task, and then proceed with the following files according to the task.
 
-### commons
+### Memories and Experiences
 
 Each task has generalized conventions, practices, and precautions:
 `.claude/works/{task}/commons.md`
-
-### review experience
 
 The experience of the review are prepared for each task with the goal of avoiding similar findings in the same case:
 `.claude/works/{task}/reviews.md`
 
 ## Typical Development Flow
 
-issue
-|> run_web_rough()
-|> run_web_design()
-
-{issue, web_rough}
+{issue, html}
 |> run_phx_context()
-
-{issue, web_rough or web_design, phx_context}
 |> run_phx_front()
-
-{issue, phx_context, phx_front}
 |> run_phx_test()
 
-all_codes
+{all_codes}
 |> run_phx_refact()
 
 ## Yarikata
@@ -83,7 +76,8 @@ Elixir Idiomatic Practices:
 - Avoid prefixes like is_ in function names, as Elixir encourages using predicate functions with names ending in ?. For example, write valid? instead of is_valid.
 - Leverage pattern matching and function clauses to express different behaviors cleanly, reducing the need for explicit conditionals.
 - Structure code with pipelines (|>) to make data transformations readable and flow naturally.
-- Rather than using conditional branching in the flow of processing (procedures), use conditional branching in the process of creating the necessary data. Then, the process is implemented by transforming the data. `value = conv(prev_value, condition)` is better than `if(condition) do value1 else value2 end`.
+- Rather than using conditional branching in the flow of processing (procedures), use conditional branching in the process of creating the necessary data. Then, the process is implemented by transforming the data. `value = conv(prev_value, condition)` is better than `value = if(condition) do value1 else value2 end`.
+- Avoid defensive coding. Trust the schema definition. Minimize conditional branching.
 
 Playwright
 - If you want to use it, please request it to the user.

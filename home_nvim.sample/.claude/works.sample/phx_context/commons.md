@@ -20,28 +20,6 @@
 
 ## 参照ファイル
 
-### ラフデザイン
-
-参照場所: `.claude/works/web_rough/`
-構成:
-```
-web_rough/
-├── README.md           # 説明書（全画面リストと画面遷移図含む）
-```
-
-### Webデザイン
-
-参照場所: `.claude/works/web_design/`
-構成:
-```
-web_design/
-├── README.md           # 説明書（コンセプト、デザイントークン、開発者への伝達事項など）
-└── pages/
-    └── {画面名}/
-        ├── users-table.html  # ユーザー一覧
-        ├── {表示要素名}.html # 意味のある部分ごとに分割.パターンがあれば列挙
- ```
-
 ### レビューファイル
 
 参照場所: `.claude/works/phx_context/reviews.md`
@@ -49,6 +27,25 @@ web_design/
 - これまで実施したタスクへの具体的なフィードバック履歴
 - 同件類似のフィードバックを回避し、タスクの品質をあげるために使用
 - より一般化されたプラクティスは本commons.mdに記載
+
+### データ設計
+
+参照場所: `.claude/works/data-design.md`
+内容:
+- 扱うデータ設計を表す。
+
+### 画面設計
+
+参照場所: `.claude/works/screens-design.md`
+内容:
+- 実装を見据えた画面設計を表す。
+
+### 機能設計
+
+参照場所: `.claude/works/functions-design.md`
+内容:
+- 実装を見据えた機能設計を表す。必要機能を参照する。
+
 
 ## 成果物
 
