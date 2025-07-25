@@ -88,9 +88,30 @@ front/
 ```
 
 ラフデザインとしてスタイリングを下記の通りに制限:
-- 画面配置のためのflexとテキストサイズ調整のみ各タグに`style=""`をつけて良い
+- 各タグに`style=""`をつけて良い
 - タグはHTML5を準拠して活用する
 - JavaScriptは使用しない（Webアプリ側で実装するため）
+
+**構造・レイアウト（必須）：**
+- `display: flex/grid` - 要素配置のため
+- `margin/padding` - 適切な余白確保
+- `width/height` - 基本的なサイズ指定
+
+**視認性確保（必須）：**
+- `font-size/font-weight` - 情報階層の表現
+- `color` - 最低限の色分け（リンク、エラー、チーム色など）
+- `background-color` - 領域区別やボタン識別のため
+- `border` - カードやボタンの境界明示
+
+**ユーザビリティ（必須）：**
+- `cursor: pointer` - クリック可能要素の明示
+- `text-align` - 可読性向上
+- `:hover` - 基本的なインタラクション表現
+
+**避けるべき装飾：**
+- `box-shadow/border-radius` - 装飾的な影や角丸
+- `transition/animation` - 動的効果
+- 複雑なグラデーションや装飾的な背景
 
 モックデータ:
 - HTML内に直接記述
