@@ -214,7 +214,7 @@ nnoremap t. :WriteCurrentFile tmp/.test<CR>
 nnoremap <Leader>to :terminal watch -n 1 -c cat tmp/.output<CR>
 
 " " ヘルプ ショートカット
-nnoremap <Leader>h :Help<Space>
+nnoremap <Leader>hh :Help<Space>
 
 " " 関数の頭を大文字に変換するショートカット
 " " hoge.foo.bar => Hoge.Foo.Bar
@@ -233,10 +233,27 @@ nnoremap <Leader>co :call <SID>OpenOrReloadDirection()<CR>
 nnoremap <Leader>chf :silent SendListWindowFiles<CR>
 nnoremap <Leader>chm :silent SendDirection 
 vnoremap <Leader>chm :silent <C-u>SendDirectionV 
-nnoremap <Leader>chd :silent SendDirection 慎重に解説してください<CR>
-vnoremap <Leader>chd :silent <C-u>SendDirectionV 慎重に解説してください<CR>
-nnoremap <Leader>chc :silent SendDirection 該当部分の下書き（あるいはメモ）に従って、その意図することを成してください<CR>
-vnoremap <Leader>chc :silent <C-u>SendDirectionV 該当部分の下書き（あるいはメモ）の不備や欠損、不足を補って意図することを成してください<CR>
+" " Claude操作コマンド群 (小文字=ファイル作用、大文字=表示のみ)  
+nnoremap <Leader>hi :silent SendDirection 上書き実装してください<CR>
+vnoremap <Leader>hi :silent <C-u>SendDirectionV 上書き実装してください<CR>
+nnoremap <Leader>hI :silent SendDirection 実装案を提示してください<CR>
+vnoremap <Leader>hI :silent <C-u>SendDirectionV 実装案を提示してください<CR>
+nnoremap <Leader>hc :silent SendDirection 同じ文脈で残りを補完してください<CR>  
+vnoremap <Leader>hc :silent <C-u>SendDirectionV 同じ文脈で残りを補完してください<CR>
+nnoremap <Leader>hC :silent SendDirection 同じ文脈で残りを補完した案を提示してください<CR>
+vnoremap <Leader>hC :silent <C-u>SendDirectionV 同じ文脈で残りを補完した案を提示してください<CR>
+nnoremap <Leader>hr :silent SendDirection リファクタリングしてください<CR>
+vnoremap <Leader>hr :silent <C-u>SendDirectionV リファクタリングしてください<CR>
+nnoremap <Leader>hR :silent SendDirection リファクタリング案を提示してください<CR>
+vnoremap <Leader>hR :silent <C-u>SendDirectionV リファクタリング案を提示してください<CR>
+nnoremap <Leader>hd :silent SendDirection コメント追加して解説してください<CR>
+vnoremap <Leader>hd :silent <C-u>SendDirectionV コメント追加して解説してください<CR>
+nnoremap <Leader>hD :silent SendDirection 解説してください<CR>
+vnoremap <Leader>hD :silent <C-u>SendDirectionV 解説してください<CR>
+nnoremap <Leader>ht :silent SendDirection 翻訳して上書きしてください<CR>
+vnoremap <Leader>ht :silent <C-u>SendDirectionV 翻訳して上書きしてください<CR>
+nnoremap <Leader>hT :silent SendDirection 翻訳してください<CR>
+vnoremap <Leader>hT :silent <C-u>SendDirectionV 翻訳してください<CR>
 
 
 " " 共通
