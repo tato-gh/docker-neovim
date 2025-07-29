@@ -26,8 +26,8 @@ This issue.md contains the requirements and decisions for the work on that speci
 ## Application Documents
 
 See below:
-- Project Proposal: `.claude/works/project-proposal.md`
-- Application Instraction: `.claude/works/application-instraction.md`
+- Project Proposal: `@.claude/works/project-proposal.md`
+- Application Instraction: `@.claude/works/application-instraction.md`
 - Data: `@.claude/works/data-design.md`
 - Screens: `@.claude/works/screens-design.md`
 - Functions: `@.claude/works/functions-design.md`
